@@ -10,6 +10,7 @@ import app.simplifymy.gallery.core.settings.GallerySettings
 import app.simplifymy.gallery.core.data.MediaRepository
 import app.simplifymy.gallery.core.model.Folder
 import app.simplifymy.gallery.core.model.MediaFilter
+import app.simplifymy.gallery.core.model.ScrollDirection
 import app.simplifymy.gallery.core.settings.Language
 import app.simplifymy.gallery.core.settings.SettingsRepository
 import app.simplifymy.gallery.ui.theme.AppIcon
@@ -58,6 +59,8 @@ class SettingsViewModel @Inject constructor(
     fun setSorting(value: Sorting) = update { repository.setSorting(value) }
     fun setFolderColumns(value: Int) = update { repository.setFolderColumns(value) }
     fun setMediaColumns(value: Int) = update { repository.setMediaColumns(value) }
+    fun setScrollDirection(value: ScrollDirection) = update { repository.setScrollDirection(value) }
+    fun setOverlayUi(value: Boolean) = update { repository.setOverlayUi(value) }
     fun setCropThumbnails(value: Boolean) = update { repository.setCropThumbnails(value) }
     fun setShowFolderNames(value: Boolean) = update { repository.setShowFolderNames(value) }
     fun setShowFolderDetails(value: Boolean) = update { repository.setShowFolderDetails(value) }

@@ -69,6 +69,9 @@
     <string name="setting_folder_columns">Folder columns</string>
     <string name="setting_media_columns">Media columns</string>
     <string name="setting_group_media">Group media by</string>
+    <string name="setting_scroll_direction">Scroll direction</string>
+    <string name="setting_overlay_ui">Overlay the top bar</string>
+    <string name="setting_overlay_ui_hint">Media scrolls under the title and buttons, which keep their own islands</string>
     <string name="setting_show_details">Show details</string>
     <string name="setting_show_details_hint">Off packs the tiles together with no labels</string>
     <string name="setting_folder_size">Show folder size and count</string>
@@ -128,6 +131,10 @@
     <string name="spacing_none">None</string>
     <string name="spacing_small">Small</string>
     <string name="spacing_large">Large</string>
+
+    <!-- Scroll direction -->
+    <string name="scroll_down">Down</string>
+    <string name="scroll_up">Up</string>
 
     <!-- Details placement -->
     <string name="placement_below">Below</string>

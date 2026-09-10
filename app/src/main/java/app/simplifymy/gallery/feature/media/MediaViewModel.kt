@@ -9,6 +9,7 @@ import app.simplifymy.gallery.core.data.MediaWriter
 import app.simplifymy.gallery.core.model.GridItem
 import app.simplifymy.gallery.core.model.Grouping
 import app.simplifymy.gallery.core.model.Medium
+import app.simplifymy.gallery.core.model.ScrollDirection
 import app.simplifymy.gallery.core.model.grouped
 import app.simplifymy.gallery.core.model.sortedBy
 import app.simplifymy.gallery.core.settings.GallerySettings
@@ -54,10 +55,14 @@ class MediaViewModel @Inject constructor(
     val state: StateFlow<MediaUiState> =
         combine(settings.settings.flatMapLatest { repository.mediaIn(route.bucketId, it.mediaFilter) }, settings.settings, selected) { media, config, picked ->
             loaded = media
-            val sorted = media.sortedBy(config.sorting)
+            // Scrolling up puts the start of the order at the bottom, so the list itself flips.
+            val order = config.sorting.copy(
+                descending = config.sorting.descending != (config.scrollDirection == ScrollDirection.Up)
+            )
+            val sorted = media.sortedBy(order)
             MediaUiState(
                 title = route.title,
-                items = sorted.grouped(config.grouping, config.sorting),
+                items = sorted.grouped(config.grouping, order),
                 totalCount = media.size,
                 totalSize = media.sumOf { it.size },
                 selected = picked,
