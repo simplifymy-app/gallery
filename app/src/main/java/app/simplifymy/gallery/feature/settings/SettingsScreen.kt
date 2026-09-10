@@ -47,6 +47,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.simplifymy.gallery.R
 import app.simplifymy.gallery.core.model.Folder
 import app.simplifymy.gallery.core.model.Grouping
+import app.simplifymy.gallery.core.model.ScrollDirection
 import app.simplifymy.gallery.core.model.SortKey
 import app.simplifymy.gallery.core.settings.GallerySettings
 import app.simplifymy.gallery.ui.component.AccentPicker
@@ -189,6 +190,19 @@ fun SettingsScreen(
                 PickerRow(stringResource(R.string.setting_group_media)) {
                     SegmentedPicker(Grouping.entries, settings.grouping, viewModel::setGrouping) { it.name }
                 }
+                PickerRow(stringResource(R.string.setting_scroll_direction)) {
+                    SegmentedPicker(
+                        ScrollDirection.entries,
+                        settings.scrollDirection,
+                        viewModel::setScrollDirection,
+                    ) { stringResource(it.labelRes) }
+                }
+                ToggleRow(
+                    stringResource(R.string.setting_overlay_ui),
+                    stringResource(R.string.setting_overlay_ui_hint),
+                    settings.overlayUi,
+                    viewModel::setOverlayUi,
+                )
             }
 
             Section(stringResource(R.string.section_folders)) {

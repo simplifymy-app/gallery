@@ -69,6 +69,9 @@
     <string name="setting_folder_columns">Стовпців тек</string>
     <string name="setting_media_columns">Стовпців медіа</string>
     <string name="setting_group_media">Групувати медіа за</string>
+    <string name="setting_scroll_direction">Напрямок прокручування</string>
+    <string name="setting_overlay_ui">Панель поверх сітки</string>
+    <string name="setting_overlay_ui_hint">Медіа прокручується під назвою та кнопками, які лишаються на власних острівцях</string>
     <string name="setting_show_details">Показувати підписи</string>
     <string name="setting_show_details_hint">Вимкнено — плитки щільно, без підписів</string>
     <string name="setting_folder_size">Показувати розмір і кількість</string>
@@ -128,6 +131,10 @@
     <string name="spacing_none">Немає</string>
     <string name="spacing_small">Малий</string>
     <string name="spacing_large">Великий</string>
+
+    <!-- Напрямок прокручування -->
+    <string name="scroll_down">Униз</string>
+    <string name="scroll_up">Угору</string>
 
     <!-- Розташування підпису -->
     <string name="placement_below">Знизу</string>

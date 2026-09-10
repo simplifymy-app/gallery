@@ -17,9 +17,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
@@ -27,18 +29,25 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -49,12 +58,16 @@ import app.simplifymy.gallery.core.model.HeaderKind
 import java.time.format.DateTimeFormatter
 import app.simplifymy.gallery.core.model.MediaType
 import app.simplifymy.gallery.core.model.Medium
+import app.simplifymy.gallery.core.model.ScrollDirection
 import app.simplifymy.gallery.ui.component.GalleryIcons
 import app.simplifymy.gallery.ui.component.IconAction
 import app.simplifymy.gallery.ui.component.MenuEntry
 import app.simplifymy.gallery.ui.component.MenuStepper
 import app.simplifymy.gallery.ui.component.OverflowMenu
 import app.simplifymy.gallery.ui.component.MediaThumbnail
+import app.simplifymy.gallery.ui.component.island
+import app.simplifymy.gallery.ui.component.islandGap
+import app.simplifymy.gallery.ui.component.shadowed
 import app.simplifymy.gallery.ui.formatCount
 import app.simplifymy.gallery.ui.formatDuration
 import app.simplifymy.gallery.ui.formatSize
@@ -76,15 +89,23 @@ fun MediaScreen(
         ActivityResultContracts.StartIntentSenderForResult()
     ) { if (it.resultCode == Activity.RESULT_OK) viewModel.clearSelection() }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(colors.background)
-            .windowInsetsPadding(WindowInsets.safeDrawing),
-    ) {
+    val overlay = state.settings.overlayUi
+    val gridState = rememberLazyGridState()
+    var barHeight by remember { mutableStateOf(0.dp) }
+    val density = LocalDensity.current
+
+    // Scrolling up opens at the end of the list, where the newest media now sits.
+    LaunchedEffect(state.settings.scrollDirection, state.items.isNotEmpty()) {
+        if (state.settings.scrollDirection == ScrollDirection.Up && state.items.isNotEmpty()) {
+            gridState.scrollToItem(state.items.lastIndex)
+        }
+    }
+
+    val bar: @Composable () -> Unit = {
         if (state.selecting) {
             SelectionBar(
                 count = state.selected.size,
+                island = overlay,
                 onClose = viewModel::clearSelection,
                 onSelectAll = viewModel::selectAll,
             )
@@ -96,9 +117,10 @@ fun MediaScreen(
                     formatCount(state.totalCount),
                     formatSize(state.totalSize),
                 ),
+                island = overlay,
                 onBack = onBack,
                 menu = {
-                    OverflowMenu { dismiss ->
+                    OverflowMenu(Modifier.island(overlay)) { dismiss ->
                         MenuEntry(stringResource(R.string.menu_group_by), value = stringResource(state.settings.grouping.labelRes)) {
                             viewModel.cycleGrouping()
                         }
@@ -118,33 +140,60 @@ fun MediaScreen(
                 },
             )
         }
+    }
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(state.settings.mediaColumns),
-            modifier = Modifier.weight(1f),
-            contentPadding = PaddingValues(horizontal = state.settings.thumbnailSpacing.gap),
-            horizontalArrangement = Arrangement.spacedBy(state.settings.thumbnailSpacing.gap),
-            verticalArrangement = Arrangement.spacedBy(state.settings.thumbnailSpacing.gap),
-        ) {
-            state.items.forEach { item ->
-                when (item) {
-                    is GridItem.Header -> item(span = { GridItemSpan(maxLineSpan) }, key = item.date) {
-                        GroupHeader(item)
-                    }
-                    is GridItem.Item -> item(key = item.medium.id) {
-                        MediaTile(
-                            medium = item.medium,
-                            selected = item.medium.id in state.selected,
-                            selecting = state.selecting,
-                            showDuration = state.settings.showVideoDuration,
-                            onClick = {
-                                if (state.selecting) viewModel.toggle(item.medium.id)
-                                else onOpenMedium(item.medium)
-                            },
-                            onLongClick = { viewModel.toggle(item.medium.id) },
-                        )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.background)
+            .windowInsetsPadding(
+                if (overlay) WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
+                else WindowInsets.safeDrawing
+            ),
+    ) {
+        if (!overlay) bar()
+
+        Box(Modifier.weight(1f)) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(state.settings.mediaColumns),
+                state = gridState,
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(
+                    start = state.settings.thumbnailSpacing.gap,
+                    end = state.settings.thumbnailSpacing.gap,
+                    top = if (overlay) barHeight else 0.dp,
+                ),
+                horizontalArrangement = Arrangement.spacedBy(state.settings.thumbnailSpacing.gap),
+                verticalArrangement = Arrangement.spacedBy(state.settings.thumbnailSpacing.gap),
+            ) {
+                state.items.forEach { item ->
+                    when (item) {
+                        is GridItem.Header -> item(span = { GridItemSpan(maxLineSpan) }, key = item.date) {
+                            GroupHeader(item)
+                        }
+                        is GridItem.Item -> item(key = item.medium.id) {
+                            MediaTile(
+                                medium = item.medium,
+                                selected = item.medium.id in state.selected,
+                                selecting = state.selecting,
+                                showDuration = state.settings.showVideoDuration,
+                                onClick = {
+                                    if (state.selecting) viewModel.toggle(item.medium.id)
+                                    else onOpenMedium(item.medium)
+                                },
+                                onLongClick = { viewModel.toggle(item.medium.id) },
+                            )
+                        }
                     }
                 }
+            }
+
+            if (overlay) {
+                Box(
+                    modifier = Modifier
+                        .onSizeChanged { barHeight = with(density) { it.height.toDp() } }
+                        .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top)),
+                ) { bar() }
             }
         }
 
@@ -173,40 +222,49 @@ fun MediaScreen(
 private fun BrowseBar(
     title: String,
     subtitle: String,
+    island: Boolean,
     onBack: () -> Unit,
     menu: @Composable () -> Unit,
 ) {
     val colors = GalleryTheme.colors
     Row(
-        modifier = Modifier.padding(start = 12.dp, end = 14.dp, bottom = 14.dp),
+        modifier = Modifier.fillMaxWidth().padding(start = 12.dp, end = 14.dp, top = islandGap(island), bottom = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(islandGap(island)),
     ) {
-        IconAction(GalleryIcons.Back, onClick = onBack)
+        IconAction(GalleryIcons.Back, onClick = onBack, modifier = Modifier.island(island))
         Column(Modifier.weight(1f).padding(horizontal = 4.dp)) {
-            Text(title, style = GalleryTheme.type.title, color = colors.text, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(subtitle, style = GalleryTheme.type.meta, color = colors.textMuted)
+            Text(
+                title,
+                style = GalleryTheme.type.title.shadowed(island),
+                color = colors.text,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(subtitle, style = GalleryTheme.type.meta.shadowed(island), color = colors.textMuted)
         }
         menu()
     }
 }
 
 @Composable
-private fun SelectionBar(count: Int, onClose: () -> Unit, onSelectAll: () -> Unit) {
+private fun SelectionBar(count: Int, island: Boolean, onClose: () -> Unit, onSelectAll: () -> Unit) {
     val colors = GalleryTheme.colors
     Row(
-        modifier = Modifier.padding(start = 12.dp, end = Spacing.screen, bottom = 14.dp),
+        modifier = Modifier.fillMaxWidth().padding(start = 12.dp, end = Spacing.screen, top = islandGap(island), bottom = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(islandGap(island)),
     ) {
-        IconAction(GalleryIcons.Back, onClick = onClose)
+        IconAction(GalleryIcons.Back, onClick = onClose, modifier = Modifier.island(island))
         Column(Modifier.weight(1f).padding(horizontal = 4.dp)) {
-            Text(stringResource(R.string.selection_count, count), style = GalleryTheme.type.title, color = colors.accent)
-            Text(stringResource(R.string.selection_hint_tap), style = GalleryTheme.type.meta, color = colors.textMuted)
+            Text(stringResource(R.string.selection_count, count), style = GalleryTheme.type.title.shadowed(island), color = colors.accent)
+            Text(stringResource(R.string.selection_hint_tap), style = GalleryTheme.type.meta.shadowed(island), color = colors.textMuted)
         }
         Text(
             stringResource(R.string.action_select_all),
             style = GalleryTheme.type.label,
             color = colors.text,
-            modifier = Modifier.clickable(onClick = onSelectAll).padding(8.dp),
+            modifier = Modifier.island(island).clickable(onClick = onSelectAll).padding(8.dp),
         )
     }
 }

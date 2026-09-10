@@ -13,6 +13,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import app.simplifymy.gallery.core.model.Grouping
 import app.simplifymy.gallery.core.model.MediaFilter
+import app.simplifymy.gallery.core.model.ScrollDirection
 import app.simplifymy.gallery.core.model.SortKey
 import app.simplifymy.gallery.core.model.Sorting
 import androidx.compose.ui.graphics.toArgb
@@ -44,6 +45,8 @@ data class GallerySettings(
     val sorting: Sorting = Sorting(),
     val grouping: Grouping = Grouping.Day,
     val mediaFilter: MediaFilter = MediaFilter.All,
+    val scrollDirection: ScrollDirection = ScrollDirection.Down,
+    val overlayUi: Boolean = false,
     val cropThumbnails: Boolean = true,
     val showFolderNames: Boolean = true,
     val showFolderDetails: Boolean = false,
@@ -73,6 +76,8 @@ private object Keys {
     val sortDesc = booleanPreferencesKey("sort_desc")
     val grouping = stringPreferencesKey("grouping")
     val mediaFilter = stringPreferencesKey("media_filter")
+    val scrollDirection = stringPreferencesKey("scroll_direction")
+    val overlayUi = booleanPreferencesKey("overlay_ui")
     val cropThumbnails = booleanPreferencesKey("crop_thumbnails")
     val showFolderNames = booleanPreferencesKey("show_folder_names")
     val showFolderDetails = booleanPreferencesKey("show_folder_details")
@@ -107,6 +112,8 @@ class SettingsRepository @Inject constructor(@ApplicationContext private val con
             ),
             grouping = p.enum(Keys.grouping, defaults.grouping),
             mediaFilter = p.enum(Keys.mediaFilter, defaults.mediaFilter),
+            scrollDirection = p.enum(Keys.scrollDirection, defaults.scrollDirection),
+            overlayUi = p[Keys.overlayUi] ?: defaults.overlayUi,
             cropThumbnails = p[Keys.cropThumbnails] ?: defaults.cropThumbnails,
             showFolderNames = p[Keys.showFolderNames] ?: defaults.showFolderNames,
             showFolderDetails = p[Keys.showFolderDetails] ?: defaults.showFolderDetails,
@@ -130,6 +137,8 @@ class SettingsRepository @Inject constructor(@ApplicationContext private val con
     suspend fun setGrouping(value: Grouping) = put(Keys.grouping, value.name)
     suspend fun setCropThumbnails(value: Boolean) = put(Keys.cropThumbnails, value)
     suspend fun setMediaFilter(value: MediaFilter) = put(Keys.mediaFilter, value.name)
+    suspend fun setScrollDirection(value: ScrollDirection) = put(Keys.scrollDirection, value.name)
+    suspend fun setOverlayUi(value: Boolean) = put(Keys.overlayUi, value)
     suspend fun setShowFolderNames(value: Boolean) = put(Keys.showFolderNames, value)
     suspend fun setShowFolderDetails(value: Boolean) = put(Keys.showFolderDetails, value)
     suspend fun setDetailsPlacement(value: DetailsPlacement) = put(Keys.detailsPlacement, value.name)

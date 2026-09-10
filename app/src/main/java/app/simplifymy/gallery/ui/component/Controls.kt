@@ -16,7 +16,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.simplifymy.gallery.ui.theme.ControlRadius
 import app.simplifymy.gallery.ui.theme.GalleryTheme
@@ -40,6 +43,19 @@ fun IconAction(
         Icon(icon, contentDescription = label, tint = tint, modifier = Modifier.size(20.dp))
     }
 }
+
+/** Translucent backing that keeps a tappable bar control findable over scrolling media. */
+@Composable
+fun Modifier.island(on: Boolean): Modifier =
+    if (on) background(GalleryTheme.colors.surface.copy(alpha = 0.55f), RoundedCornerShape(ControlRadius)) else this
+
+/** Islands need air between them; a bar that sits in its own row does not. */
+fun islandGap(on: Boolean): Dp = if (on) 6.dp else 0.dp
+
+/** Bar text gets a glow in the background colour instead of a box, so media stays visible. */
+@Composable
+fun TextStyle.shadowed(on: Boolean): TextStyle =
+    if (on) copy(shadow = Shadow(GalleryTheme.colors.background.copy(alpha = 0.9f), blurRadius = 14f)) else this
 
 @Composable
 fun Chip(

@@ -19,6 +19,12 @@ enum class Grouping(@StringRes val labelRes: Int) {
     Month(R.string.group_month),
 }
 
+/** [Up] flips the media grid so the start of the order sits at the bottom, iOS-style. */
+enum class ScrollDirection(@StringRes val labelRes: Int) {
+    Down(R.string.scroll_down),
+    Up(R.string.scroll_up),
+}
+
 enum class MediaFilter(@StringRes val labelRes: Int) {
     All(R.string.filter_all),
     Images(R.string.filter_images),
