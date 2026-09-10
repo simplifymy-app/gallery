@@ -1,0 +1,151 @@
+<resources>
+    <string name="app_name">Gallery</string>
+
+    <!-- Toolbar and selection -->
+    <string name="action_search">Search</string>
+    <string name="action_more">More options</string>
+    <string name="action_ignore">Ignore</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_share">Share</string>
+    <string name="action_favorite">Favorite</string>
+    <string name="action_select_all">All</string>
+    <string name="selection_count">%1$d selected</string>
+    <string name="selection_hint_long_press">Long press to select</string>
+    <string name="selection_hint_tap">Tap to add or remove</string>
+
+    <!-- Menus -->
+    <string name="menu_sort_by">Sort by</string>
+    <string name="menu_show">Show</string>
+    <string name="menu_columns">Columns</string>
+    <string name="menu_group_by">Group by</string>
+    <string name="menu_ignore_folder">Ignore folder</string>
+    <string name="menu_settings">Settings</string>
+
+    <!-- Media grid -->
+    <string name="media_summary">%1$s items · %2$s</string>
+
+    <!-- Search -->
+    <string name="search_placeholder">Search by file name</string>
+    <string name="search_no_matches">No matches</string>
+    <string name="search_results">%1$s results</string>
+
+    <!-- Viewer -->
+    <string name="details_title">DETAILS</string>
+    <string name="details_size">Size</string>
+    <string name="details_dimensions">Dimensions</string>
+    <string name="details_camera">Camera</string>
+    <string name="details_exposure">Exposure</string>
+    <string name="details_path">Path</string>
+
+    <!-- Permission -->
+    <string name="permission_title">Gallery needs access to your photos and videos</string>
+    <string name="permission_body">Nothing leaves your device — the app has no network permission.</string>
+    <string name="permission_open_settings">Open settings</string>
+
+    <!-- Settings sections -->
+    <string name="settings_title">Settings</string>
+    <string name="section_theme">Theme</string>
+    <string name="section_typography">Typography</string>
+    <string name="section_language">Language</string>
+    <string name="section_sorting">Sorting</string>
+    <string name="section_grid">Grid</string>
+    <string name="section_folders">Folders</string>
+    <string name="section_thumbnails">Thumbnails</string>
+    <string name="section_video">Video</string>
+
+    <!-- Settings rows -->
+    <string name="setting_mode">Mode</string>
+    <string name="setting_accent">Accent</string>
+    <string name="setting_app_icon">App icon</string>
+    <string name="setting_app_icon_hint">Applied when you leave the app</string>
+    <string name="setting_contrast">Text contrast</string>
+    <string name="setting_corner_radius">Corner radius</string>
+    <string name="setting_font">Font</string>
+    <string name="setting_text_size">Text size</string>
+    <string name="setting_language">App language</string>
+    <string name="setting_sort_all">Sort everything by</string>
+    <string name="setting_reverse">Reverse order</string>
+    <string name="setting_reverse_hint">Largest and newest first</string>
+    <string name="setting_folder_columns">Folder columns</string>
+    <string name="setting_media_columns">Media columns</string>
+    <string name="setting_group_media">Group media by</string>
+    <string name="setting_show_details">Show details</string>
+    <string name="setting_show_details_hint">Off packs the tiles together with no labels</string>
+    <string name="setting_folder_size">Show folder size and count</string>
+    <string name="setting_folder_size_hint">Number of photos and total size under each name</string>
+    <string name="setting_details_position">Details position</string>
+    <string name="setting_ignored">Ignored folders</string>
+    <string name="setting_ignored_hint">Folders hidden from the gallery</string>
+    <string name="setting_preview_spacing">Preview spacing</string>
+    <string name="setting_crop">Crop into squares</string>
+    <string name="setting_crop_hint">Otherwise keep the original aspect ratio</string>
+    <string name="setting_video_duration">Show video duration</string>
+    <string name="setting_video_duration_hint">Small badge on video thumbnails</string>
+    <string name="setting_autoplay">Autoplay next video</string>
+    <string name="setting_autoplay_hint">When one ends, continue with the next video in the folder. Off repeats it.</string>
+
+    <!-- Folder preview -->
+    <string name="preview_label">PREVIEW</string>
+    <string name="preview_summary">%1$d columns · %2$s gap</string>
+    <string name="preview_folder">Folder</string>
+
+    <!-- Ignored folders -->
+    <string name="ignored_title">Ignored folders</string>
+    <string name="ignored_empty">Nothing is ignored. Use “Ignore folder” from a folder’s menu to hide it from the gallery.</string>
+    <string name="ignored_restore">Restore</string>
+
+    <!-- Theme mode -->
+    <string name="mode_auto">Auto</string>
+    <string name="mode_light">Light</string>
+    <string name="mode_dark">Dark</string>
+    <string name="mode_black">Black</string>
+
+    <!-- Contrast -->
+    <string name="contrast_soft">Soft</string>
+    <string name="contrast_normal">Normal</string>
+    <string name="contrast_high">High</string>
+
+    <!-- Sorting -->
+    <string name="sort_date_taken">Date taken</string>
+    <string name="sort_modified">Modified</string>
+    <string name="sort_name">Name</string>
+    <string name="sort_size">Size</string>
+    <string name="sort_type">Content type</string>
+
+    <!-- Grouping -->
+    <string name="group_today">Today</string>
+    <string name="group_yesterday">Yesterday</string>
+    <string name="group_none">None</string>
+    <string name="group_day">Day</string>
+    <string name="group_month">Month</string>
+
+    <!-- Media filter -->
+    <string name="filter_all">All media</string>
+    <string name="filter_images">Images</string>
+    <string name="filter_videos">Videos</string>
+
+    <!-- Spacing -->
+    <string name="spacing_none">None</string>
+    <string name="spacing_small">Small</string>
+    <string name="spacing_large">Large</string>
+
+    <!-- Details placement -->
+    <string name="placement_below">Below</string>
+    <string name="placement_overlay">On image</string>
+
+    <!-- Video fit -->
+    <string name="fit_fit">Fit</string>
+    <string name="fit_fill">Fill</string>
+    <string name="fit_stretch">Stretch</string>
+
+    <!-- App icon colours -->
+    <string name="icon_carbon">Carbon</string>
+    <string name="icon_blue">Blue</string>
+    <string name="icon_purple">Purple</string>
+    <string name="icon_magenta">Magenta</string>
+    <string name="icon_teal">Teal</string>
+    <string name="icon_green">Green</string>
+
+    <!-- Language and font choices that follow the device -->
+    <string name="follow_system">System</string>
+</resources>
