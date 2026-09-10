@@ -35,6 +35,9 @@ interface MediaDao {
     @Query("SELECT * FROM media WHERE bucket_id IN (:bucketIds)")
     suspend fun mediaForFolders(bucketIds: List<Long>): List<MediumEntity>
 
+    @Query("SELECT * FROM media WHERE id = :id")
+    suspend fun medium(id: Long): MediumEntity?
+
     @Query("SELECT relative_path || name FROM media WHERE id = :id")
     suspend fun pathOf(id: Long): String?
 

@@ -70,7 +70,11 @@ import java.util.Locale
 private val CHROME_TEXT = Color(0xFFEDEDEF)
 
 @Composable
-fun ViewerScreen(onBack: () -> Unit, viewModel: ViewerViewModel = hiltViewModel()) {
+fun ViewerScreen(
+    onBack: () -> Unit,
+    onEdit: (Medium) -> Unit,
+    viewModel: ViewerViewModel = hiltViewModel(),
+) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var chrome by remember { mutableStateOf(true) }
@@ -157,7 +161,7 @@ fun ViewerScreen(onBack: () -> Unit, viewModel: ViewerViewModel = hiltViewModel(
         ) {
             BottomChrome(
                 onShare = { context.startActivity(Intent.createChooser(shareIntent(current), null)) },
-                onEdit = { runCatching { context.startActivity(editIntent(current)) } },
+                onEdit = { onEdit(current) },
                 onSetAs = { runCatching { context.startActivity(setAsIntent(current)) } },
                 onDelete = {
                     trashLauncher.launch(IntentSenderRequest.Builder(viewModel.trash(current)).build())
@@ -301,11 +305,6 @@ private fun shareIntent(medium: Medium) = Intent(Intent.ACTION_SEND).apply {
     type = mimeOf(medium)
     putExtra(Intent.EXTRA_STREAM, medium.uri)
     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-}
-
-private fun editIntent(medium: Medium) = Intent(Intent.ACTION_EDIT).apply {
-    setDataAndType(medium.uri, mimeOf(medium))
-    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 }
 
 private fun setAsIntent(medium: Medium) = Intent(Intent.ACTION_ATTACH_DATA).apply {

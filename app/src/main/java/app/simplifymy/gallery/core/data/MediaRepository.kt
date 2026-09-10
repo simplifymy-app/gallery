@@ -50,6 +50,8 @@ class MediaRepository @Inject constructor(
     suspend fun ignoreFolders(folders: List<Folder>) =
         folders.forEach { ignored.add(IgnoredFolderEntity(it.bucketId, it.name)) }
 
+    suspend fun medium(id: Long): Medium? = media.medium(id)?.toMedium(false)
+
     suspend fun mediaForFolders(bucketIds: List<Long>): List<Medium> =
         media.mediaForFolders(bucketIds).map { it.toMedium(false) }
 

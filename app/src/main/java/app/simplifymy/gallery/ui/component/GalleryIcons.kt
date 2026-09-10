@@ -42,6 +42,21 @@ object GalleryIcons {
     val Share = icon("M10 13V3M6.5 6.5L10 3l3.5 3.5M4 12v4h12v-4")
     val Edit = icon("M13.4 3.6l3 3L7 16H4v-3z")
     val SetAs = icon("M10 3.5v9M6.8 9.3L10 12.5l3.2-3.2M3.2 3.5h13.6v13H3.2z")
+    val Crop = icon("M5.5 1.5v13h13M1.5 5.5h13v13")
+    val Adjust = icon(
+        "M3 6h9M15.5 6H17M3 14h3M9.5 14H17" +
+            "M13.7 6m-1.8 0a1.8 1.8 0 1 0 3.6 0a1.8 1.8 0 1 0 -3.6 0" +
+            "M7.7 14m-1.8 0a1.8 1.8 0 1 0 3.6 0a1.8 1.8 0 1 0 -3.6 0"
+    )
+    val Filter = icon(
+        "M7.6 7.6m-4.6 0a4.6 4.6 0 1 0 9.2 0a4.6 4.6 0 1 0 -9.2 0" +
+            "M12.4 12.4m-4.6 0a4.6 4.6 0 1 0 9.2 0a4.6 4.6 0 1 0 -9.2 0"
+    )
+    val Draw = icon("M13.4 3.6l3 3L7 16H4v-3zM11.6 5.4l3 3")
+    val Reset = icon("M4 10a6 6 0 1 0 1.9-4.4M3.4 3.6v3.4h3.4")
+    val RotateLeft = icon("M4.2 10a5.8 5.8 0 1 0 1.8-4.2M3.6 4v3.4h3.4")
+    val RotateRight = icon("M15.8 10a5.8 5.8 0 1 1-1.8-4.2M16.4 4v3.4h-3.4")
+    val Mirror = icon("M10 2.5v15M7.2 6.8L4 10l3.2 3.2M12.8 6.8L16 10l-3.2 3.2")
     val Play = icon("M7 4.5l8 5.5-8 5.5z", filled = true)
     val Trash = icon("M3 6h14M8 6V4h4v2M5.5 6l.8 10.5h7.4L14.5 6")
     val Heart = icon("M10 16.8S2.6 12.4 2.6 7.5A3.9 3.9 0 0 1 10 5.4a3.9 3.9 0 0 1 7.4 2.1c0 4.9-7.4 9.3-7.4 9.3z")

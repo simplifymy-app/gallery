@@ -155,4 +155,33 @@
 
     <!-- Вибір, що слідує за системою -->
     <string name="follow_system">Системна</string>
+
+    <!-- Редактор -->
+    <string name="editor_crop">Обрізати</string>
+    <string name="editor_adjust">Корекція</string>
+    <string name="editor_filter">Фільтр</string>
+    <string name="editor_draw">Малювати</string>
+    <string name="editor_title_crop">Обрізати та повернути</string>
+    <string name="editor_title_adjust">Корекція</string>
+    <string name="editor_title_filter">Фільтри</string>
+    <string name="editor_title_draw">Малювання</string>
+    <string name="editor_brightness">Яскравість</string>
+    <string name="editor_contrast">Контраст</string>
+    <string name="editor_saturation">Насиченість</string>
+    <string name="editor_color">Колір</string>
+    <string name="editor_brush">Пензель</string>
+    <string name="editor_saved">Збережено як копію</string>
+    <string name="action_save">Зберегти</string>
+    <string name="action_reset">Скинути</string>
+    <string name="action_close">Закрити</string>
+    <string name="action_rotate_left">Повернути ліворуч</string>
+    <string name="action_rotate_right">Повернути праворуч</string>
+    <string name="action_mirror">Дзеркально</string>
+    <string name="crop_free">Вільно</string>
+    <string name="filter_original">Оригінал</string>
+    <string name="filter_mono">Ч/б</string>
+    <string name="filter_sepia">Сепія</string>
+    <string name="filter_cold">Холодний</string>
+    <string name="filter_warm">Теплий</string>
+    <string name="filter_fade">Вицвілий</string>
 </resources>

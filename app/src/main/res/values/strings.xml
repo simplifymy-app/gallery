@@ -155,4 +155,33 @@
 
     <!-- Language and font choices that follow the device -->
     <string name="follow_system">System</string>
+
+    <!-- Editor -->
+    <string name="editor_crop">Crop</string>
+    <string name="editor_adjust">Adjust</string>
+    <string name="editor_filter">Filter</string>
+    <string name="editor_draw">Draw</string>
+    <string name="editor_title_crop">Crop and rotate</string>
+    <string name="editor_title_adjust">Adjust</string>
+    <string name="editor_title_filter">Filters</string>
+    <string name="editor_title_draw">Draw</string>
+    <string name="editor_brightness">Brightness</string>
+    <string name="editor_contrast">Contrast</string>
+    <string name="editor_saturation">Saturation</string>
+    <string name="editor_color">Color</string>
+    <string name="editor_brush">Brush</string>
+    <string name="editor_saved">Saved as a copy</string>
+    <string name="action_save">Save</string>
+    <string name="action_reset">Reset</string>
+    <string name="action_close">Close</string>
+    <string name="action_rotate_left">Rotate left</string>
+    <string name="action_rotate_right">Rotate right</string>
+    <string name="action_mirror">Mirror</string>
+    <string name="crop_free">Free</string>
+    <string name="filter_original">Original</string>
+    <string name="filter_mono">Mono</string>
+    <string name="filter_sepia">Sepia</string>
+    <string name="filter_cold">Cold</string>
+    <string name="filter_warm">Warm</string>
+    <string name="filter_fade">Fade</string>
 </resources>
