@@ -8,6 +8,9 @@ import coil3.gif.AnimatedImageDecoder
 import coil3.request.crossfade
 import coil3.video.VideoFrameDecoder
 import dagger.hilt.android.HiltAndroidApp
+import app.simplifymy.gallery.core.media.Thumbnail
+import app.simplifymy.gallery.core.media.ThumbnailFetcher
+import app.simplifymy.gallery.core.media.ThumbnailKeyer
 import app.simplifymy.gallery.core.settings.AppIconManager
 import app.simplifymy.gallery.core.settings.SettingsRepository
 import kotlinx.coroutines.CoroutineScope
@@ -35,6 +38,8 @@ class GalleryApp : Application(), SingletonImageLoader.Factory {
     override fun newImageLoader(context: PlatformContext): ImageLoader =
         ImageLoader.Builder(context)
             .components {
+                add(ThumbnailFetcher.Factory(context), Thumbnail::class)
+                add(ThumbnailKeyer(), Thumbnail::class)
                 add(AnimatedImageDecoder.Factory())
                 add(VideoFrameDecoder.Factory())
             }
