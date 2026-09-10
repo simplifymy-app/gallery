@@ -1,8 +1,8 @@
 <resources>
-    <!-- Same theme, plus the splash screen the platform only has from API 31. -->
+    <!-- API 31+ always draws a splash; a transparent icon on the window black is the closest to none. -->
     <style name="Theme.Gallery" parent="android:Theme.Material.NoActionBar">
         <item name="android:windowBackground">@android:color/black</item>
         <item name="android:windowSplashScreenBackground">@android:color/black</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@android:color/transparent</item>
     </style>
 </resources>

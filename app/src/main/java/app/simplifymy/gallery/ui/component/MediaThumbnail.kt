@@ -7,18 +7,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import android.net.Uri
 import coil3.compose.AsyncImage
+import app.simplifymy.gallery.core.media.Thumbnail
 import app.simplifymy.gallery.ui.theme.GalleryTheme
 
 @Composable
 fun MediaThumbnail(
-    model: Any?,
+    model: Uri?,
     modifier: Modifier = Modifier,
     crop: Boolean = true,
     aspectRatio: Float = 1f,
 ) {
     AsyncImage(
-        model = model,
+        model = model?.let(::Thumbnail),
         contentDescription = null,
         contentScale = if (crop) ContentScale.Crop else ContentScale.Fit,
         modifier = modifier
