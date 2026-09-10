@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import app.simplifymy.gallery.feature.editor.EditorScreen
 import app.simplifymy.gallery.feature.folders.FoldersScreen
 import app.simplifymy.gallery.feature.media.MediaScreen
 import app.simplifymy.gallery.feature.search.SearchScreen
@@ -30,6 +31,9 @@ data class Media(val bucketId: Long, val title: String)
 @Serializable
 data class Viewer(val bucketId: Long, val mediumId: Long)
 
+@Serializable
+data class Editor(val mediumId: Long)
+
 @Composable
 fun GalleryNavHost() {
     val navController = rememberNavController()
@@ -51,7 +55,13 @@ fun GalleryNavHost() {
             )
         }
         composable<Viewer> {
-            ViewerScreen(onBack = navController::popBackStack)
+            ViewerScreen(
+                onBack = navController::popBackStack,
+                onEdit = { navController.navigate(Editor(it.id)) },
+            )
+        }
+        composable<Editor> {
+            EditorScreen(onBack = navController::popBackStack)
         }
         composable<Search> {
             SearchScreen(
