@@ -1,0 +1,18 @@
+<!--
+  Minimal Carbon-style gallery mark: a sun over a soft ridge.
+  The ridge runs past every edge of the 108dp adaptive grid so it bleeds to the tile edge under any
+  launcher mask, while the sun stays inside the 66dp safe circle. Monochrome by design - the
+  background layer carries the colour.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M-12,101.3L36,69C39.2,67.3 41,66.2 43.2,66.2C45.7,66.2 47.8,68.3 50.4,69.9C52.5,71.2 55.5,71.2 57.6,69.9C60,68.4 62.7,66.2 64.8,64L73.8,56.6C77.6,53.5 80.8,53.5 84.6,56.6L120,84.1L120,120L-12,120Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M43.1,39.5m-8.2,0a8.2,8.2 0,1 1,16.4 0a8.2,8.2 0,1 1,-16.4 0" />
+</vector>

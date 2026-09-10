@@ -1,0 +1,151 @@
+<resources>
+    <string name="app_name">Галерея</string>
+
+    <!-- Панель і вибір -->
+    <string name="action_search">Пошук</string>
+    <string name="action_more">Більше дій</string>
+    <string name="action_ignore">Ігнорувати</string>
+    <string name="action_delete">Видалити</string>
+    <string name="action_share">Поділитися</string>
+    <string name="action_favorite">Обране</string>
+    <string name="action_select_all">Усе</string>
+    <string name="selection_count">Вибрано %1$d</string>
+    <string name="selection_hint_long_press">Утримуйте, щоб вибрати</string>
+    <string name="selection_hint_tap">Торкніться, щоб додати або прибрати</string>
+
+    <!-- Меню -->
+    <string name="menu_sort_by">Сортувати за</string>
+    <string name="menu_show">Показувати</string>
+    <string name="menu_columns">Стовпці</string>
+    <string name="menu_group_by">Групувати за</string>
+    <string name="menu_ignore_folder">Ігнорувати теку</string>
+    <string name="menu_settings">Налаштування</string>
+
+    <!-- Сітка медіа -->
+    <string name="media_summary">%1$s елем. · %2$s</string>
+
+    <!-- Пошук -->
+    <string name="search_placeholder">Пошук за назвою файлу</string>
+    <string name="search_no_matches">Нічого не знайдено</string>
+    <string name="search_results">Знайдено: %1$s</string>
+
+    <!-- Перегляд -->
+    <string name="details_title">ДЕТАЛІ</string>
+    <string name="details_size">Розмір</string>
+    <string name="details_dimensions">Роздільність</string>
+    <string name="details_camera">Камера</string>
+    <string name="details_exposure">Експозиція</string>
+    <string name="details_path">Шлях</string>
+
+    <!-- Дозволи -->
+    <string name="permission_title">Галереї потрібен доступ до ваших фото та відео</string>
+    <string name="permission_body">Нічого не залишає ваш пристрій — застосунок не має доступу до мережі.</string>
+    <string name="permission_open_settings">Відкрити налаштування</string>
+
+    <!-- Розділи налаштувань -->
+    <string name="settings_title">Налаштування</string>
+    <string name="section_theme">Тема</string>
+    <string name="section_typography">Типографіка</string>
+    <string name="section_language">Мова</string>
+    <string name="section_sorting">Сортування</string>
+    <string name="section_grid">Сітка</string>
+    <string name="section_folders">Теки</string>
+    <string name="section_thumbnails">Мініатюри</string>
+    <string name="section_video">Відео</string>
+
+    <!-- Рядки налаштувань -->
+    <string name="setting_mode">Режим</string>
+    <string name="setting_accent">Акцент</string>
+    <string name="setting_app_icon">Іконка застосунку</string>
+    <string name="setting_app_icon_hint">Застосується, коли ви вийдете із застосунку</string>
+    <string name="setting_contrast">Контраст тексту</string>
+    <string name="setting_corner_radius">Радіус кутів</string>
+    <string name="setting_font">Шрифт</string>
+    <string name="setting_text_size">Розмір тексту</string>
+    <string name="setting_language">Мова застосунку</string>
+    <string name="setting_sort_all">Сортувати все за</string>
+    <string name="setting_reverse">Зворотний порядок</string>
+    <string name="setting_reverse_hint">Спочатку найбільші та найновіші</string>
+    <string name="setting_folder_columns">Стовпців тек</string>
+    <string name="setting_media_columns">Стовпців медіа</string>
+    <string name="setting_group_media">Групувати медіа за</string>
+    <string name="setting_show_details">Показувати підписи</string>
+    <string name="setting_show_details_hint">Вимкнено — плитки щільно, без підписів</string>
+    <string name="setting_folder_size">Показувати розмір і кількість</string>
+    <string name="setting_folder_size_hint">Кількість фото та загальний розмір під назвою</string>
+    <string name="setting_details_position">Розташування підпису</string>
+    <string name="setting_ignored">Ігноровані теки</string>
+    <string name="setting_ignored_hint">Теки, приховані з галереї</string>
+    <string name="setting_preview_spacing">Відступ між мініатюрами</string>
+    <string name="setting_crop">Обрізати у квадрат</string>
+    <string name="setting_crop_hint">Інакше зберігати вихідні пропорції</string>
+    <string name="setting_video_duration">Показувати тривалість відео</string>
+    <string name="setting_video_duration_hint">Невелика позначка на мініатюрах відео</string>
+    <string name="setting_autoplay">Автовідтворення наступного відео</string>
+    <string name="setting_autoplay_hint">Коли одне завершується, відтворити наступне відео в теці. Вимкнено — повторювати поточне.</string>
+
+    <!-- Попередній перегляд тек -->
+    <string name="preview_label">ПЕРЕГЛЯД</string>
+    <string name="preview_summary">Стовпців: %1$d · відступ: %2$s</string>
+    <string name="preview_folder">Тека</string>
+
+    <!-- Ігноровані теки -->
+    <string name="ignored_title">Ігноровані теки</string>
+    <string name="ignored_empty">Немає ігнорованих тек. Виберіть «Ігнорувати теку» в меню теки, щоб приховати її з галереї.</string>
+    <string name="ignored_restore">Відновити</string>
+
+    <!-- Режим теми -->
+    <string name="mode_auto">Авто</string>
+    <string name="mode_light">Світла</string>
+    <string name="mode_dark">Темна</string>
+    <string name="mode_black">Чорна</string>
+
+    <!-- Контраст -->
+    <string name="contrast_soft">М’який</string>
+    <string name="contrast_normal">Звичайний</string>
+    <string name="contrast_high">Високий</string>
+
+    <!-- Сортування -->
+    <string name="sort_date_taken">Датою зйомки</string>
+    <string name="sort_modified">Датою зміни</string>
+    <string name="sort_name">Назвою</string>
+    <string name="sort_size">Розміром</string>
+    <string name="sort_type">Типом вмісту</string>
+
+    <!-- Групування -->
+    <string name="group_today">Сьогодні</string>
+    <string name="group_yesterday">Учора</string>
+    <string name="group_none">Без груп</string>
+    <string name="group_day">Днем</string>
+    <string name="group_month">Місяцем</string>
+
+    <!-- Фільтр медіа -->
+    <string name="filter_all">Усі медіа</string>
+    <string name="filter_images">Зображення</string>
+    <string name="filter_videos">Відео</string>
+
+    <!-- Відступи -->
+    <string name="spacing_none">Немає</string>
+    <string name="spacing_small">Малий</string>
+    <string name="spacing_large">Великий</string>
+
+    <!-- Розташування підпису -->
+    <string name="placement_below">Знизу</string>
+    <string name="placement_overlay">На зображенні</string>
+
+    <!-- Вписування відео -->
+    <string name="fit_fit">Вписати</string>
+    <string name="fit_fill">Заповнити</string>
+    <string name="fit_stretch">Розтягнути</string>
+
+    <!-- Кольори іконки -->
+    <string name="icon_carbon">Вугільний</string>
+    <string name="icon_blue">Синій</string>
+    <string name="icon_purple">Фіолетовий</string>
+    <string name="icon_magenta">Пурпуровий</string>
+    <string name="icon_teal">Бірюзовий</string>
+    <string name="icon_green">Зелений</string>
+
+    <!-- Вибір, що слідує за системою -->
+    <string name="follow_system">Системна</string>
+</resources>
