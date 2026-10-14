@@ -89,7 +89,6 @@ fun galleryColors(
     )
 }
 
-/** Moves a foreground colour away from (or toward) its background without changing hue. */
 private fun Color.contrasted(background: Color, contrast: Contrast): Color {
     if (contrast == Contrast.Normal) return this
     val target = if (background.luminance() < 0.5f) 1f else 0f

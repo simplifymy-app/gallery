@@ -13,7 +13,6 @@ object Spacing {
     val hitTarget = 44.dp
 }
 
-/** Applies to media thumbnails only; controls keep [ControlRadius]. */
 enum class CornerStyle(val radius: Dp) {
     Sharp(2.dp),
     Default(4.dp),

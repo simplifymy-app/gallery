@@ -14,8 +14,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import app.simplifymy.gallery.core.settings.AppIconManager
 import app.simplifymy.gallery.feature.permission.MediaPermissionGate
 import app.simplifymy.gallery.navigation.GalleryNavHost
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import app.simplifymy.gallery.ui.theme.GalleryTheme
+import app.simplifymy.gallery.ui.theme.isDark
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -23,13 +28,11 @@ class MainActivity : ComponentActivity() {
 
     @Inject lateinit var appIcons: AppIconManager
 
-    /** Swapping the launcher alias finishes the task, so it waits until nothing is on screen. */
     override fun onStop() {
         super.onStop()
         appIcons.flush()
     }
 
-    /** The locale has to be in place before any resource is read, so it goes on the base context. */
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base.withLanguage(base.storedLanguage()))
     }
@@ -48,8 +51,21 @@ class MainActivity : ComponentActivity() {
                 font = settings.font,
                 textScale = settings.textScale,
             ) {
+                SystemBars(light = !settings.themeMode.isDark())
                 MediaPermissionGate { GalleryNavHost() }
             }
+        }
+    }
+}
+
+@Composable
+private fun SystemBars(light: Boolean) {
+    val view = LocalView.current
+    val window = (view.context as ComponentActivity).window
+    SideEffect {
+        WindowCompat.getInsetsController(window, view).apply {
+            isAppearanceLightStatusBars = light
+            isAppearanceLightNavigationBars = light
         }
     }
 }

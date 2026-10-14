@@ -25,7 +25,6 @@ import kotlin.coroutines.coroutineContext
 
 data class Thumbnail(val uri: Uri)
 
-
 class ThumbnailFetcher(
     private val context: Context,
     private val data: Thumbnail,
@@ -39,7 +38,6 @@ class ThumbnailFetcher(
             options.size.width.pxOrElse { FALLBACK_PX },
             options.size.height.pxOrElse { FALLBACK_PX },
         )
-        // Only a missing thumbnail is caught here; a cancelled read must not fall through.
         val bitmap = try {
             context.contentResolver.loadThumbnail(data.uri, size, signal)
         } catch (_: IOException) {

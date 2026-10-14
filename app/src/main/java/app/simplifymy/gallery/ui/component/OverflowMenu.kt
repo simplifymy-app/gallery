@@ -120,7 +120,6 @@ fun <T> DropdownSetting(
     }
 }
 
-/** Steps a value without closing the menu, so several taps can be made in a row. */
 @Composable
 fun MenuStepper(
     label: String,

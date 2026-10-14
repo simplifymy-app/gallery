@@ -6,7 +6,6 @@ import androidx.compose.ui.geometry.Size
 
 enum class CropGrip { None, Move, TopLeft, TopRight, BottomLeft, BottomRight }
 
-/** Smallest box the user can pinch down to, and how close a finger must land to catch a corner. */
 private const val MIN_PX = 72f
 private const val GRAB_PX = 56f
 

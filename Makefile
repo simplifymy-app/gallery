@@ -5,6 +5,7 @@ EMULATOR := $(SDK)/emulator/emulator
 VERSION  := $(shell sed -n 's/.*versionName = "\(.*\)".*/\1/p' app/build.gradle.kts)
 DIST     := dist
 APK      := $(DIST)/simplify-gallery-$(VERSION).apk
+AAB      := $(DIST)/simplify-gallery-$(VERSION).aab
 
 .PHONY: help
 help: #shows what make commands are available
@@ -36,6 +37,13 @@ apk: #builds the release apk and copies it to dist as a versioned file
 	@$$(ls $(SDK)/build-tools/*/apksigner | sort -V | tail -1) verify $(APK) && echo "signature ok"
 	@ls -lh $(APK)
 
+.PHONY: bundle
+bundle: #builds the signed app bundle for google play into dist
+	./gradlew :app:bundleRelease
+	@mkdir -p $(DIST)
+	@cp app/build/outputs/bundle/release/app-release.aab $(AAB)
+	@ls -lh $(AAB)
+
 .PHONY: emulator
 emulator: #boots the first available avd and waits for it
 	@$(EMULATOR) -avd $$($(EMULATOR) -list-avds | head -1) >/dev/null 2>&1 &
@@ -66,6 +74,22 @@ lint: #runs android lint over the debug variant
 .PHONY: version
 version: #prints the current version name
 	@echo $(VERSION)
+
+.PHONY: bump-patch
+bump-patch: #bumps the patch version and the version code, 1.0.0 to 1.0.1
+	@sh scripts/bump.sh patch
+
+.PHONY: bump-minor
+bump-minor: #bumps the minor version and the version code, 1.0.3 to 1.1.0
+	@sh scripts/bump.sh minor
+
+.PHONY: bump-major
+bump-major: #bumps the major version and the version code, 1.2.3 to 2.0.0
+	@sh scripts/bump.sh major
+
+.PHONY: set-version
+set-version: #sets an exact version and bumps the code, make set-version VERSION=1.4.0
+	@sh scripts/bump.sh $(VERSION)
 
 .PHONY: clean
 clean: #removes build output and the dist directory

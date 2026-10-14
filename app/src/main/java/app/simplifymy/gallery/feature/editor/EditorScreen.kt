@@ -180,7 +180,6 @@ private fun Preview(
     onStroke: (Stroke) -> Unit,
     onCrop: (Rect) -> Unit,
 ) {
-    // While cropping the whole photo stays visible so the box can be dragged over any part of it.
     val window = if (cropping) FULL_FRAME else edits.crop
     val aspect = source.width * window.width / (source.height * window.height)
     val filter = remember(edits.filter, edits.brightness, edits.contrast, edits.saturation) {

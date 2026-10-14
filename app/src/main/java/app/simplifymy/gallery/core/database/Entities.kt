@@ -25,7 +25,9 @@ data class IgnoredFolderEntity(
     val name: String,
 )
 
-/** Keyed by path, not id, so a favorite survives the file being moved or re-indexed. */
+@Entity(tableName = "pinned_folders")
+data class PinnedFolderEntity(@PrimaryKey @ColumnInfo(name = "bucket_id") val bucketId: Long)
+
 @Entity(tableName = "favorites")
 data class FavoriteEntity(@PrimaryKey val path: String)
 
@@ -38,4 +40,11 @@ data class FolderRow(
     @ColumnInfo(name = "date_modified") val dateModified: Long,
     @ColumnInfo(name = "cover_id") val coverId: Long,
     @ColumnInfo(name = "cover_type") val coverType: Int,
+)
+
+data class FolderNameRow(
+    @ColumnInfo(name = "bucket_id") val bucketId: Long,
+    @ColumnInfo(name = "bucket_name") val bucketName: String,
+    @ColumnInfo(name = "relative_path") val relativePath: String,
+    @ColumnInfo(name = "item_count") val itemCount: Int,
 )

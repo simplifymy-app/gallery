@@ -26,6 +26,14 @@ interface MediaDao {
     )
     fun folders(types: List<Int>): Flow<List<FolderRow>>
 
+    @Query(
+        """
+        SELECT bucket_id, bucket_name, MIN(relative_path) AS relative_path, COUNT(*) AS item_count
+        FROM media GROUP BY bucket_id, bucket_name ORDER BY bucket_name COLLATE NOCASE
+        """
+    )
+    fun allFolders(): Flow<List<FolderNameRow>>
+
     @Query("SELECT * FROM media WHERE bucket_id = :bucketId AND type IN (:types)")
     fun mediaIn(bucketId: Long, types: List<Int>): Flow<List<MediumEntity>>
 
@@ -47,7 +55,6 @@ interface MediaDao {
     @Query("DELETE FROM media")
     suspend fun clear()
 
-    /** MediaStore is the source of truth; the table is a pure cache, so swap it wholesale. */
     @Transaction
     suspend fun replaceAll(items: List<MediumEntity>) {
         clear()
@@ -63,8 +70,29 @@ interface IgnoredFolderDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add(folder: IgnoredFolderEntity)
 
-    @Query("DELETE FROM ignored_folders WHERE bucket_id = :bucketId")
-    suspend fun remove(bucketId: Long)
+    @Query("DELETE FROM ignored_folders")
+    suspend fun clear()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addAll(folders: List<IgnoredFolderEntity>)
+
+    @Transaction
+    suspend fun replaceAll(folders: List<IgnoredFolderEntity>) {
+        clear()
+        addAll(folders)
+    }
+}
+
+@Dao
+interface PinnedFolderDao {
+    @Query("SELECT bucket_id FROM pinned_folders")
+    fun ids(): Flow<List<Long>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addAll(folders: List<PinnedFolderEntity>)
+
+    @Query("DELETE FROM pinned_folders WHERE bucket_id IN (:bucketIds)")
+    suspend fun removeAll(bucketIds: List<Long>)
 }
 
 @Dao

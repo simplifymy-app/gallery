@@ -11,6 +11,7 @@ import app.simplifymy.gallery.core.database.FavoriteDao
 import app.simplifymy.gallery.core.database.GalleryDatabase
 import app.simplifymy.gallery.core.database.IgnoredFolderDao
 import app.simplifymy.gallery.core.database.MediaDao
+import app.simplifymy.gallery.core.database.PinnedFolderDao
 import javax.inject.Singleton
 
 @Module
@@ -21,7 +22,7 @@ object AppModule {
     @Singleton
     fun database(@ApplicationContext context: Context): GalleryDatabase =
         Room.databaseBuilder(context, GalleryDatabase::class.java, "gallery.db")
-            .addMigrations(GalleryDatabase.MIGRATION_1_2)
+            .addMigrations(GalleryDatabase.MIGRATION_1_2, GalleryDatabase.MIGRATION_2_3)
             .build()
 
     @Provides
@@ -32,4 +33,7 @@ object AppModule {
 
     @Provides
     fun ignoredFolderDao(db: GalleryDatabase): IgnoredFolderDao = db.ignoredFolderDao()
+
+    @Provides
+    fun pinnedFolderDao(db: GalleryDatabase): PinnedFolderDao = db.pinnedFolderDao()
 }

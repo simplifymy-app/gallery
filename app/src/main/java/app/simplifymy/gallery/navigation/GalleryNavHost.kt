@@ -1,5 +1,7 @@
 package app.simplifymy.gallery.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -39,12 +41,18 @@ fun GalleryNavHost() {
     val navController = rememberNavController()
     val openSettings = { navController.navigate(Settings) }
 
-    NavHost(navController = navController, startDestination = Folders) {
+    NavHost(
+        navController = navController,
+        startDestination = Folders,
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+    ) {
         composable<Folders> {
             FoldersScreen(
                 onOpenFolder = { navController.navigate(Media(it.bucketId, it.name)) },
                 onOpenSearch = { navController.navigate(Search) },
                 onOpenSettings = { openSettings() },
+                onOpenIgnored = { navController.navigate(IgnoredFolders) },
             )
         }
         composable<Media> { entry ->

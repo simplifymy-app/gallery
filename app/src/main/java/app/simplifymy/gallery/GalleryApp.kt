@@ -27,7 +27,6 @@ class GalleryApp : Application(), SingletonImageLoader.Factory {
 
     @Inject lateinit var appIcons: AppIconManager
 
-    /** A restored backup brings the preference back but not the alias state, so queue a reconcile. */
     override fun onCreate() {
         super.onCreate()
         CoroutineScope(SupervisorJob() + Dispatchers.Default).launch {

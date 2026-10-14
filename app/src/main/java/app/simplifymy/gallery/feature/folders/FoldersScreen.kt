@@ -27,6 +27,9 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -68,6 +71,7 @@ fun FoldersScreen(
     onOpenFolder: (Folder) -> Unit,
     onOpenSearch: () -> Unit,
     onOpenSettings: () -> Unit,
+    onOpenIgnored: () -> Unit,
     viewModel: FoldersViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -142,6 +146,7 @@ fun FoldersScreen(
                     modifier = Modifier.padding(horizontal = 12.dp),
                     onChange = viewModel::setColumns,
                 )
+                MenuEntry(stringResource(R.string.setting_ignored)) { dismiss(); onOpenIgnored() }
                 MenuEntry(stringResource(R.string.menu_settings)) { dismiss(); onOpenSettings() }
             }
         }
@@ -202,6 +207,11 @@ fun FoldersScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                IconAction(
+                    GalleryIcons.Pin,
+                    onClick = viewModel::pinSelected,
+                    label = stringResource(if (state.selectionPinned) R.string.action_unpin else R.string.action_pin),
+                )
                 IconAction(GalleryIcons.Hide, onClick = viewModel::ignoreSelected, label = stringResource(R.string.action_ignore))
                 IconAction(GalleryIcons.Trash, label = stringResource(R.string.action_delete), onClick = {
                     viewModel.trashSelected { sender ->
@@ -232,6 +242,7 @@ private fun FolderCard(
     if (captioned && !below) {
         Box(Modifier.selectable(selected, onClick, onLongClick)) {
             MediaThumbnail(model = folder.coverUri, crop = crop, modifier = Modifier.fillMaxWidth())
+            if (folder.isPinned) PinBadge(Modifier.align(Alignment.TopEnd))
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
@@ -251,11 +262,28 @@ private fun FolderCard(
         modifier = Modifier.selectable(selected, onClick, onLongClick),
         verticalArrangement = Arrangement.spacedBy(Spacing.base),
     ) {
-        MediaThumbnail(model = folder.coverUri, crop = crop, modifier = Modifier.fillMaxWidth())
+        Box {
+            MediaThumbnail(model = folder.coverUri, crop = crop, modifier = Modifier.fillMaxWidth())
+            if (folder.isPinned) PinBadge(Modifier.align(Alignment.TopEnd))
+        }
         if (captioned) {
             Caption(folder, showName, showDetails, compact, colors.text, colors.textMuted)
         }
     }
+}
+
+@Composable
+private fun PinBadge(modifier: Modifier = Modifier) {
+    Icon(
+        GalleryIcons.Pin,
+        contentDescription = stringResource(R.string.pinned),
+        tint = Color(0xFFEDEDEF),
+        modifier = modifier
+            .padding(5.dp)
+            .background(Color(0x8C000000), CircleShape)
+            .padding(4.dp)
+            .size(12.dp),
+    )
 }
 
 @OptIn(ExperimentalFoundationApi::class)

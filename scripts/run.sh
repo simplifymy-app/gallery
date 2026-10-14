@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 # Build, install and launch on a running device, starting the emulator if none is attached.
 set -euo pipefail
+cd "$(dirname "$0")/.."
 
 SDK="${ANDROID_HOME:-$HOME/Library/Android/sdk}"
 ADB="$SDK/platform-tools/adb"
 EMULATOR="$SDK/emulator/emulator"
-APP_ID="dev.simplify.gallery.debug"
+APP_ID="app.simplifymy.gallery.debug"
 AVD="${1:-}"
 
 if [ -z "$($ADB devices | sed '1d' | grep -w device || true)" ]; then

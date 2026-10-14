@@ -30,12 +30,19 @@ data class Folder(
     override val dateModified: Long,
     val coverId: Long,
     val coverType: Int,
+    val isPinned: Boolean = false,
 ) : Sortable {
     override val typeRank: Int get() = coverType
     val coverUri: Uri get() = mediaUri(coverId, MediaType.entries[coverType])
 }
 
-/** Ids are per-collection, so a video must be addressed through the video collection. */
+data class FolderEntry(
+    val bucketId: Long,
+    val name: String,
+    val path: String,
+    val itemCount: Int,
+)
+
 fun mediaUri(id: Long, type: MediaType): Uri = ContentUris.withAppendedId(
     if (type == MediaType.Video) MediaStore.Video.Media.EXTERNAL_CONTENT_URI
     else MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
