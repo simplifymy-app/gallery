@@ -5,6 +5,9 @@
     <string name="action_search">Пошук</string>
     <string name="action_more">Більше дій</string>
     <string name="action_ignore">Ігнорувати</string>
+    <string name="action_pin">Закріпити</string>
+    <string name="action_unpin">Відкріпити</string>
+    <string name="pinned">Закріплено</string>
     <string name="action_delete">Видалити</string>
     <string name="action_share">Поділитися</string>
     <string name="action_favorite">Обране</string>
@@ -52,6 +55,7 @@
     <string name="section_folders">Теки</string>
     <string name="section_thumbnails">Мініатюри</string>
     <string name="section_video">Відео</string>
+    <string name="section_support">Підтримка</string>
 
     <!-- Рядки налаштувань -->
     <string name="setting_mode">Режим</string>
@@ -86,6 +90,8 @@
     <string name="setting_video_duration_hint">Невелика позначка на мініатюрах відео</string>
     <string name="setting_autoplay">Автовідтворення наступного відео</string>
     <string name="setting_autoplay_hint">Коли одне завершується, відтворити наступне відео в теці. Вимкнено — повторювати поточне.</string>
+    <string name="setting_contact">Звʼязатися з нами</string>
+    <string name="setting_contact_hint">Повідомити про помилку, запропонувати ідею чи поставити запитання</string>
 
     <!-- Попередній перегляд тек -->
     <string name="preview_label">ПЕРЕГЛЯД</string>
@@ -94,8 +100,7 @@
 
     <!-- Ігноровані теки -->
     <string name="ignored_title">Ігноровані теки</string>
-    <string name="ignored_empty">Немає ігнорованих тек. Виберіть «Ігнорувати теку» в меню теки, щоб приховати її з галереї.</string>
-    <string name="ignored_restore">Відновити</string>
+    <string name="ignored_hint">Ігнорується: %1$d · позначте теку, щоб приховати її з галереї</string>
 
     <!-- Режим теми -->
     <string name="mode_auto">Авто</string>

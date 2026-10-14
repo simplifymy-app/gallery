@@ -5,6 +5,9 @@
     <string name="action_search">Search</string>
     <string name="action_more">More options</string>
     <string name="action_ignore">Ignore</string>
+    <string name="action_pin">Pin</string>
+    <string name="action_unpin">Unpin</string>
+    <string name="pinned">Pinned</string>
     <string name="action_delete">Delete</string>
     <string name="action_share">Share</string>
     <string name="action_favorite">Favorite</string>
@@ -52,6 +55,7 @@
     <string name="section_folders">Folders</string>
     <string name="section_thumbnails">Thumbnails</string>
     <string name="section_video">Video</string>
+    <string name="section_support">Support</string>
 
     <!-- Settings rows -->
     <string name="setting_mode">Mode</string>
@@ -86,6 +90,8 @@
     <string name="setting_video_duration_hint">Small badge on video thumbnails</string>
     <string name="setting_autoplay">Autoplay next video</string>
     <string name="setting_autoplay_hint">When one ends, continue with the next video in the folder. Off repeats it.</string>
+    <string name="setting_contact">Contact us</string>
+    <string name="setting_contact_hint">Report a bug, suggest an idea or ask a question</string>
 
     <!-- Folder preview -->
     <string name="preview_label">PREVIEW</string>
@@ -94,8 +100,7 @@
 
     <!-- Ignored folders -->
     <string name="ignored_title">Ignored folders</string>
-    <string name="ignored_empty">Nothing is ignored. Use “Ignore folder” from a folder’s menu to hide it from the gallery.</string>
-    <string name="ignored_restore">Restore</string>
+    <string name="ignored_hint">%1$d ignored · tick a folder to hide it from the gallery</string>
 
     <!-- Theme mode -->
     <string name="mode_auto">Auto</string>

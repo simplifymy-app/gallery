@@ -6,8 +6,11 @@ import app.simplifymy.gallery.core.database.IgnoredFolderDao
 import app.simplifymy.gallery.core.database.IgnoredFolderEntity
 import app.simplifymy.gallery.core.database.MediaDao
 import app.simplifymy.gallery.core.database.MediumEntity
+import app.simplifymy.gallery.core.database.PinnedFolderDao
+import app.simplifymy.gallery.core.database.PinnedFolderEntity
 import app.simplifymy.gallery.core.media.MediaStoreScanner
 import app.simplifymy.gallery.core.model.Folder
+import app.simplifymy.gallery.core.model.FolderEntry
 import app.simplifymy.gallery.core.model.MediaFilter
 import app.simplifymy.gallery.core.model.MediaType
 import app.simplifymy.gallery.core.model.Medium
@@ -23,13 +26,31 @@ class MediaRepository @Inject constructor(
     private val media: MediaDao,
     private val favorites: FavoriteDao,
     private val ignored: IgnoredFolderDao,
+    private val pinned: PinnedFolderDao,
     private val scanner: MediaStoreScanner,
 ) {
 
     val changes: Flow<Unit> = scanner.changes
 
     fun folders(filter: MediaFilter): Flow<List<Folder>> =
-        media.folders(filter.types).map { rows -> rows.map(FolderRow::toFolder) }
+        combine(media.folders(filter.types), pinned.ids()) { rows, pins ->
+            val pinnedIds = pins.toHashSet()
+            rows.map { it.toFolder(it.bucketId in pinnedIds) }
+        }
+
+    val folderEntries: Flow<List<FolderEntry>> =
+        combine(media.allFolders(), ignored.all()) { rows, hidden ->
+            val present = rows.map { FolderEntry(it.bucketId, it.bucketName, it.relativePath, it.itemCount) }
+            val known = present.map(FolderEntry::bucketId).toHashSet()
+            (present + hidden.filter { it.bucketId !in known }.map { FolderEntry(it.bucketId, it.name, "", 0) })
+                .sortedBy { it.name.lowercase() }
+        }
+
+    suspend fun setIgnoredFolders(folders: List<FolderEntry>) =
+        ignored.replaceAll(folders.map { IgnoredFolderEntity(it.bucketId, it.name) })
+
+    suspend fun setPinned(bucketIds: List<Long>, pin: Boolean) =
+        if (pin) pinned.addAll(bucketIds.map(::PinnedFolderEntity)) else pinned.removeAll(bucketIds)
 
     fun mediaIn(bucketId: Long, filter: MediaFilter): Flow<List<Medium>> =
         media.mediaIn(bucketId, filter.types).withFavorites()
@@ -55,8 +76,6 @@ class MediaRepository @Inject constructor(
     suspend fun mediaForFolders(bucketIds: List<Long>): List<Medium> =
         media.mediaForFolders(bucketIds).map { it.toMedium(false) }
 
-    suspend fun unignoreFolder(bucketId: Long) = ignored.remove(bucketId)
-
     suspend fun sync() = media.replaceAll(scanner.scan())
 
     suspend fun setFavorite(medium: Medium, favorite: Boolean) {
@@ -79,7 +98,7 @@ private fun MediumEntity.toMedium(isFavorite: Boolean) = Medium(
     isFavorite = isFavorite,
 )
 
-private fun FolderRow.toFolder() = Folder(
+private fun FolderRow.toFolder(isPinned: Boolean) = Folder(
     bucketId = bucketId,
     name = bucketName,
     itemCount = itemCount,
@@ -88,5 +107,5 @@ private fun FolderRow.toFolder() = Folder(
     dateModified = dateModified,
     coverId = coverId,
     coverType = coverType,
+    isPinned = isPinned,
 )
-

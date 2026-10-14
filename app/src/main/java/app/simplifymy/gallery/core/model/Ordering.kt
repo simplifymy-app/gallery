@@ -19,7 +19,6 @@ enum class Grouping(@StringRes val labelRes: Int) {
     Month(R.string.group_month),
 }
 
-/** [Up] flips the media grid so the start of the order sits at the bottom, iOS-style. */
 enum class ScrollDirection(@StringRes val labelRes: Int) {
     Down(R.string.scroll_down),
     Up(R.string.scroll_up),
@@ -31,7 +30,6 @@ enum class MediaFilter(@StringRes val labelRes: Int) {
     Videos(R.string.filter_videos),
     ;
 
-    /** MediaType ordinals this filter admits; GIFs count as images. */
     val types: List<Int>
         get() = when (this) {
             All -> MediaType.entries.map(MediaType::ordinal)
@@ -46,7 +44,6 @@ interface Sortable {
     val dateTaken: Long
     val dateModified: Long
 
-    /** Content type used by [SortKey.Type]; a folder reports the type of its newest item. */
     val typeRank: Int
 }
 

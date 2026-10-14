@@ -7,7 +7,6 @@ import java.time.ZoneId
 enum class HeaderKind { Today, Yesterday, Day, Month }
 
 sealed interface GridItem {
-    /** Carries the date, not a formatted label, so the text can follow the app's language. */
     data class Header(val date: LocalDate, val kind: HeaderKind, val count: Int) : GridItem
     data class Item(val medium: Medium) : GridItem
 }

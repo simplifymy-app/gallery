@@ -1,0 +1,192 @@
+<resources>
+    <string name="app_name">Galeria</string>
+
+    <!-- Toolbar and selection -->
+    <string name="action_search">Pesquisar</string>
+    <string name="action_more">Mais opções</string>
+    <string name="action_ignore">Ignorar</string>
+    <string name="action_pin">Fixar</string>
+    <string name="action_unpin">Desafixar</string>
+    <string name="pinned">Fixada</string>
+    <string name="action_delete">Eliminar</string>
+    <string name="action_share">Partilhar</string>
+    <string name="action_favorite">Favorito</string>
+    <string name="action_select_all">Tudo</string>
+    <string name="selection_count">%1$d selecionados</string>
+    <string name="selection_hint_long_press">Toque longo para selecionar</string>
+    <string name="selection_hint_tap">Toque para adicionar ou remover</string>
+
+    <!-- Menus -->
+    <string name="menu_sort_by">Ordenar por</string>
+    <string name="menu_show">Mostrar</string>
+    <string name="menu_columns">Colunas</string>
+    <string name="menu_group_by">Agrupar por</string>
+    <string name="menu_ignore_folder">Ignorar pasta</string>
+    <string name="menu_settings">Definições</string>
+
+    <!-- Media grid -->
+    <string name="media_summary">%1$s itens · %2$s</string>
+
+    <!-- Search -->
+    <string name="search_placeholder">Pesquisar pelo nome do ficheiro</string>
+    <string name="search_no_matches">Sem resultados</string>
+    <string name="search_results">%1$s resultados</string>
+
+    <!-- Viewer -->
+    <string name="details_title">DETALHES</string>
+    <string name="details_size">Tamanho</string>
+    <string name="details_dimensions">Dimensões</string>
+    <string name="details_camera">Câmara</string>
+    <string name="details_exposure">Exposição</string>
+    <string name="details_path">Caminho</string>
+
+    <!-- Permission -->
+    <string name="permission_title">A Galeria precisa de acesso às suas fotos e vídeos</string>
+    <string name="permission_body">Nada sai do seu dispositivo — a app não tem permissão de rede.</string>
+    <string name="permission_open_settings">Abrir definições</string>
+
+    <!-- Settings sections -->
+    <string name="settings_title">Definições</string>
+    <string name="section_theme">Tema</string>
+    <string name="section_typography">Tipografia</string>
+    <string name="section_language">Idioma</string>
+    <string name="section_sorting">Ordenação</string>
+    <string name="section_grid">Grelha</string>
+    <string name="section_folders">Pastas</string>
+    <string name="section_thumbnails">Miniaturas</string>
+    <string name="section_video">Vídeo</string>
+    <string name="section_support">Suporte</string>
+
+    <!-- Settings rows -->
+    <string name="setting_mode">Modo</string>
+    <string name="setting_accent">Cor de destaque</string>
+    <string name="setting_app_icon">Ícone da app</string>
+    <string name="setting_app_icon_hint">Aplicado quando sair da app</string>
+    <string name="setting_contrast">Contraste do texto</string>
+    <string name="setting_corner_radius">Raio dos cantos</string>
+    <string name="setting_font">Tipo de letra</string>
+    <string name="setting_text_size">Tamanho do texto</string>
+    <string name="setting_language">Idioma da app</string>
+    <string name="setting_sort_all">Ordenar tudo por</string>
+    <string name="setting_reverse">Ordem inversa</string>
+    <string name="setting_reverse_hint">Maiores e mais recentes primeiro</string>
+    <string name="setting_folder_columns">Colunas de pastas</string>
+    <string name="setting_media_columns">Colunas de multimédia</string>
+    <string name="setting_group_media">Agrupar multimédia por</string>
+    <string name="setting_scroll_direction">Direção do deslocamento</string>
+    <string name="setting_overlay_ui">Sobrepor a barra superior</string>
+    <string name="setting_overlay_ui_hint">A multimédia desliza sob o título e os botões, que mantêm o seu próprio fundo</string>
+    <string name="setting_show_details">Mostrar detalhes</string>
+    <string name="setting_show_details_hint">Desligado, as miniaturas ficam juntas e sem etiquetas</string>
+    <string name="setting_folder_size">Mostrar tamanho e número da pasta</string>
+    <string name="setting_folder_size_hint">Número de fotos e tamanho total sob cada nome</string>
+    <string name="setting_details_position">Posição dos detalhes</string>
+    <string name="setting_ignored">Pastas ignoradas</string>
+    <string name="setting_ignored_hint">Pastas ocultas da galeria</string>
+    <string name="setting_preview_spacing">Espaçamento das miniaturas</string>
+    <string name="setting_crop">Recortar em quadrados</string>
+    <string name="setting_crop_hint">Caso contrário, manter a proporção original</string>
+    <string name="setting_video_duration">Mostrar duração do vídeo</string>
+    <string name="setting_video_duration_hint">Pequeno distintivo nas miniaturas de vídeo</string>
+    <string name="setting_autoplay">Reproduzir o vídeo seguinte</string>
+    <string name="setting_autoplay_hint">Quando um termina, continua com o vídeo seguinte da pasta. Desligado, repete-o.</string>
+    <string name="setting_contact">Contacte-nos</string>
+    <string name="setting_contact_hint">Comunicar um erro, sugerir uma ideia ou fazer uma pergunta</string>
+
+    <!-- Folder preview -->
+    <string name="preview_label">PRÉ-VISUALIZAÇÃO</string>
+    <string name="preview_summary">%1$d colunas · espaçamento %2$s</string>
+    <string name="preview_folder">Pasta</string>
+
+    <!-- Ignored folders -->
+    <string name="ignored_title">Pastas ignoradas</string>
+    <string name="ignored_hint">%1$d ignoradas · marque uma pasta para a ocultar da galeria</string>
+
+    <!-- Theme mode -->
+    <string name="mode_auto">Auto</string>
+    <string name="mode_light">Claro</string>
+    <string name="mode_dark">Escuro</string>
+    <string name="mode_black">Preto</string>
+
+    <!-- Contrast -->
+    <string name="contrast_soft">Suave</string>
+    <string name="contrast_normal">Normal</string>
+    <string name="contrast_high">Alto</string>
+
+    <!-- Sorting -->
+    <string name="sort_date_taken">Data da captura</string>
+    <string name="sort_modified">Modificação</string>
+    <string name="sort_name">Nome</string>
+    <string name="sort_size">Tamanho</string>
+    <string name="sort_type">Tipo de conteúdo</string>
+
+    <!-- Grouping -->
+    <string name="group_today">Hoje</string>
+    <string name="group_yesterday">Ontem</string>
+    <string name="group_none">Nenhum</string>
+    <string name="group_day">Dia</string>
+    <string name="group_month">Mês</string>
+
+    <!-- Media filter -->
+    <string name="filter_all">Tudo</string>
+    <string name="filter_images">Imagens</string>
+    <string name="filter_videos">Vídeos</string>
+
+    <!-- Spacing -->
+    <string name="spacing_none">Nenhum</string>
+    <string name="spacing_small">Pequeno</string>
+    <string name="spacing_large">Grande</string>
+
+    <!-- Scroll direction -->
+    <string name="scroll_down">Para baixo</string>
+    <string name="scroll_up">Para cima</string>
+
+    <!-- Details placement -->
+    <string name="placement_below">Por baixo</string>
+    <string name="placement_overlay">Sobre a imagem</string>
+
+    <!-- Video fit -->
+    <string name="fit_fit">Ajustar</string>
+    <string name="fit_fill">Preencher</string>
+    <string name="fit_stretch">Esticar</string>
+
+    <!-- App icon colours -->
+    <string name="icon_carbon">Carbono</string>
+    <string name="icon_blue">Azul</string>
+    <string name="icon_purple">Roxo</string>
+    <string name="icon_magenta">Magenta</string>
+    <string name="icon_teal">Azul-petróleo</string>
+    <string name="icon_green">Verde</string>
+
+    <!-- Language and font choices that follow the device -->
+    <string name="follow_system">Sistema</string>
+
+    <!-- Editor -->
+    <string name="editor_crop">Recortar</string>
+    <string name="editor_adjust">Ajustar</string>
+    <string name="editor_filter">Filtro</string>
+    <string name="editor_draw">Desenhar</string>
+    <string name="editor_title_crop">Recortar e rodar</string>
+    <string name="editor_title_adjust">Ajustes</string>
+    <string name="editor_title_filter">Filtros</string>
+    <string name="editor_title_draw">Desenhar</string>
+    <string name="editor_brightness">Brilho</string>
+    <string name="editor_contrast">Contraste</string>
+    <string name="editor_saturation">Saturação</string>
+    <string name="editor_color">Cor</string>
+    <string name="editor_brush">Pincel</string>
+    <string name="editor_saved">Guardado como cópia</string>
+    <string name="action_save">Guardar</string>
+    <string name="action_reset">Repor</string>
+    <string name="action_close">Fechar</string>
+    <string name="action_rotate_left">Rodar para a esquerda</string>
+    <string name="action_rotate_right">Rodar para a direita</string>
+    <string name="action_mirror">Espelhar</string>
+    <string name="crop_free">Livre</string>
+    <string name="filter_original">Original</string>
+    <string name="filter_mono">Mono</string>
+    <string name="filter_sepia">Sépia</string>
+    <string name="filter_cold">Frio</string>
+    <string name="filter_warm">Quente</string>
+    <string name="filter_fade">Desbotado</string>
+</resources>

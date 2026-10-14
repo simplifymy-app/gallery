@@ -59,7 +59,6 @@ class EditorViewModel @Inject constructor(
             _state.update { it.copy(medium = medium) }
             val bitmap = load(medium)
             original = bitmap
-            // A shape chosen while the photo was still loading has no box yet, so size it now.
             _state.update { state ->
                 val crop = bitmap?.let { centredCrop(it.width, it.height, state.edits.ratio.ratio) }
                 state.copy(source = bitmap, edits = state.edits.copy(crop = crop ?: state.edits.crop))
@@ -119,7 +118,6 @@ class EditorViewModel @Inject constructor(
         val rotated = bitmap.transformed(if (clockwise) 90f else -90f, mirror = false)
         state.copy(
             source = rotated,
-            // A locked shape has to be re-centred, or the chip would stop matching the box.
             edits = if (state.edits.ratio.ratio == null) turned else turned.copy(
                 crop = centredCrop(rotated.width, rotated.height, state.edits.ratio.ratio)
             ),

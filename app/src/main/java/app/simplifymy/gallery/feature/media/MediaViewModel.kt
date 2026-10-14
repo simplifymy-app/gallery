@@ -55,7 +55,6 @@ class MediaViewModel @Inject constructor(
     val state: StateFlow<MediaUiState> =
         combine(settings.settings.flatMapLatest { repository.mediaIn(route.bucketId, it.mediaFilter) }, settings.settings, selected) { media, config, picked ->
             loaded = media
-            // Scrolling up puts the start of the order at the bottom, so the list itself flips.
             val order = config.sorting.copy(
                 descending = config.sorting.descending != (config.scrollDirection == ScrollDirection.Up)
             )

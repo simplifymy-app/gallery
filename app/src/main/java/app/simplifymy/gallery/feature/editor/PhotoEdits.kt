@@ -13,7 +13,6 @@ enum class EditorTab(@StringRes val labelRes: Int, @StringRes val titleRes: Int)
     Draw(R.string.editor_draw, R.string.editor_title_draw),
 }
 
-/** A null [ratio] lets the box be dragged to any shape; the rest hold it while it is resized. */
 enum class CropRatio(val ratio: Float?, @StringRes val labelRes: Int? = null, val label: String = "") {
     Free(null, labelRes = R.string.crop_free),
     Square(1f, label = "1:1"),
@@ -31,10 +30,8 @@ enum class PhotoFilter(@StringRes val labelRes: Int) {
     Fade(R.string.filter_fade),
 }
 
-/** Points and width are fractions of the whole photo, so a stroke holds still when the crop moves. */
 data class Stroke(val color: Int, val width: Float, val points: List<Offset>)
 
-/** The whole frame, in the 0..1 space every crop is expressed in. */
 val FULL_FRAME = Rect(0f, 0f, 1f, 1f)
 
 data class PhotoEdits(
@@ -66,7 +63,6 @@ data class PhotoEdits(
         postConcat(saturate(1f + saturation / 100f))
     }
 }
-
 
 fun PhotoEdits.turned(clockwise: Boolean, widthOverHeight: Float): PhotoEdits {
     val box = crop.let {
@@ -116,7 +112,6 @@ private fun brightness(amount: Float) = ColorMatrix(
     )
 )
 
-/** Scaling around mid-grey, so the offset is what keeps 50% grey in place. */
 private fun contrast(amount: Float): ColorMatrix {
     val shift = (1f - amount) / 2f * 255f
     return ColorMatrix(

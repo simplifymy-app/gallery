@@ -167,17 +167,12 @@ class SettingsRepository @Inject constructor(@ApplicationContext private val con
 
 fun Sorting.cycled(): Sorting = copy(key = SortKey.entries[(key.ordinal + 1) % SortKey.entries.size])
 
-/**
- * Mirrored into SharedPreferences by [SettingsRepository.setLanguage]: `attachBaseContext` runs
- * before the activity has an application context, which DataStore needs to initialise.
- */
 fun Context.storedLanguage(): Language =
     getSharedPreferences(BOOTSTRAP_PREFS, Context.MODE_PRIVATE)
         .getString(BOOTSTRAP_LANGUAGE, null)
         ?.let { stored -> Language.entries.firstOrNull { it.name == stored } }
         ?: Language.System
 
-/** Applies [language] to a context so every resource lookup below it, popups included, follows. */
 fun Context.withLanguage(language: Language): Context {
     if (language == Language.System) return this
     val configuration = Configuration(resources.configuration).apply {

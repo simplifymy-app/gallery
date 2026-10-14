@@ -31,6 +31,8 @@ data class FoldersUiState(
     val selected: Set<Long> = emptySet(),
 ) {
     val selecting: Boolean get() = selected.isNotEmpty()
+
+    val selectionPinned: Boolean get() = folders.filter { it.bucketId in selected }.all(Folder::isPinned)
 }
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
@@ -50,7 +52,7 @@ class FoldersViewModel @Inject constructor(
             settings.settings,
             selected,
         ) { folders, config, picked ->
-            val sorted = folders.sortedBy(config.sorting)
+            val sorted = folders.sortedBy(config.sorting).sortedByDescending(Folder::isPinned)
             loaded = sorted
             FoldersUiState(sorted, config, picked.intersect(sorted.map(Folder::bucketId).toSet()))
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), FoldersUiState())
@@ -72,6 +74,11 @@ class FoldersViewModel @Inject constructor(
 
     fun ignoreSelected() = viewModelScope.launch {
         repository.ignoreFolders(loaded.filter { it.bucketId in selected.value })
+        clearSelection()
+    }
+
+    fun pinSelected() = viewModelScope.launch {
+        repository.setPinned(selected.value.toList(), pin = !state.value.selectionPinned)
         clearSelection()
     }
 

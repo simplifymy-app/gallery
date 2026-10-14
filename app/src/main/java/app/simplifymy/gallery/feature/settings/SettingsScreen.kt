@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -72,6 +73,7 @@ import app.simplifymy.gallery.ui.theme.ThemeMode
 import app.simplifymy.gallery.ui.theme.ThumbnailSpacing
 
 private val COLUMN_RANGE = 2..6
+private const val CONTACT_URL = "https://www.simplifymy.app/contact/"
 
 @Composable
 fun SettingsScreen(
@@ -84,6 +86,7 @@ fun SettingsScreen(
     val colors = GalleryTheme.colors
     var customAccent by remember { mutableStateOf(false) }
     val activity = LocalActivity.current
+    val uriHandler = LocalUriHandler.current
 
     Column(
         modifier = Modifier
@@ -263,6 +266,14 @@ fun SettingsScreen(
                     viewModel::setAutoplayNextVideo,
                 )
             }
+
+            Section(stringResource(R.string.section_support)) {
+                LinkRow(
+                    stringResource(R.string.setting_contact),
+                    stringResource(R.string.setting_contact_hint),
+                    { uriHandler.openUri(CONTACT_URL) },
+                )
+            }
         }
     }
 }
@@ -386,10 +397,6 @@ private fun AppIconRow(selected: AppIcon, onSelect: (AppIcon) -> Unit) {
     }
 }
 
-/**
- * Mirrors how a launcher composes the adaptive icon: the 108dp foreground is scaled so its
- * 72dp viewport matches the masked tile.
- */
 @Composable
 private fun AppIconPreview(icon: AppIcon) {
     Box(
@@ -409,7 +416,6 @@ private fun AppIconPreview(icon: AppIcon) {
     }
 }
 
-/** Renders a live miniature of the folder grid so layout settings can be judged before leaving. */
 @Composable
 private fun FolderPreview(settings: GallerySettings, folders: List<Folder>) {
     val colors = GalleryTheme.colors

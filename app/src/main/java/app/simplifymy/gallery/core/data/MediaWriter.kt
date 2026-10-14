@@ -14,7 +14,6 @@ import app.simplifymy.gallery.core.model.Medium
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** MediaStore's own trash is the recycle bin: system-managed, auto-purged, no extra permission. */
 @Singleton
 class MediaWriter @Inject constructor(
     @ApplicationContext private val context: Context,

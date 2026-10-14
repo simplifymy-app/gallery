@@ -35,7 +35,6 @@ class SettingsViewModel @Inject constructor(
     media: MediaRepository,
 ) : ViewModel() {
 
-    /** Real covers so the preview shows the user's own folders, not stand-ins. */
     val previewFolders: StateFlow<List<Folder>> = media.folders(MediaFilter.All)
         .map { it.take(6) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
@@ -68,7 +67,6 @@ class SettingsViewModel @Inject constructor(
     fun setThumbnailSpacing(value: ThumbnailSpacing) = update { repository.setThumbnailSpacing(value) }
     fun setShowVideoDuration(value: Boolean) = update { repository.setShowVideoDuration(value) }
     fun setAutoplayNextVideo(value: Boolean) = update { repository.setAutoplayNextVideo(value) }
-    /** The activity re-reads the locale in attachBaseContext, so recreate only after the write lands. */
     fun setLanguage(value: Language, onApplied: () -> Unit) = viewModelScope.launch {
         repository.setLanguage(value)
         onApplied()

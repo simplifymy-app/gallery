@@ -26,7 +26,6 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-/** Lightness stays inside this band so a custom accent can never lose contrast on either theme. */
 private val SAFE_LIGHTNESS = 0.46f..0.78f
 
 private val HUE_TRACK = Brush.horizontalGradient(

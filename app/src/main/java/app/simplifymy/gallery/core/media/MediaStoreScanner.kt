@@ -39,10 +39,6 @@ class MediaStoreScanner @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
 
-    /**
-     * The typed collections are queried separately on purpose: MediaStore.Files drops videos
-     * when the app holds only the granular READ_MEDIA_* permissions.
-     */
     suspend fun scan(): List<MediumEntity> = withContext(Dispatchers.IO) {
         read(IMAGES, BASE_COLUMNS, video = false) + read(VIDEOS, VIDEO_COLUMNS, video = true)
     }

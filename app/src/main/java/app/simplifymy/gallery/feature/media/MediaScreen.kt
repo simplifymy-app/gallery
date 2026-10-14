@@ -94,7 +94,6 @@ fun MediaScreen(
     var barHeight by remember { mutableStateOf(0.dp) }
     val density = LocalDensity.current
 
-    // Scrolling up opens at the end of the list, where the newest media now sits.
     LaunchedEffect(state.settings.scrollDirection, state.items.isNotEmpty()) {
         if (state.settings.scrollDirection == ScrollDirection.Up && state.items.isNotEmpty()) {
             gridState.scrollToItem(state.items.lastIndex)
@@ -370,7 +369,6 @@ private fun MediaTile(
         }
     }
 }
-
 
 private val COLUMN_RANGE = 2..6
 

@@ -8,6 +8,7 @@ import java.util.Locale
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.longClick
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -42,10 +43,8 @@ class GalleryE2eTest {
     private val hilt = HiltAndroidRule(this)
     private val compose = createAndroidComposeRule<MainActivity>()
 
-    /** Seeding must finish before the activity starts, or the first scan can race the inserts. */
     private val media = object : ExternalResource() {
         override fun before() {
-            // The suite asserts against device-locale strings, so it must not inherit a language choice.
             runBlocking { SettingsRepository(context).setLanguage(Language.System) }
             MediaSeed.clear(context)
             MediaSeed.insert(context, SEEDED)
@@ -104,9 +103,21 @@ class GalleryE2eTest {
 
         openSettings()
         tapInSettings(str(R.string.setting_ignored))
-        awaitText(str(R.string.ignored_restore))
-        compose.onNodeWithText(str(R.string.ignored_restore)).performClick()
-        awaitGone(str(R.string.ignored_restore))
+        awaitText(str(R.string.ignored_hint, 1))
+        compose.onNodeWithText(MediaSeed.FOLDER).performClick()
+        compose.onNodeWithText(str(R.string.action_save)).performClick()
+        awaitText(str(R.string.ignored_hint, 0))
+    }
+
+    @Test
+    fun aSelectedFolderCanBePinned() {
+        awaitText(MediaSeed.FOLDER)
+        compose.onNodeWithText(MediaSeed.FOLDER).performTouchInput { longClick() }
+        awaitText(str(R.string.selection_count, 1))
+        compose.onNodeWithContentDescription(str(R.string.action_pin)).performClick()
+        compose.waitUntil(TIMEOUT) {
+            compose.onAllNodesWithContentDescription(str(R.string.pinned)).fetchSemanticsNodes().isNotEmpty()
+        }
     }
 
     @Test
@@ -115,6 +126,7 @@ class GalleryE2eTest {
         awaitText(str(R.string.menu_sort_by))
         compose.onNodeWithText(str(R.string.menu_columns)).assertIsDisplayed()
         compose.onNodeWithText(str(R.string.menu_settings)).assertIsDisplayed()
+        compose.onNodeWithText(str(R.string.setting_ignored)).assertIsDisplayed()
     }
 
     @Test
@@ -146,7 +158,6 @@ class GalleryE2eTest {
         awaitText(str(R.string.section_theme).uppercase())
     }
 
-    /** Settings is one long scrolling column, so a row has to be brought on screen before it takes a tap. */
     private fun tapInSettings(text: String) {
         awaitText(text)
         compose.onNodeWithText(text).performScrollTo().performClick()
@@ -154,7 +165,6 @@ class GalleryE2eTest {
 
     private fun str(id: Int, vararg args: Any) = context.getString(id, *args)
 
-    /** Reads the Ukrainian copy directly, so the assertions do not depend on the device locale. */
     private fun ukrainian(id: Int): String {
         val configuration = Configuration(context.resources.configuration).apply {
             setLocales(LocaleList(Locale.forLanguageTag("uk")))

@@ -1,6 +1,5 @@
 package app.simplifymy.gallery.ui
 
-
 import java.util.Locale
 import kotlin.math.log10
 import kotlin.math.pow
@@ -24,4 +23,3 @@ fun formatDuration(ms: Long): String {
     return if (minutes >= 60) String.format(Locale.US, "%d:%02d:%02d", minutes / 60, minutes % 60, seconds)
     else String.format(Locale.US, "%d:%02d", minutes, seconds)
 }
-

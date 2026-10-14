@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.provider.MediaStore
 
-/** Writes throwaway images into MediaStore so the suite does not depend on what is on the device. */
 object MediaSeed {
 
     const val FOLDER = "SimplifyE2E"

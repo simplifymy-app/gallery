@@ -32,6 +32,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -179,6 +180,21 @@ private fun SystemBars(visible: Boolean) {
         val controller = WindowCompat.getInsetsController(activity.window, activity.window.decorView)
         if (visible) controller.show(WindowInsetsCompat.Type.systemBars())
         else controller.hide(WindowInsetsCompat.Type.systemBars())
+    }
+    DisposableEffect(Unit) {
+        val activity = context as? Activity
+        val controller = activity?.let {
+            WindowCompat.getInsetsController(it.window, it.window.decorView)
+        }
+        val wasLight = controller?.isAppearanceLightStatusBars
+        controller?.isAppearanceLightStatusBars = false
+        controller?.isAppearanceLightNavigationBars = false
+        onDispose {
+            if (controller != null && wasLight != null) {
+                controller.isAppearanceLightStatusBars = wasLight
+                controller.isAppearanceLightNavigationBars = wasLight
+            }
+        }
     }
 }
 
