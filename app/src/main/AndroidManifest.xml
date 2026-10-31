@@ -20,6 +20,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="false"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
             android:theme="@style/Theme.Gallery" />
 
         <!--

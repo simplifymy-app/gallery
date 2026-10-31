@@ -160,6 +160,7 @@ fun ViewerScreen(
                             val ahead = state.media.drop(page + 1).indexOfFirst { it.type == MediaType.Video }
                             if (ahead >= 0) scope.launch { pagerState.animateScrollToPage(page + 1 + ahead) }
                         },
+                        onZoomedChange = { zoomed = it },
                     )
                 } else {
                     VideoPoster(medium) { chrome = !chrome }

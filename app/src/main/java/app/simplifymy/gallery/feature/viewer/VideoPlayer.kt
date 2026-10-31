@@ -34,6 +34,8 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,6 +57,8 @@ import app.simplifymy.gallery.ui.formatDuration
 import app.simplifymy.gallery.ui.theme.ControlRadius
 import app.simplifymy.gallery.ui.theme.GalleryTheme
 import kotlinx.coroutines.delay
+import me.saket.telephoto.zoomable.rememberZoomableState
+import me.saket.telephoto.zoomable.zoomable
 
 private val CHROME = Color(0xFFEDEDEF)
 private val SPEEDS = List(8) { 0.25f * (it + 1) }
@@ -73,23 +77,32 @@ fun VideoPlayer(
     autoplayNext: Boolean,
     onToggleChrome: () -> Unit,
     onEnded: () -> Unit,
+    onZoomedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val player = remember { ExoPlayer.Builder(context).build() }
-    var playing by remember { mutableStateOf(true) }
-    var muted by remember { mutableStateOf(false) }
-    var position by remember { mutableLongStateOf(0L) }
+    var playing by rememberSaveable(uri) { mutableStateOf(true) }
+    var muted by rememberSaveable { mutableStateOf(false) }
+    var position by rememberSaveable(uri) { mutableLongStateOf(0L) }
     var duration by remember { mutableLongStateOf(0L) }
     var ratio by remember { mutableFloatStateOf(16f / 9f) }
-    var speed by remember { mutableFloatStateOf(1f) }
-    var fit by remember { mutableStateOf(VideoFit.Fit) }
+    var speed by rememberSaveable { mutableFloatStateOf(1f) }
+    var fit by rememberSaveable { mutableStateOf(VideoFit.Fit) }
+    val zoom = rememberZoomableState()
+
+    LaunchedEffect(zoom) {
+        snapshotFlow { (zoom.zoomFraction ?: 0f) > 0.01f }.collect(onZoomedChange)
+    }
 
     DisposableEffect(uri, autoplayNext) {
         player.setMediaItem(MediaItem.fromUri(uri))
         player.repeatMode = if (autoplayNext) Player.REPEAT_MODE_OFF else Player.REPEAT_MODE_ONE
+        player.seekTo(position)
+        player.setPlaybackSpeed(speed)
+        player.volume = if (muted) 0f else 1f
         player.prepare()
-        player.playWhenReady = true
+        player.playWhenReady = playing
         val listener = object : Player.Listener {
             override fun onIsPlayingChanged(isPlaying: Boolean) { playing = isPlaying }
 
@@ -118,9 +131,9 @@ fun VideoPlayer(
         }
     }
 
-    Box(modifier.fillMaxSize().clickable(onClick = onToggleChrome), contentAlignment = Alignment.Center) {
+    Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         BoxWithConstraints(
-            modifier = Modifier.fillMaxSize().clipToBounds(),
+            modifier = Modifier.fillMaxSize().clipToBounds().zoomable(zoom, onClick = { onToggleChrome() }),
             contentAlignment = Alignment.Center,
         ) {
             val containerRatio = maxWidth / maxHeight
