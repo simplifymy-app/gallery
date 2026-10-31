@@ -35,6 +35,29 @@ object MediaSeed {
         bitmap.recycle()
     }
 
+    fun count(context: Context, nameLike: String): Int =
+        context.contentResolver.query(
+            COLLECTION,
+            arrayOf(MediaStore.MediaColumns._ID),
+            "${MediaStore.MediaColumns.RELATIVE_PATH} LIKE ? AND ${MediaStore.MediaColumns.DISPLAY_NAME} LIKE ?",
+            arrayOf("%$FOLDER%", nameLike),
+            null,
+        )?.use { it.count } ?: 0
+
+    fun editedSize(context: Context): Pair<Int, Int> {
+        val uri = context.contentResolver.query(
+            COLLECTION,
+            arrayOf(MediaStore.MediaColumns._ID),
+            "${MediaStore.MediaColumns.RELATIVE_PATH} LIKE ? AND ${MediaStore.MediaColumns.DISPLAY_NAME} LIKE ?",
+            arrayOf("%$FOLDER%", "%_edited_%"),
+            null,
+        )?.use { if (it.moveToFirst()) android.content.ContentUris.withAppendedId(COLLECTION, it.getLong(0)) else null }
+            ?: return 0 to 0
+        val options = android.graphics.BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        context.contentResolver.openInputStream(uri)?.use { android.graphics.BitmapFactory.decodeStream(it, null, options) }
+        return options.outWidth to options.outHeight
+    }
+
     fun clear(context: Context) {
         context.contentResolver.delete(
             COLLECTION,

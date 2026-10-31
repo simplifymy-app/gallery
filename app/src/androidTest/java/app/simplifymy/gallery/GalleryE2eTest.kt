@@ -12,11 +12,17 @@ import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.click
+import androidx.compose.ui.test.percentOffset
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
 import app.simplifymy.gallery.R
+import app.simplifymy.gallery.feature.editor.EDITOR_PREVIEW
 import app.simplifymy.gallery.core.settings.Language
 import app.simplifymy.gallery.core.settings.SettingsRepository
 import kotlinx.coroutines.runBlocking
@@ -26,6 +32,7 @@ import androidx.test.rule.GrantPermissionRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExternalResource
@@ -150,6 +157,89 @@ class GalleryE2eTest {
         awaitText(str(R.string.search_placeholder))
         compose.onNodeWithText(str(R.string.search_placeholder)).assertIsDisplayed()
     }
+
+    @Test
+    fun anAdjustedPhotoIsSavedAsACopyAfterUndoAndRedo() {
+        openEditorOnFirstPhoto()
+        raiseExposure()
+        compose.onNodeWithContentDescription(str(R.string.action_undo)).performClick()
+        compose.onNodeWithContentDescription(str(R.string.action_redo)).performClick()
+        compose.onNodeWithText(str(R.string.action_save)).performClick()
+        compose.waitUntil(TIMEOUT) { MediaSeed.count(context, "%_edited_%") == 1 }
+    }
+
+    @Test
+    fun closingWithChangesAndDiscardingWritesNothing() {
+        openEditorOnFirstPhoto()
+        raiseExposure()
+        compose.onNodeWithContentDescription(str(R.string.action_close)).performClick()
+        awaitText(str(R.string.editor_discard_changes))
+        compose.onNodeWithText(str(R.string.editor_discard_changes)).performClick()
+        awaitGone(str(R.string.editor_presets))
+        assertEquals(0, MediaSeed.count(context, "%_edited_%"))
+    }
+
+    @Test
+    fun holdingThePreviewComparesWithTheOriginal() {
+        openEditorOnFirstPhoto()
+        raiseExposure()
+        compose.onNodeWithTag(EDITOR_PREVIEW).performTouchInput { longClick(durationMillis = 1_500) }
+        compose.onAllNodesWithText(str(R.string.editor_exposure)).onFirst().assertIsDisplayed()
+    }
+
+    @Test
+    fun aPresetAndAPortraitCropAreSavedAtFourByFive() {
+        openEditorOnFirstPhoto()
+        compose.onNodeWithText(str(R.string.preset_golden)).performScrollTo().performClick()
+        awaitText(str(R.string.editor_intensity))
+        compose.onNodeWithText(str(R.string.editor_crop)).performClick()
+        awaitText(str(R.string.editor_straighten))
+        compose.onNodeWithText("4:5").performClick()
+        compose.onNodeWithText(str(R.string.action_done)).performClick()
+        awaitText(str(R.string.editor_presets))
+        compose.onNodeWithText(str(R.string.action_save)).performClick()
+        compose.waitUntil(TIMEOUT) { MediaSeed.count(context, "%_edited_%") == 1 }
+        val (width, height) = MediaSeed.editedSize(context)
+        assertEquals(4f / 5f, width.toFloat() / height, 0.03f)
+    }
+
+    @Test
+    fun cancellingTheCropToolKeepsTheOriginalFrame() {
+        openEditorOnFirstPhoto()
+        compose.onNodeWithText(str(R.string.editor_crop)).performClick()
+        awaitText(str(R.string.editor_straighten))
+        compose.onNodeWithText("1:1").performClick()
+        compose.onNodeWithContentDescription(str(R.string.action_rotate_right)).performClick()
+        compose.activityRule.scenario.onActivity { it.onBackPressedDispatcher.onBackPressed() }
+        awaitText(str(R.string.editor_presets))
+        compose.onNodeWithContentDescription(str(R.string.action_undo)).assertIsNotEnabled()
+    }
+
+    private fun openEditorOnFirstPhoto() {
+        awaitText(MediaSeed.FOLDER)
+        compose.onNodeWithText(MediaSeed.FOLDER).performClick()
+        awaitDescription(SEEDED.first())
+        compose.onNodeWithContentDescription(SEEDED.first()).performClick()
+        awaitDescription(str(R.string.action_edit))
+        compose.onNodeWithContentDescription(str(R.string.action_edit)).performClick()
+        awaitText(str(R.string.editor_presets))
+        compose.waitUntil(TIMEOUT) {
+            compose.onAllNodesWithTag(EDITOR_PREVIEW).fetchSemanticsNodes().isNotEmpty()
+        }
+    }
+
+    private fun raiseExposure() {
+        compose.onNodeWithText(str(R.string.editor_adjust)).performClick()
+        awaitDescription(str(R.string.editor_exposure))
+        compose.onAllNodesWithContentDescription(str(R.string.editor_exposure)).onFirst()
+            .performTouchInput { click(percentOffset(0.8f, 0.5f)) }
+        awaitText("+", substring = true)
+    }
+
+    private fun awaitDescription(description: String) =
+        compose.waitUntil(TIMEOUT) {
+            compose.onAllNodesWithContentDescription(description).fetchSemanticsNodes().isNotEmpty()
+        }
 
     private fun openSettings() {
         compose.onNodeWithContentDescription(str(R.string.action_more)).performClick()

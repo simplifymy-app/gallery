@@ -40,6 +40,7 @@ data class GalleryColors(
     val textFaint: Color,
     val accent: Color,
     val onAccent: Color,
+    val danger: Color,
 )
 
 private val Dark = GalleryColors(
@@ -52,6 +53,7 @@ private val Dark = GalleryColors(
     textFaint = Color(0xFF5A5A62),
     accent = Accent.Indigo.color,
     onAccent = Color(0xFF0B0B0C),
+    danger = Color(0xFFFF7A7A),
 )
 
 private val Black = Dark.copy(
@@ -71,6 +73,7 @@ private val Light = GalleryColors(
     textFaint = Color(0xFF9A9AA2),
     accent = Accent.Indigo.color,
     onAccent = Color(0xFF0B0B0C),
+    danger = Color(0xFFC22B2B),
 )
 
 fun galleryColors(

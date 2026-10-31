@@ -18,10 +18,11 @@ fun MediaThumbnail(
     modifier: Modifier = Modifier,
     crop: Boolean = true,
     aspectRatio: Float = 1f,
+    description: String? = null,
 ) {
     AsyncImage(
         model = model?.let(::Thumbnail),
-        contentDescription = null,
+        contentDescription = description,
         contentScale = if (crop) ContentScale.Crop else ContentScale.Fit,
         modifier = modifier
             .aspectRatio(aspectRatio)

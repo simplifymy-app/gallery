@@ -13,3 +13,4 @@ screenshot.png
 keystore.properties
 *.jks
 *.md
+!README.md

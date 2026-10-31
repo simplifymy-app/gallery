@@ -270,7 +270,7 @@ private fun BottomChrome(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconAction(GalleryIcons.Share, onClick = onShare, tint = CHROME_TEXT)
-        IconAction(GalleryIcons.Edit, onClick = onEdit, tint = CHROME_TEXT)
+        IconAction(GalleryIcons.Edit, onClick = onEdit, label = stringResource(R.string.action_edit), tint = CHROME_TEXT)
         IconAction(GalleryIcons.SetAs, onClick = onSetAs, tint = CHROME_TEXT)
         IconAction(GalleryIcons.Trash, onClick = onDelete, tint = CHROME_TEXT)
     }

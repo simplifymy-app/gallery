@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
@@ -32,12 +33,14 @@ fun IconAction(
     modifier: Modifier = Modifier,
     label: String? = null,
     tint: Color = GalleryTheme.colors.text,
+    enabled: Boolean = true,
 ) {
     Box(
         modifier = modifier
             .size(Spacing.hitTarget)
+            .alpha(if (enabled) 1f else 0.38f)
             .clip(RoundedCornerShape(ControlRadius))
-            .clickable(onClick = onClick),
+            .clickable(enabled = enabled, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Icon(icon, contentDescription = label, tint = tint, modifier = Modifier.size(20.dp))
