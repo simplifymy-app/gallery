@@ -12,7 +12,7 @@ interface MediaDao {
 
     @Query(
         """
-        SELECT m.bucket_id, m.bucket_name, COUNT(*) AS item_count, SUM(m.size) AS size,
+        SELECT m.bucket_id, MIN(m.bucket_name) AS bucket_name, COUNT(*) AS item_count, SUM(m.size) AS size,
                MAX(m.date_taken) AS date_taken, MAX(m.date_modified) AS date_modified,
                (SELECT c.id FROM media c WHERE c.bucket_id = m.bucket_id AND c.type IN (:types)
                 ORDER BY c.date_taken DESC LIMIT 1) AS cover_id,
@@ -21,15 +21,15 @@ interface MediaDao {
         FROM media m
         WHERE m.type IN (:types)
           AND m.bucket_id NOT IN (SELECT bucket_id FROM ignored_folders)
-        GROUP BY m.bucket_id, m.bucket_name
+        GROUP BY m.bucket_id
         """
     )
     fun folders(types: List<Int>): Flow<List<FolderRow>>
 
     @Query(
         """
-        SELECT bucket_id, bucket_name, MIN(relative_path) AS relative_path, COUNT(*) AS item_count
-        FROM media GROUP BY bucket_id, bucket_name ORDER BY bucket_name COLLATE NOCASE
+        SELECT bucket_id, MIN(bucket_name) AS bucket_name, MIN(relative_path) AS relative_path, COUNT(*) AS item_count
+        FROM media GROUP BY bucket_id ORDER BY bucket_name COLLATE NOCASE
         """
     )
     fun allFolders(): Flow<List<FolderNameRow>>
