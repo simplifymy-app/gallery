@@ -323,6 +323,7 @@ private fun MediaTile(
     ) {
         MediaThumbnail(
             model = medium.uri,
+            description = medium.name,
             modifier = Modifier.fillMaxSize().then(if (selected) Modifier.scale(0.86f) else Modifier),
         )
         if (medium.type == MediaType.Video && showDuration) {

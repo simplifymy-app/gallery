@@ -91,6 +91,18 @@ bump-major: #bumps the major version and the version code, 1.2.3 to 2.0.0
 set-version: #sets an exact version and bumps the code, make set-version VERSION=1.4.0
 	@sh scripts/bump.sh $(VERSION)
 
+.PHONY: test
+test: #runs the unit tests
+	./gradlew :app:testDebugUnitTest
+
+.PHONY: tag
+tag: #tags HEAD as v<version> with its commit message and pushes it, which publishes a release
+	@test -z "$$(git status --porcelain --untracked-files=no)" || { echo "commit your changes first"; exit 1; }
+	@! git rev-parse -q --verify "refs/tags/v$(VERSION)" >/dev/null || { echo "v$(VERSION) already exists, bump the version first"; exit 1; }
+	@git log -1 --format=%B | git tag -a "v$(VERSION)" -F -
+	@git push origin "v$(VERSION)"
+	@echo "pushed v$(VERSION), the release workflow builds and publishes it"
+
 .PHONY: clean
 clean: #removes build output and the dist directory
 	./gradlew clean
