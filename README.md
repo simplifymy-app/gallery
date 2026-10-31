@@ -24,12 +24,13 @@ A gallery for Android that opens on your folders, the way they are on the phone,
 
 | | |
 | --- | --- |
-| **Folders** | Every folder with photos or videos, its cover, item count and size. Pin the ones you open most, ignore the ones you never want to see |
+| **Folders** | Every folder with photos or videos, its cover, item count and size. Pin the ones you open most, ignore the ones you never want to see. Optionally a Recent tile first, with everything newest first |
 | **Media** | A grid per folder or across everything, grouped by day or month, sorted by date taken, modified, name, size or type, filtered to images or videos |
-| **Viewer** | Pinch and double-tap zoom, swipe between items, details with camera, exposure, size, dimensions and path |
+| **Viewer** | Pinch and double-tap zoom, swipe between items, swipe up for details with camera, exposure, size, dimensions and path, swipe down to close |
 | **Video** | Built-in player with seeking, mute, playback speed from 0.25× to 2×, and autoplay of the next video in the folder |
 | **Edit** | Crop, rotate, mirror, straighten and fix perspective. Light and colour sliders, tone curve, colour mix, split tone. Presets, retro camera looks, film effects, markup and text. Saved as a copy, the original stays |
-| **Select** | Long press to start, tap to add or remove. Share, favourite or delete many at once |
+| **Select** | Long press to start, keep holding and slide to select a run, tap to add or remove. Share, favourite, copy, move or delete many at once |
+| **Files** | Copy or move to any folder or a new one, rename in place. Android asks before anything you didn't create is changed |
 | **Delete** | Goes to the system's own trash, so a deleted photo can come back |
 | **Search** | Find any photo or video by file name |
 | **Make it yours** | Light, dark or pure black, five accents, text contrast, corner radius, four fonts, text size, six app icons, grid columns, spacing, square or original thumbnails, scroll direction |

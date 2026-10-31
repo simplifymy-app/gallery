@@ -37,6 +37,9 @@ interface MediaDao {
     @Query("SELECT * FROM media WHERE bucket_id = :bucketId AND type IN (:types)")
     fun mediaIn(bucketId: Long, types: List<Int>): Flow<List<MediumEntity>>
 
+    @Query("SELECT * FROM media WHERE type IN (:types) AND bucket_id NOT IN (SELECT bucket_id FROM ignored_folders)")
+    fun recent(types: List<Int>): Flow<List<MediumEntity>>
+
     @Query("SELECT * FROM media WHERE name LIKE '%' || :query || '%' ORDER BY date_taken DESC LIMIT 300")
     fun search(query: String): Flow<List<MediumEntity>>
 

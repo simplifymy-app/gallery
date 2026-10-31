@@ -9,6 +9,7 @@ import app.simplifymy.gallery.core.data.MediaWriter
 import app.simplifymy.gallery.core.model.GridItem
 import app.simplifymy.gallery.core.model.Grouping
 import app.simplifymy.gallery.core.model.Medium
+import app.simplifymy.gallery.core.model.RECENT_BUCKET_ID
 import app.simplifymy.gallery.core.model.ScrollDirection
 import app.simplifymy.gallery.core.model.grouped
 import app.simplifymy.gallery.core.model.sortedBy
@@ -35,6 +36,7 @@ data class MediaUiState(
     val totalSize: Long = 0,
     val selected: Set<Long> = emptySet(),
     val settings: GallerySettings = GallerySettings(),
+    val recent: Boolean = false,
 ) {
     val selecting: Boolean get() = selected.isNotEmpty()
 }
@@ -51,6 +53,7 @@ class MediaViewModel @Inject constructor(
     private val route = savedStateHandle.toRoute<Media>()
     private val selected = MutableStateFlow(emptySet<Long>())
     private var loaded = emptyList<Medium>()
+    private var rangeBase = emptySet<Long>()
 
     val state: StateFlow<MediaUiState> =
         combine(settings.settings.flatMapLatest { repository.mediaIn(route.bucketId, it.mediaFilter) }, settings.settings, selected) { media, config, picked ->
@@ -66,11 +69,22 @@ class MediaViewModel @Inject constructor(
                 totalSize = media.sumOf { it.size },
                 selected = picked,
                 settings = config,
+                recent = route.bucketId == RECENT_BUCKET_ID,
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), MediaUiState(title = route.title))
 
     fun toggle(id: Long) {
         selected.value = selected.value.let { if (id in it) it - id else it + id }
+    }
+
+    fun beginRange() { rangeBase = selected.value }
+
+    fun selectRange(from: Long, to: Long) {
+        val ids = state.value.items.mapNotNull { (it as? GridItem.Item)?.medium?.id }
+        val start = ids.indexOf(from)
+        val end = ids.indexOf(to)
+        if (start < 0 || end < 0) return
+        selected.value = rangeBase + ids.subList(minOf(start, end), maxOf(start, end) + 1)
     }
 
     fun selectAll() { selected.value = loaded.map(Medium::id).toSet() }

@@ -302,4 +302,15 @@
     <string name="text_hint">Touchez un texte sur la photo ou ajoutez-en un</string>
     <string name="text_placeholder">Commencez à écrire</string>
     <string name="text_plate">Fond</string>
+    <string name="action_copy">Copier</string>
+    <string name="action_copy_to">Copier vers</string>
+    <string name="action_move_to">Déplacer vers</string>
+    <string name="action_rename">Renommer</string>
+    <string name="files_new_folder">Nouveau dossier</string>
+    <string name="files_copy_failed">Certains fichiers n\'ont pas pu être copiés</string>
+    <string name="files_move_failed">Certains fichiers n\'ont pas pu être déplacés</string>
+    <string name="files_rename_failed">Impossible de renommer le fichier</string>
+    <string name="folder_recent">Récents</string>
+    <string name="setting_show_recent">Afficher Récents</string>
+    <string name="setting_show_recent_hint">Toutes les photos et vidéos, les plus récentes d\'abord, en première vignette</string>
 </resources>

@@ -7,9 +7,10 @@ import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +29,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
@@ -37,6 +39,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.onLongClick
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -44,7 +54,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.IntRect
+import androidx.compose.ui.unit.round
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -59,6 +73,8 @@ import java.time.format.DateTimeFormatter
 import app.simplifymy.gallery.core.model.MediaType
 import app.simplifymy.gallery.core.model.Medium
 import app.simplifymy.gallery.core.model.ScrollDirection
+import app.simplifymy.gallery.feature.files.FileAction
+import app.simplifymy.gallery.feature.files.FileActions
 import app.simplifymy.gallery.ui.component.GalleryIcons
 import app.simplifymy.gallery.ui.component.IconAction
 import app.simplifymy.gallery.ui.component.MenuEntry
@@ -73,6 +89,7 @@ import app.simplifymy.gallery.ui.formatDuration
 import app.simplifymy.gallery.ui.formatSize
 import app.simplifymy.gallery.ui.theme.GalleryTheme
 import app.simplifymy.gallery.ui.theme.Spacing
+import kotlinx.coroutines.delay
 
 @Composable
 fun MediaScreen(
@@ -93,6 +110,25 @@ fun MediaScreen(
     val gridState = rememberLazyGridState()
     var barHeight by remember { mutableStateOf(0.dp) }
     val density = LocalDensity.current
+    var fileAction by remember { mutableStateOf<FileAction?>(null) }
+    var dragAnchor by remember { mutableStateOf<Long?>(null) }
+    var dragPoint by remember { mutableStateOf(Offset.Zero) }
+    var autoScroll by remember { mutableFloatStateOf(0f) }
+    var slid by remember { mutableStateOf(false) }
+    val haptics = LocalHapticFeedback.current
+    val openOrToggle: (Medium) -> Unit = { if (state.selecting) viewModel.toggle(it.id) else onOpenMedium(it) }
+    val currentTap by rememberUpdatedState<(Long) -> Unit> { id ->
+        state.items.firstNotNullOfOrNull { (it as? GridItem.Item)?.medium?.takeIf { m -> m.id == id } }?.let(openOrToggle)
+    }
+
+    LaunchedEffect(autoScroll) {
+        while (autoScroll != 0f) {
+            gridState.scrollBy(autoScroll)
+            val anchor = dragAnchor ?: break
+            if (slid) gridState.mediumAt(dragPoint)?.let { viewModel.selectRange(anchor, it) }
+            delay(16)
+        }
+    }
 
     LaunchedEffect(state.settings.scrollDirection, state.items.isNotEmpty()) {
         if (state.settings.scrollDirection == ScrollDirection.Up && state.items.isNotEmpty()) {
@@ -133,7 +169,9 @@ fun MediaScreen(
                             modifier = Modifier.padding(horizontal = 12.dp),
                             onChange = viewModel::setColumns,
                         )
-                        MenuEntry(stringResource(R.string.menu_ignore_folder)) { dismiss(); viewModel.ignoreFolder(); onBack() }
+                        if (!state.recent) {
+                            MenuEntry(stringResource(R.string.menu_ignore_folder)) { dismiss(); viewModel.ignoreFolder(); onBack() }
+                        }
                         MenuEntry(stringResource(R.string.menu_settings)) { dismiss(); onOpenSettings() }
                     }
                 },
@@ -156,7 +194,32 @@ fun MediaScreen(
             LazyVerticalGrid(
                 columns = GridCells.Fixed(state.settings.mediaColumns),
                 state = gridState,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().gridGestures(
+                    grid = gridState,
+                    onTap = { id -> currentTap(id) },
+                    onLongPress = { id ->
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        viewModel.toggle(id)
+                        viewModel.beginRange()
+                        dragAnchor = id
+                    },
+                    onSlide = { point, height ->
+                        dragPoint = point
+                        dragAnchor?.let { anchor -> gridState.mediumAt(point)?.let { if (it != anchor) slid = true } }
+                        if (slid) dragAnchor?.let { anchor -> gridState.mediumAt(point)?.let { viewModel.selectRange(anchor, it) } }
+                        val edge = with(density) { AUTO_SCROLL_EDGE.toPx() }
+                        autoScroll = when {
+                            point.y < edge -> -(edge - point.y) / edge * AUTO_SCROLL_SPEED
+                            point.y > height - edge -> (point.y - height + edge) / edge * AUTO_SCROLL_SPEED
+                            else -> 0f
+                        }
+                    },
+                    onSlideEnd = {
+                        dragAnchor = null
+                        slid = false
+                        autoScroll = 0f
+                    },
+                ),
                 contentPadding = PaddingValues(
                     start = state.settings.thumbnailSpacing.gap,
                     end = state.settings.thumbnailSpacing.gap,
@@ -176,11 +239,8 @@ fun MediaScreen(
                                 selected = item.medium.id in state.selected,
                                 selecting = state.selecting,
                                 showDuration = state.settings.showVideoDuration,
-                                onClick = {
-                                    if (state.selecting) viewModel.toggle(item.medium.id)
-                                    else onOpenMedium(item.medium)
-                                },
-                                onLongClick = { viewModel.toggle(item.medium.id) },
+                                onTap = { openOrToggle(item.medium) },
+                                onHold = { viewModel.toggle(item.medium.id) },
                             )
                         }
                     }
@@ -205,6 +265,9 @@ fun MediaScreen(
                     }
                 },
                 onFavorite = viewModel::toggleFavorite,
+                onCopy = { fileAction = FileAction.Copy },
+                onMove = { fileAction = FileAction.Move },
+                onRename = if (state.selected.size == 1) ({ fileAction = FileAction.Rename }) else null,
                 onDelete = {
                     trashLauncher.launch(
                         IntentSenderRequest.Builder(
@@ -215,6 +278,16 @@ fun MediaScreen(
             )
         }
     }
+
+    FileActions(
+        action = fileAction,
+        media = if (fileAction == null) emptyList() else viewModel.selectedMedia(),
+        onDone = {
+            fileAction = null
+            viewModel.clearSelection()
+        },
+        onDismiss = { fileAction = null },
+    )
 }
 
 @Composable
@@ -269,7 +342,14 @@ private fun SelectionBar(count: Int, island: Boolean, onClose: () -> Unit, onSel
 }
 
 @Composable
-private fun ActionBar(onShare: () -> Unit, onFavorite: () -> Unit, onDelete: () -> Unit) {
+private fun ActionBar(
+    onShare: () -> Unit,
+    onFavorite: () -> Unit,
+    onCopy: () -> Unit,
+    onMove: () -> Unit,
+    onRename: (() -> Unit)?,
+    onDelete: () -> Unit,
+) {
     val colors = GalleryTheme.colors
     Row(
         modifier = Modifier
@@ -281,7 +361,12 @@ private fun ActionBar(onShare: () -> Unit, onFavorite: () -> Unit, onDelete: () 
     ) {
         IconAction(GalleryIcons.Share, onClick = onShare, label = stringResource(R.string.action_share))
         IconAction(GalleryIcons.Heart, onClick = onFavorite, label = stringResource(R.string.action_favorite))
+        IconAction(GalleryIcons.Duplicate, onClick = onCopy, label = stringResource(R.string.action_copy))
         IconAction(GalleryIcons.Trash, onClick = onDelete, label = stringResource(R.string.action_delete))
+        OverflowMenu { dismiss ->
+            MenuEntry(stringResource(R.string.action_move_to)) { dismiss(); onMove() }
+            if (onRename != null) MenuEntry(stringResource(R.string.action_rename)) { dismiss(); onRename() }
+        }
     }
 }
 
@@ -304,22 +389,24 @@ private fun GroupHeader(header: GridItem.Header) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun MediaTile(
     medium: Medium,
     selected: Boolean,
     selecting: Boolean,
     showDuration: Boolean,
-    onClick: () -> Unit,
-    onLongClick: () -> Unit,
+    onTap: () -> Unit,
+    onHold: () -> Unit,
 ) {
     val colors = GalleryTheme.colors
     Box(
         modifier = Modifier
             .aspectRatio(1f)
             .background(if (selected) colors.accent else Color.Transparent, RoundedCornerShape(4.dp))
-            .combinedClickable(onClick = onClick, onLongClick = onLongClick),
+            .semantics {
+                onClick { onTap(); true }
+                onLongClick { onHold(); true }
+            },
     ) {
         MediaThumbnail(
             model = medium.uri,
@@ -372,6 +459,44 @@ private fun MediaTile(
 }
 
 private val COLUMN_RANGE = 2..6
+private val AUTO_SCROLL_EDGE = 64.dp
+private const val AUTO_SCROLL_SPEED = 24f
+
+private fun Modifier.gridGestures(
+    grid: LazyGridState,
+    onTap: (Long) -> Unit,
+    onLongPress: (Long) -> Unit,
+    onSlide: (point: Offset, height: Int) -> Unit,
+    onSlideEnd: () -> Unit,
+) = pointerInput(Unit) {
+    awaitEachGesture {
+        val down = awaitFirstDown(requireUnconsumed = false)
+        val id = grid.mediumAt(down.position) ?: return@awaitEachGesture
+        var held = true
+        withTimeoutOrNull(viewConfiguration.longPressTimeoutMillis) {
+            while (true) {
+                val change = awaitPointerEvent().changes.firstOrNull { it.id == down.id }
+                held = false
+                if (change == null || change.isConsumed) break
+                if (!change.pressed) { onTap(id); break }
+                if ((change.position - down.position).getDistance() > viewConfiguration.touchSlop) break
+                held = true
+            }
+        }
+        if (!held) return@awaitEachGesture
+        onLongPress(id)
+        while (true) {
+            val change = awaitPointerEvent(PointerEventPass.Initial).changes.firstOrNull { it.id == down.id } ?: break
+            change.consume()
+            if (!change.pressed) break
+            onSlide(change.position, size.height)
+        }
+        onSlideEnd()
+    }
+}
+
+private fun LazyGridState.mediumAt(point: Offset): Long? =
+    layoutInfo.visibleItemsInfo.firstOrNull { IntRect(it.offset, it.size).contains(point.round()) }?.key as? Long
 
 private fun shareIntent(media: List<Medium>) = Intent(Intent.ACTION_SEND_MULTIPLE).apply {
     type = if (media.all { it.type == MediaType.Video }) "video/*" else "*/*"

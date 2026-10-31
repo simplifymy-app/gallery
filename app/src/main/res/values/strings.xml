@@ -302,4 +302,15 @@
     <string name="text_hint">Tap a text on the photo or add a new one</string>
     <string name="text_placeholder">Begin typing</string>
     <string name="text_plate">Background</string>
+    <string name="action_copy">Copy</string>
+    <string name="action_copy_to">Copy to</string>
+    <string name="action_move_to">Move to</string>
+    <string name="action_rename">Rename</string>
+    <string name="files_new_folder">New folder</string>
+    <string name="files_copy_failed">Some items could not be copied</string>
+    <string name="files_move_failed">Some items could not be moved</string>
+    <string name="files_rename_failed">Couldn\'t rename the file</string>
+    <string name="folder_recent">Recent</string>
+    <string name="setting_show_recent">Show Recent</string>
+    <string name="setting_show_recent_hint">All photos and videos, newest first, as the first tile</string>
 </resources>

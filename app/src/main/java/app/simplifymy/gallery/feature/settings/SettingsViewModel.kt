@@ -63,6 +63,7 @@ class SettingsViewModel @Inject constructor(
     fun setCropThumbnails(value: Boolean) = update { repository.setCropThumbnails(value) }
     fun setShowFolderNames(value: Boolean) = update { repository.setShowFolderNames(value) }
     fun setShowFolderDetails(value: Boolean) = update { repository.setShowFolderDetails(value) }
+    fun setShowRecent(value: Boolean) = update { repository.setShowRecent(value) }
     fun setDetailsPlacement(value: DetailsPlacement) = update { repository.setDetailsPlacement(value) }
     fun setThumbnailSpacing(value: ThumbnailSpacing) = update { repository.setThumbnailSpacing(value) }
     fun setShowVideoDuration(value: Boolean) = update { repository.setShowVideoDuration(value) }

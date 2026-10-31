@@ -8,6 +8,8 @@ import app.simplifymy.gallery.core.data.MediaRepository
 import app.simplifymy.gallery.core.data.MediaWriter
 import app.simplifymy.gallery.core.model.Folder
 import app.simplifymy.gallery.core.model.MediaFilter
+import app.simplifymy.gallery.core.model.RECENT_BUCKET_ID
+import app.simplifymy.gallery.core.model.recent
 import app.simplifymy.gallery.core.model.sortedBy
 import app.simplifymy.gallery.core.settings.GallerySettings
 import app.simplifymy.gallery.core.settings.SettingsRepository
@@ -54,7 +56,8 @@ class FoldersViewModel @Inject constructor(
         ) { folders, config, picked ->
             val sorted = folders.sortedBy(config.sorting).sortedByDescending(Folder::isPinned)
             loaded = sorted
-            FoldersUiState(sorted, config, picked.intersect(sorted.map(Folder::bucketId).toSet()))
+            val shown = listOfNotNull(folders.recent().takeIf { config.showRecent }) + sorted
+            FoldersUiState(shown, config, picked.intersect(sorted.map(Folder::bucketId).toSet()))
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), FoldersUiState())
 
     init {
@@ -65,6 +68,7 @@ class FoldersViewModel @Inject constructor(
     fun sync() = viewModelScope.launch { repository.sync() }
 
     fun toggle(bucketId: Long) {
+        if (bucketId == RECENT_BUCKET_ID) return
         selected.value = selected.value.let { if (bucketId in it) it - bucketId else it + bucketId }
     }
 

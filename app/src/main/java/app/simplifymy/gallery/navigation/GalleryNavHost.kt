@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import app.simplifymy.gallery.feature.editor.EditorScreen
 import app.simplifymy.gallery.feature.folders.FoldersScreen
 import app.simplifymy.gallery.feature.media.MediaScreen
@@ -58,7 +59,7 @@ fun GalleryNavHost() {
         composable<Media> { entry ->
             MediaScreen(
                 onBack = navController::popBackStack,
-                onOpenMedium = { navController.navigate(Viewer(it.bucketId, it.id)) },
+                onOpenMedium = { navController.navigate(Viewer(entry.toRoute<Media>().bucketId, it.id)) },
                 onOpenSettings = { openSettings() },
             )
         }

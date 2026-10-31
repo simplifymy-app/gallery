@@ -50,6 +50,7 @@ data class GallerySettings(
     val cropThumbnails: Boolean = true,
     val showFolderNames: Boolean = true,
     val showFolderDetails: Boolean = false,
+    val showRecent: Boolean = false,
     val detailsPlacement: DetailsPlacement = DetailsPlacement.Below,
     val thumbnailSpacing: ThumbnailSpacing = ThumbnailSpacing.Small,
     val showVideoDuration: Boolean = true,
@@ -81,6 +82,7 @@ private object Keys {
     val cropThumbnails = booleanPreferencesKey("crop_thumbnails")
     val showFolderNames = booleanPreferencesKey("show_folder_names")
     val showFolderDetails = booleanPreferencesKey("show_folder_details")
+    val showRecent = booleanPreferencesKey("show_recent")
     val detailsPlacement = stringPreferencesKey("details_placement")
     val thumbnailSpacing = stringPreferencesKey("thumbnail_spacing")
     val showVideoDuration = booleanPreferencesKey("show_video_duration")
@@ -117,6 +119,7 @@ class SettingsRepository @Inject constructor(@ApplicationContext private val con
             cropThumbnails = p[Keys.cropThumbnails] ?: defaults.cropThumbnails,
             showFolderNames = p[Keys.showFolderNames] ?: defaults.showFolderNames,
             showFolderDetails = p[Keys.showFolderDetails] ?: defaults.showFolderDetails,
+            showRecent = p[Keys.showRecent] ?: defaults.showRecent,
             detailsPlacement = p.enum(Keys.detailsPlacement, defaults.detailsPlacement),
             thumbnailSpacing = p.enum(Keys.thumbnailSpacing, defaults.thumbnailSpacing),
             showVideoDuration = p[Keys.showVideoDuration] ?: defaults.showVideoDuration,
@@ -141,6 +144,7 @@ class SettingsRepository @Inject constructor(@ApplicationContext private val con
     suspend fun setOverlayUi(value: Boolean) = put(Keys.overlayUi, value)
     suspend fun setShowFolderNames(value: Boolean) = put(Keys.showFolderNames, value)
     suspend fun setShowFolderDetails(value: Boolean) = put(Keys.showFolderDetails, value)
+    suspend fun setShowRecent(value: Boolean) = put(Keys.showRecent, value)
     suspend fun setDetailsPlacement(value: DetailsPlacement) = put(Keys.detailsPlacement, value.name)
     suspend fun setThumbnailSpacing(value: ThumbnailSpacing) = put(Keys.thumbnailSpacing, value.name)
     suspend fun setShowVideoDuration(value: Boolean) = put(Keys.showVideoDuration, value)

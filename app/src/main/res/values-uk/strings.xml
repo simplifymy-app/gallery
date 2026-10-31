@@ -302,4 +302,15 @@
     <string name="text_hint">Торкніться тексту на фото або додайте новий</string>
     <string name="text_placeholder">Почніть вводити</string>
     <string name="text_plate">Тло</string>
+    <string name="action_copy">Копіювати</string>
+    <string name="action_copy_to">Копіювати до</string>
+    <string name="action_move_to">Перемістити до</string>
+    <string name="action_rename">Перейменувати</string>
+    <string name="files_new_folder">Нова папка</string>
+    <string name="files_copy_failed">Деякі файли не вдалося скопіювати</string>
+    <string name="files_move_failed">Деякі файли не вдалося перемістити</string>
+    <string name="files_rename_failed">Не вдалося перейменувати файл</string>
+    <string name="folder_recent">Нещодавні</string>
+    <string name="setting_show_recent">Показувати «Нещодавні»</string>
+    <string name="setting_show_recent_hint">Усі фото й відео, найновіші спершу, першою плиткою</string>
 </resources>

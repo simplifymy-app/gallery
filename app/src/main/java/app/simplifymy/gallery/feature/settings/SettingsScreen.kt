@@ -211,6 +211,12 @@ fun SettingsScreen(
             Section(stringResource(R.string.section_folders)) {
                 FolderPreview(settings, previewFolders)
                 ToggleRow(
+                    stringResource(R.string.setting_show_recent),
+                    stringResource(R.string.setting_show_recent_hint),
+                    settings.showRecent,
+                    viewModel::setShowRecent,
+                )
+                ToggleRow(
                     stringResource(R.string.setting_show_details),
                     stringResource(R.string.setting_show_details_hint),
                     settings.showFolderNames,

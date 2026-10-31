@@ -33,8 +33,20 @@ data class Folder(
     val isPinned: Boolean = false,
 ) : Sortable {
     override val typeRank: Int get() = coverType
+    val isRecent: Boolean get() = bucketId == RECENT_BUCKET_ID
     val coverUri: Uri get() = mediaUri(coverId, MediaType.entries[coverType])
 }
+
+const val RECENT_BUCKET_ID = Long.MIN_VALUE
+
+fun List<Folder>.recent(): Folder? = maxByOrNull(Folder::dateTaken)?.copy(
+    bucketId = RECENT_BUCKET_ID,
+    name = "",
+    itemCount = sumOf(Folder::itemCount),
+    size = sumOf(Folder::size),
+    dateModified = maxOf(Folder::dateModified),
+    isPinned = false,
+)
 
 data class FolderEntry(
     val bucketId: Long,

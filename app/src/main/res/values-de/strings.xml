@@ -302,4 +302,15 @@
     <string name="text_hint">Tippe auf einen Text im Foto oder füge einen neuen hinzu</string>
     <string name="text_placeholder">Tippe los</string>
     <string name="text_plate">Hintergrund</string>
+    <string name="action_copy">Kopieren</string>
+    <string name="action_copy_to">Kopieren nach</string>
+    <string name="action_move_to">Verschieben nach</string>
+    <string name="action_rename">Umbenennen</string>
+    <string name="files_new_folder">Neuer Ordner</string>
+    <string name="files_copy_failed">Einige Dateien konnten nicht kopiert werden</string>
+    <string name="files_move_failed">Einige Dateien konnten nicht verschoben werden</string>
+    <string name="files_rename_failed">Datei konnte nicht umbenannt werden</string>
+    <string name="folder_recent">Neueste</string>
+    <string name="setting_show_recent">„Neueste“ anzeigen</string>
+    <string name="setting_show_recent_hint">Alle Fotos und Videos, die neuesten zuerst, als erste Kachel</string>
 </resources>

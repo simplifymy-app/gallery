@@ -8,11 +8,14 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,6 +45,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChange
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -59,10 +68,16 @@ import app.simplifymy.gallery.core.model.MediaType
 import app.simplifymy.gallery.core.model.Medium
 import app.simplifymy.gallery.ui.component.GalleryIcons
 import app.simplifymy.gallery.ui.component.IconAction
+import app.simplifymy.gallery.ui.component.MenuEntry
+import app.simplifymy.gallery.ui.component.OverflowMenu
+import app.simplifymy.gallery.feature.files.FileAction
+import app.simplifymy.gallery.feature.files.FileActions
 import app.simplifymy.gallery.ui.formatSize
 import app.simplifymy.gallery.ui.theme.GalleryTheme
 import app.simplifymy.gallery.ui.theme.Spacing
 import me.saket.telephoto.zoomable.coil3.ZoomableAsyncImage
+import me.saket.telephoto.zoomable.rememberZoomableImageState
+import kotlin.math.abs
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -80,6 +95,10 @@ fun ViewerScreen(
     val context = LocalContext.current
     var chrome by remember { mutableStateOf(true) }
     var info by remember { mutableStateOf(false) }
+    var zoomed by remember { mutableStateOf(false) }
+    var fileAction by remember { mutableStateOf<FileAction?>(null) }
+    val pull = remember { Animatable(0f) }
+    val swipeThreshold = with(LocalDensity.current) { SWIPE_THRESHOLD.toPx() }
     val scope = rememberCoroutineScope()
 
     val trashLauncher = rememberLauncherForActivityResult(
@@ -96,14 +115,39 @@ fun ViewerScreen(
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
+            zoomed = false
             state.media.getOrNull(page)?.let { viewModel.loadDetails(it) }
         }
     }
 
     SystemBars(visible = chrome)
 
-    Box(Modifier.fillMaxSize().background(Color.Black)) {
-        HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .verticalSwipe(
+                enabled = { !zoomed },
+                onDrag = { dy -> if (!info) scope.launch { pull.snapTo(dy.coerceAtLeast(0f)) } },
+                onRelease = { dy ->
+                    when {
+                        dy > swipeThreshold && info -> info = false
+                        dy > swipeThreshold -> onBack()
+                        dy < -swipeThreshold -> { chrome = true; info = true }
+                    }
+                    scope.launch { pull.animateTo(0f) }
+                },
+            ),
+    ) {
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxSize().graphicsLayer {
+                translationY = pull.value
+                val shrink = 1f - (pull.value / size.height).coerceIn(0f, 1f) * 0.3f
+                scaleX = shrink
+                scaleY = shrink
+            },
+        ) { page ->
             val medium = state.media[page]
             if (medium.type == MediaType.Video) {
                 if (page == pagerState.currentPage) {
@@ -121,9 +165,16 @@ fun ViewerScreen(
                     VideoPoster(medium) { chrome = !chrome }
                 }
             } else {
+                val zoom = rememberZoomableImageState()
+                if (page == pagerState.currentPage) {
+                    LaunchedEffect(zoom) {
+                        snapshotFlow { (zoom.zoomableState.zoomFraction ?: 0f) > 0.01f }.collect { zoomed = it }
+                    }
+                }
                 ZoomableAsyncImage(
                     model = medium.uri,
                     contentDescription = null,
+                    state = zoom,
                     modifier = Modifier.fillMaxSize(),
                     onClick = { chrome = !chrome },
                 )
@@ -167,8 +218,47 @@ fun ViewerScreen(
                 onDelete = {
                     trashLauncher.launch(IntentSenderRequest.Builder(viewModel.trash(current)).build())
                 },
+                onFileAction = { fileAction = it },
             )
         }
+    }
+
+    FileActions(
+        action = fileAction,
+        media = listOf(current),
+        onDone = {
+            fileAction = null
+            if (it == FileAction.Move) onBack()
+        },
+        onDismiss = { fileAction = null },
+    )
+}
+
+private val SWIPE_THRESHOLD = 80.dp
+
+private fun Modifier.verticalSwipe(
+    enabled: () -> Boolean,
+    onDrag: (Float) -> Unit,
+    onRelease: (Float) -> Unit,
+) = pointerInput(Unit) {
+    awaitEachGesture {
+        val down = awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
+        var total = Offset.Zero
+        var tracking = false
+        while (true) {
+            val event = awaitPointerEvent(PointerEventPass.Initial)
+            val change = event.changes.firstOrNull { it.id == down.id }
+            if (change == null || !change.pressed || event.changes.count { it.pressed } > 1) break
+            total += change.positionChange()
+            if (!tracking) {
+                if (total.getDistance() < viewConfiguration.touchSlop) continue
+                if (!enabled() || abs(total.y) < abs(total.x) * 2) break
+                tracking = true
+            }
+            change.consume()
+            onDrag(total.y)
+        }
+        if (tracking) onRelease(total.y)
     }
 }
 
@@ -259,6 +349,7 @@ private fun BottomChrome(
     onEdit: () -> Unit,
     onSetAs: () -> Unit,
     onDelete: () -> Unit,
+    onFileAction: (FileAction) -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -273,6 +364,11 @@ private fun BottomChrome(
         IconAction(GalleryIcons.Edit, onClick = onEdit, label = stringResource(R.string.action_edit), tint = CHROME_TEXT)
         IconAction(GalleryIcons.SetAs, onClick = onSetAs, tint = CHROME_TEXT)
         IconAction(GalleryIcons.Trash, onClick = onDelete, tint = CHROME_TEXT)
+        OverflowMenu(tint = CHROME_TEXT) { dismiss ->
+            FileAction.entries.forEach { action ->
+                MenuEntry(stringResource(action.labelRes)) { dismiss(); onFileAction(action) }
+            }
+        }
     }
 }
 

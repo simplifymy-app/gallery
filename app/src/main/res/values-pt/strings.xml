@@ -302,4 +302,15 @@
     <string name="text_hint">Toque num texto da foto ou adicione um novo</string>
     <string name="text_placeholder">Comece a escrever</string>
     <string name="text_plate">Fundo</string>
+    <string name="action_copy">Copiar</string>
+    <string name="action_copy_to">Copiar para</string>
+    <string name="action_move_to">Mover para</string>
+    <string name="action_rename">Mudar o nome</string>
+    <string name="files_new_folder">Nova pasta</string>
+    <string name="files_copy_failed">Não foi possível copiar alguns ficheiros</string>
+    <string name="files_move_failed">Não foi possível mover alguns ficheiros</string>
+    <string name="files_rename_failed">Não foi possível mudar o nome do ficheiro</string>
+    <string name="folder_recent">Recentes</string>
+    <string name="setting_show_recent">Mostrar Recentes</string>
+    <string name="setting_show_recent_hint">Todas as fotos e vídeos, os mais recentes primeiro, como primeiro mosaico</string>
 </resources>

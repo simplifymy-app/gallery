@@ -85,6 +85,8 @@ fun FoldersScreen(
     val captioned = labelled || state.settings.showFolderDetails
 
     val overlay = state.settings.overlayUi
+    val recentName = stringResource(R.string.folder_recent)
+    val folders = state.folders.map { if (it.isRecent) it.copy(name = recentName) else it }
     var barHeight by remember { mutableStateOf(0.dp) }
     val density = LocalDensity.current
 
@@ -171,7 +173,7 @@ fun FoldersScreen(
                 horizontalArrangement = Arrangement.spacedBy(gap),
                 verticalArrangement = Arrangement.spacedBy(if (captioned && below) gap + 14.dp else gap),
             ) {
-                items(state.folders, key = { it.bucketId }) { folder ->
+                items(folders, key = { it.bucketId }) { folder ->
                     FolderCard(
                         folder = folder,
                         selected = folder.bucketId in state.selected,

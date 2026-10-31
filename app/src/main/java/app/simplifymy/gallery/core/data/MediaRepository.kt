@@ -14,6 +14,7 @@ import app.simplifymy.gallery.core.model.FolderEntry
 import app.simplifymy.gallery.core.model.MediaFilter
 import app.simplifymy.gallery.core.model.MediaType
 import app.simplifymy.gallery.core.model.Medium
+import app.simplifymy.gallery.core.model.RECENT_BUCKET_ID
 import app.simplifymy.gallery.core.model.mediaUri
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -28,6 +29,7 @@ class MediaRepository @Inject constructor(
     private val ignored: IgnoredFolderDao,
     private val pinned: PinnedFolderDao,
     private val scanner: MediaStoreScanner,
+    private val writer: MediaWriter,
 ) {
 
     val changes: Flow<Unit> = scanner.changes
@@ -53,7 +55,7 @@ class MediaRepository @Inject constructor(
         if (pin) pinned.addAll(bucketIds.map(::PinnedFolderEntity)) else pinned.removeAll(bucketIds)
 
     fun mediaIn(bucketId: Long, filter: MediaFilter): Flow<List<Medium>> =
-        media.mediaIn(bucketId, filter.types).withFavorites()
+        (if (bucketId == RECENT_BUCKET_ID) media.recent(filter.types) else media.mediaIn(bucketId, filter.types)).withFavorites()
 
     fun search(query: String): Flow<List<Medium>> = media.search(query).withFavorites()
 
@@ -77,6 +79,25 @@ class MediaRepository @Inject constructor(
         media.mediaForFolders(bucketIds).map { it.toMedium(false) }
 
     suspend fun sync() = media.replaceAll(scanner.scan())
+
+    suspend fun copy(items: List<Medium>, folder: String): Int = items.count { writer.copy(it, folder) }
+
+    suspend fun move(items: List<Medium>, folder: String): Int = items.count { medium ->
+        relocate(medium, { folder + it.substringAfterLast('/') }) { writer.move(medium, folder) }
+    }
+
+    suspend fun rename(medium: Medium, name: String): Boolean =
+        relocate(medium, { it.substringBeforeLast('/', "") + "/" + name }) { writer.rename(medium, name) }
+
+    private suspend fun relocate(medium: Medium, target: (String) -> String, write: suspend () -> Boolean): Boolean {
+        val path = media.pathOf(medium.id)
+        if (!write()) return false
+        if (medium.isFavorite && path != null) {
+            favorites.remove(path)
+            favorites.add(target(path))
+        }
+        return true
+    }
 
     suspend fun setFavorite(medium: Medium, favorite: Boolean) {
         val path = media.pathOf(medium.id) ?: return
