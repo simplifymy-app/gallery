@@ -322,4 +322,15 @@
     <string name="setting_show_recent_hint">All photos and videos, newest first, as the first tile</string>
     <string name="setting_copy_path">Copy path</string>
     <string name="setting_copy_path_hint">Adds “Copy path” to the selection menu: quoted paths on one line, for scripts</string>
+    <string name="action_metadata">Metadata</string>
+    <string name="metadata_date">Date</string>
+    <string name="metadata_time">Time</string>
+    <string name="metadata_description">Description</string>
+    <string name="metadata_author">Author</string>
+    <string name="metadata_location">Location</string>
+    <string name="metadata_remove_location">Remove location</string>
+    <string name="metadata_read_only">Only JPEG, PNG and WebP photos can be edited</string>
+    <string name="metadata_save_failed">Couldn\'t save the changes</string>
+    <string name="details_lens">Lens</string>
+    <string name="details_focal_length">Focal length</string>
 </resources>

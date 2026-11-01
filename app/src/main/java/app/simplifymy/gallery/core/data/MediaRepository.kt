@@ -12,6 +12,7 @@ import app.simplifymy.gallery.core.database.PinnedFolderDao
 import app.simplifymy.gallery.core.database.PinnedFolderEntity
 import app.simplifymy.gallery.core.media.MediaPaths
 import app.simplifymy.gallery.core.media.MediaStoreScanner
+import app.simplifymy.gallery.core.media.MetadataEdit
 import app.simplifymy.gallery.core.model.Folder
 import app.simplifymy.gallery.core.model.FolderEntry
 import app.simplifymy.gallery.core.model.MediaFilter
@@ -105,6 +106,13 @@ class MediaRepository @Inject constructor(
 
     suspend fun rename(medium: Medium, name: String): Boolean =
         relocate(medium, { it.substringBeforeLast('/', "") + "/" + name }) { writer.rename(medium, name) }
+
+    suspend fun editMetadata(medium: Medium, edit: MetadataEdit): Boolean {
+        if (!writer.writeMetadata(medium, edit)) return false
+        scanner.rescan(paths.absolute(listOf(medium)))
+        sync()
+        return true
+    }
 
     private suspend fun relocate(medium: Medium, target: (String) -> String, write: suspend () -> Boolean): Boolean {
         val path = media.pathOf(medium.id)

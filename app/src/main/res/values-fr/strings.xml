@@ -322,4 +322,15 @@
     <string name="setting_show_recent_hint">Toutes les photos et vidéos, les plus récentes d\'abord, en première vignette</string>
     <string name="setting_copy_path">Copier le chemin</string>
     <string name="setting_copy_path_hint">Ajoute « Copier le chemin » au menu de sélection : chemins entre guillemets sur une seule ligne, pour les scripts</string>
+    <string name="action_metadata">Métadonnées</string>
+    <string name="metadata_date">Date</string>
+    <string name="metadata_time">Heure</string>
+    <string name="metadata_description">Description</string>
+    <string name="metadata_author">Auteur</string>
+    <string name="metadata_location">Lieu</string>
+    <string name="metadata_remove_location">Supprimer le lieu</string>
+    <string name="metadata_read_only">Seules les photos JPEG, PNG et WebP peuvent être modifiées</string>
+    <string name="metadata_save_failed">Impossible d\'enregistrer les modifications</string>
+    <string name="details_lens">Objectif</string>
+    <string name="details_focal_length">Focale</string>
 </resources>

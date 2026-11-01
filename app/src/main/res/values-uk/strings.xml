@@ -322,4 +322,15 @@
     <string name="setting_show_recent_hint">Усі фото й відео, найновіші спершу, першою плиткою</string>
     <string name="setting_copy_path">Копіювати шлях</string>
     <string name="setting_copy_path_hint">Додає «Копіювати шлях» у меню вибору: шляхи в лапках одним рядком, для скриптів</string>
+    <string name="action_metadata">Метадані</string>
+    <string name="metadata_date">Дата</string>
+    <string name="metadata_time">Час</string>
+    <string name="metadata_description">Опис</string>
+    <string name="metadata_author">Автор</string>
+    <string name="metadata_location">Місце</string>
+    <string name="metadata_remove_location">Прибрати місце</string>
+    <string name="metadata_read_only">Змінювати можна лише фото JPEG, PNG і WebP</string>
+    <string name="metadata_save_failed">Не вдалося зберегти зміни</string>
+    <string name="details_lens">Об\'єктив</string>
+    <string name="details_focal_length">Фокусна відстань</string>
 </resources>

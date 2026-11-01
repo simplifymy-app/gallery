@@ -6,60 +6,39 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.simplifymy.gallery.R
 import app.simplifymy.gallery.core.model.FolderEntry
 import app.simplifymy.gallery.core.model.Medium
 import app.simplifymy.gallery.ui.component.GalleryIcons
+import app.simplifymy.gallery.ui.component.GallerySheet
+import app.simplifymy.gallery.ui.component.TextDialog
 import app.simplifymy.gallery.ui.formatCount
-import app.simplifymy.gallery.ui.theme.ControlRadius
 import app.simplifymy.gallery.ui.theme.GalleryTheme
 import app.simplifymy.gallery.ui.theme.Spacing
 
@@ -68,8 +47,6 @@ enum class FileAction(@StringRes val labelRes: Int, @StringRes val failedRes: In
     Move(R.string.action_move_to, R.string.files_move_failed),
     Rename(R.string.action_rename, R.string.files_rename_failed),
 }
-
-private val SCRIM = Color.Black.copy(alpha = 0.64f)
 
 @Composable
 fun FileActions(
@@ -119,16 +96,19 @@ fun FileActions(
         action == FileAction.Rename -> {
             val medium = media.first()
             val extension = medium.name.substringAfterLast('.', "").let { if (it.isEmpty()) "" else ".$it" }
-            NameDialog(
+            val stem = medium.name.removeSuffix(extension)
+            TextDialog(
                 title = stringResource(R.string.action_rename),
-                initial = medium.name.removeSuffix(extension),
+                initial = stem,
+                isValid = { isValidName(it) && it.trim() != stem },
                 onConfirm = { stem -> withConsent { viewModel.rename(medium, stem.trim() + extension, finish) } },
                 onDismiss = onDismiss,
             )
         }
-        naming -> NameDialog(
+        naming -> TextDialog(
             title = stringResource(R.string.files_new_folder),
             initial = "",
+            isValid = ::isValidName,
             onConfirm = { commit(newFolderPath(it)) },
             onDismiss = { naming = false },
         )
@@ -142,7 +122,6 @@ fun FileActions(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FolderSheet(
     title: String,
@@ -151,29 +130,7 @@ private fun FolderSheet(
     onNewFolder: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val colors = GalleryTheme.colors
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        shape = RoundedCornerShape(topStart = 14.dp, topEnd = 14.dp),
-        containerColor = colors.surfaceAlt,
-        contentColor = colors.text,
-        tonalElevation = 0.dp,
-        scrimColor = SCRIM,
-        dragHandle = {
-            Box(
-                Modifier
-                    .padding(top = 10.dp, bottom = 6.dp)
-                    .size(width = 36.dp, height = 4.dp)
-                    .background(colors.hairline, CircleShape),
-            )
-        },
-    ) {
-        Text(
-            title.uppercase(),
-            style = GalleryTheme.type.section,
-            color = colors.textFaint,
-            modifier = Modifier.padding(horizontal = Spacing.screen, vertical = Spacing.base),
-        )
+    GallerySheet(title, onDismiss) {
         LazyColumn(Modifier.padding(bottom = Spacing.base)) {
             item {
                 SheetRow(icon = GalleryIcons.Add, title = stringResource(R.string.files_new_folder), onClick = onNewFolder)
@@ -219,65 +176,3 @@ private fun SheetRow(
     }
 }
 
-@Composable
-private fun NameDialog(title: String, initial: String, onConfirm: (String) -> Unit, onDismiss: () -> Unit) {
-    val colors = GalleryTheme.colors
-    val focus = remember { FocusRequester() }
-    var value by remember { mutableStateOf(TextFieldValue(initial, TextRange(0, initial.length))) }
-    val valid = isValidName(value.text) && value.text.trim() != initial
-    val submit = { if (valid) onConfirm(value.text) }
-
-    LaunchedEffect(Unit) { focus.requestFocus() }
-
-    Dialog(onDismissRequest = onDismiss) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(6.dp))
-                .background(colors.surfaceAlt)
-                .padding(20.dp),
-        ) {
-            Text(title, style = GalleryTheme.type.label.copy(fontWeight = FontWeight.SemiBold), color = colors.text)
-            BasicTextField(
-                value = value,
-                onValueChange = { value = it },
-                singleLine = true,
-                textStyle = GalleryTheme.type.body.copy(color = colors.text),
-                cursorBrush = SolidColor(colors.accent),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = { submit() }),
-                modifier = Modifier
-                    .padding(top = 14.dp)
-                    .fillMaxWidth()
-                    .focusRequester(focus)
-                    .clip(RoundedCornerShape(ControlRadius))
-                    .background(colors.surface)
-                    .padding(horizontal = 12.dp, vertical = 10.dp),
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(top = 18.dp),
-                horizontalArrangement = Arrangement.spacedBy(Spacing.base, Alignment.End),
-            ) {
-                DialogButton(stringResource(R.string.action_cancel), filled = false, enabled = true, onClick = onDismiss)
-                DialogButton(stringResource(R.string.action_done), filled = true, enabled = valid, onClick = submit)
-            }
-        }
-    }
-}
-
-@Composable
-private fun DialogButton(label: String, filled: Boolean, enabled: Boolean, onClick: () -> Unit) {
-    val colors = GalleryTheme.colors
-    Box(
-        modifier = Modifier
-            .height(34.dp)
-            .alpha(if (enabled) 1f else 0.38f)
-            .clip(RoundedCornerShape(ControlRadius))
-            .background(if (filled) colors.accent else Color.Transparent)
-            .clickable(enabled = enabled, onClick = onClick)
-            .padding(horizontal = 14.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(label, style = GalleryTheme.type.label, color = if (filled) colors.onAccent else colors.textMuted)
-    }
-}

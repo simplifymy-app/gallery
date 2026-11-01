@@ -67,6 +67,8 @@ import me.saket.telephoto.zoomable.zoomable
 
 private val CHROME = Color(0xFFEDEDEF)
 private val SPEEDS = List(8) { 0.25f * (it + 1) }
+internal val VIDEO_CONTROLS_BOTTOM = 96.dp
+internal val VIDEO_CONTROLS_HEIGHT = 28.dp
 
 enum class VideoFit(@StringRes val labelRes: Int) {
     Fit(R.string.fit_fit),
@@ -195,7 +197,7 @@ fun VideoPlayer(
             visible = controlsVisible,
             enter = fadeIn(),
             exit = fadeOut(),
-            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 96.dp),
+            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = VIDEO_CONTROLS_BOTTOM),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
@@ -243,7 +245,7 @@ private fun Scrubber(progress: Float, modifier: Modifier = Modifier, onSeek: (Fl
     val accent = GalleryTheme.colors.accent
     Box(
         modifier = modifier
-            .height(28.dp)
+            .height(VIDEO_CONTROLS_HEIGHT)
             .pointerInput(Unit) {
                 detectTapGestures { onSeek(it.x / size.width) }
             }

@@ -322,4 +322,15 @@
     <string name="setting_show_recent_hint">Alle Fotos und Videos, die neuesten zuerst, als erste Kachel</string>
     <string name="setting_copy_path">Pfad kopieren</string>
     <string name="setting_copy_path_hint">Fügt „Pfad kopieren“ zum Auswahlmenü hinzu: Pfade in Anführungszeichen in einer Zeile, für Skripte</string>
+    <string name="action_metadata">Metadaten</string>
+    <string name="metadata_date">Datum</string>
+    <string name="metadata_time">Uhrzeit</string>
+    <string name="metadata_description">Beschreibung</string>
+    <string name="metadata_author">Urheber</string>
+    <string name="metadata_location">Ort</string>
+    <string name="metadata_remove_location">Ort entfernen</string>
+    <string name="metadata_read_only">Nur JPEG-, PNG- und WebP-Fotos lassen sich bearbeiten</string>
+    <string name="metadata_save_failed">Änderungen konnten nicht gespeichert werden</string>
+    <string name="details_lens">Objektiv</string>
+    <string name="details_focal_length">Brennweite</string>
 </resources>

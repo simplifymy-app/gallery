@@ -5,6 +5,7 @@ import androidx.compose.ui.res.stringResource
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,6 +16,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.clickable
@@ -70,6 +72,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import app.simplifymy.gallery.core.media.MediaDetails
+import app.simplifymy.gallery.core.media.MetadataEdit
 import app.simplifymy.gallery.core.model.MediaType
 import app.simplifymy.gallery.core.model.Medium
 import app.simplifymy.gallery.ui.component.GalleryIcons
@@ -107,6 +110,8 @@ fun ViewerScreen(
     var info by remember { mutableStateOf(false) }
     var zoomed by remember { mutableStateOf(false) }
     var fileAction by remember { mutableStateOf<FileAction?>(null) }
+    var metadata by remember { mutableStateOf(false) }
+    var pendingEdit by remember { mutableStateOf<Pair<Medium, MetadataEdit>?>(null) }
     val pull = remember { Animatable(0f) }
     val swipeThreshold = with(LocalDensity.current) { SWIPE_THRESHOLD.toPx() }
     val scope = rememberCoroutineScope()
@@ -114,6 +119,18 @@ fun ViewerScreen(
     val trashLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartIntentSenderForResult()
     ) { if (it.resultCode == Activity.RESULT_OK) onBack() }
+
+    val metadataConsent = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult()
+    ) { result ->
+        val (medium, edit) = pendingEdit ?: return@rememberLauncherForActivityResult
+        pendingEdit = null
+        if (result.resultCode == Activity.RESULT_OK) {
+            viewModel.editMetadata(medium, edit) { saved ->
+                if (!saved) Toast.makeText(context, R.string.metadata_save_failed, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     if (state.media.isEmpty()) {
         Box(Modifier.fillMaxSize().background(Color.Black))
@@ -225,7 +242,13 @@ fun ViewerScreen(
             visible = chrome && info,
             enter = fadeIn(),
             exit = fadeOut(),
-            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 108.dp),
+            modifier = Modifier.align(Alignment.BottomCenter).padding(
+                bottom = if (current.type == MediaType.Video) {
+                    VIDEO_CONTROLS_BOTTOM + VIDEO_CONTROLS_HEIGHT + 12.dp
+                } else {
+                    108.dp
+                },
+            ),
         ) {
             DetailsPanel(current, state.details, onClose = { info = false })
         }
@@ -244,8 +267,22 @@ fun ViewerScreen(
                     trashLauncher.launch(IntentSenderRequest.Builder(viewModel.trash(current)).build())
                 },
                 onFileAction = { fileAction = it },
+                onMetadata = { metadata = true },
             )
         }
+    }
+
+    if (metadata) {
+        MetadataSheet(
+            medium = current,
+            details = state.details,
+            onSave = { edit ->
+                metadata = false
+                pendingEdit = current to edit
+                metadataConsent.launch(IntentSenderRequest.Builder(viewModel.writeRequest(current)).build())
+            },
+            onDismiss = { metadata = false },
+        )
     }
 
     FileActions(
@@ -459,6 +496,7 @@ private fun BottomChrome(
     onSetAs: () -> Unit,
     onDelete: () -> Unit,
     onFileAction: (FileAction) -> Unit,
+    onMetadata: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -477,16 +515,19 @@ private fun BottomChrome(
             FileAction.entries.forEach { action ->
                 MenuEntry(stringResource(action.labelRes)) { dismiss(); onFileAction(action) }
             }
+            MenuEntry(stringResource(R.string.action_metadata)) { dismiss(); onMetadata() }
         }
     }
 }
 
 @Composable
 private fun DetailsPanel(medium: Medium, details: MediaDetails, onClose: () -> Unit) {
+    val shape = RoundedCornerShape(6.dp)
     Column(
         modifier = Modifier
             .padding(horizontal = 12.dp)
-            .background(Color(0xD10B0B0C), RoundedCornerShape(6.dp))
+            .background(Color(0xD10B0B0C), shape)
+            .border(1.dp, CHROME_TEXT.copy(alpha = 0.14f), shape)
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(9.dp),
     ) {

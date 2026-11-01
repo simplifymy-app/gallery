@@ -9,8 +9,12 @@ import android.provider.MediaStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import dagger.hilt.android.qualifiers.ApplicationContext
+import app.simplifymy.gallery.core.media.MetadataEdit
+import app.simplifymy.gallery.core.media.write
 import app.simplifymy.gallery.core.model.MediaType
+import androidx.exifinterface.media.ExifInterface
 import app.simplifymy.gallery.core.model.Medium
+import java.io.File
 import java.io.OutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -37,6 +41,20 @@ class MediaWriter @Inject constructor(
         insert(MediaType.Image, editedName(source.name), "image/jpeg", folder) {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 95, it)
         }
+    }
+
+    suspend fun writeMetadata(medium: Medium, edit: MetadataEdit): Boolean = withContext(Dispatchers.IO) {
+        val draft = File.createTempFile("metadata", null, context.cacheDir)
+        runCatching {
+            resolver.openInputStream(medium.uri)?.use { input -> draft.outputStream().use { input.copyTo(it) } }
+                ?: error("Unable to read ${medium.uri}.")
+            ExifInterface(draft).run {
+                write(edit)
+                saveAttributes()
+            }
+            resolver.openOutputStream(medium.uri, "wt")?.use { output -> draft.inputStream().use { it.copyTo(output) } }
+                ?: error("Unable to write ${medium.uri}.")
+        }.also { draft.delete() }.isSuccess
     }
 
     suspend fun copy(source: Medium, folder: String): Boolean = withContext(Dispatchers.IO) {

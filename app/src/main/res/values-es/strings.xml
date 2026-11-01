@@ -322,4 +322,15 @@
     <string name="setting_show_recent_hint">Todas las fotos y vídeos, los más nuevos primero, como primer mosaico</string>
     <string name="setting_copy_path">Copiar ruta</string>
     <string name="setting_copy_path_hint">Añade «Copiar ruta» al menú de selección: rutas entre comillas en una sola línea, para scripts</string>
+    <string name="action_metadata">Metadatos</string>
+    <string name="metadata_date">Fecha</string>
+    <string name="metadata_time">Hora</string>
+    <string name="metadata_description">Descripción</string>
+    <string name="metadata_author">Autor</string>
+    <string name="metadata_location">Ubicación</string>
+    <string name="metadata_remove_location">Quitar ubicación</string>
+    <string name="metadata_read_only">Solo se pueden editar fotos JPEG, PNG y WebP</string>
+    <string name="metadata_save_failed">No se pudieron guardar los cambios</string>
+    <string name="details_lens">Objetivo</string>
+    <string name="details_focal_length">Distancia focal</string>
 </resources>

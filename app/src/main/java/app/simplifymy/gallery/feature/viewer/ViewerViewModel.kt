@@ -10,6 +10,7 @@ import app.simplifymy.gallery.core.data.MediaRepository
 import app.simplifymy.gallery.core.data.MediaWriter
 import app.simplifymy.gallery.core.media.MediaDetails
 import app.simplifymy.gallery.core.media.MediaDetailsLoader
+import app.simplifymy.gallery.core.media.MetadataEdit
 import app.simplifymy.gallery.core.model.Medium
 import app.simplifymy.gallery.core.model.sortedBy
 import app.simplifymy.gallery.core.settings.SettingsRepository
@@ -70,6 +71,14 @@ class ViewerViewModel @Inject constructor(
 
     fun toggleFavorite(medium: Medium) = viewModelScope.launch {
         repository.setFavorite(medium, !medium.isFavorite)
+    }
+
+    fun writeRequest(medium: Medium): IntentSender = writer.writeRequest(listOf(medium))
+
+    fun editMetadata(medium: Medium, edit: MetadataEdit, onDone: (Boolean) -> Unit) = viewModelScope.launch {
+        val saved = repository.editMetadata(medium, edit)
+        if (saved) details.value = detailsLoader.load(medium.id, medium.type)
+        onDone(saved)
     }
 
     fun trash(medium: Medium): IntentSender = writer.trashRequest(listOf(medium), trashed = true)
