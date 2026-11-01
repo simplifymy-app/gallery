@@ -56,6 +56,7 @@
     <string name="section_thumbnails">Miniaturas</string>
     <string name="section_video">Vídeo</string>
     <string name="section_support">Suporte</string>
+    <string name="section_advanced">Avançado</string>
 
     <!-- Settings rows -->
     <string name="setting_mode">Modo</string>
@@ -306,6 +307,8 @@
     <string name="action_copy_to">Copiar para</string>
     <string name="action_move_to">Mover para</string>
     <string name="action_rename">Mudar o nome</string>
+    <string name="action_copy_path">Copiar caminho</string>
+    <string name="paths_copied">Caminhos copiados</string>
     <string name="files_new_folder">Nova pasta</string>
     <string name="files_copy_failed">Não foi possível copiar alguns ficheiros</string>
     <string name="files_move_failed">Não foi possível mover alguns ficheiros</string>
@@ -313,4 +316,6 @@
     <string name="folder_recent">Recentes</string>
     <string name="setting_show_recent">Mostrar Recentes</string>
     <string name="setting_show_recent_hint">Todas as fotos e vídeos, os mais recentes primeiro, como primeiro mosaico</string>
+    <string name="setting_copy_path">Copiar caminho</string>
+    <string name="setting_copy_path_hint">Adiciona “Copiar caminho” ao menu de seleção: caminhos entre aspas numa só linha, para scripts</string>
 </resources>

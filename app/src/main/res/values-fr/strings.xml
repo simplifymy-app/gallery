@@ -56,6 +56,7 @@
     <string name="section_thumbnails">Miniatures</string>
     <string name="section_video">Vidéo</string>
     <string name="section_support">Assistance</string>
+    <string name="section_advanced">Avancé</string>
 
     <!-- Settings rows -->
     <string name="setting_mode">Mode</string>
@@ -306,6 +307,8 @@
     <string name="action_copy_to">Copier vers</string>
     <string name="action_move_to">Déplacer vers</string>
     <string name="action_rename">Renommer</string>
+    <string name="action_copy_path">Copier le chemin</string>
+    <string name="paths_copied">Chemins copiés</string>
     <string name="files_new_folder">Nouveau dossier</string>
     <string name="files_copy_failed">Certains fichiers n\'ont pas pu être copiés</string>
     <string name="files_move_failed">Certains fichiers n\'ont pas pu être déplacés</string>
@@ -313,4 +316,6 @@
     <string name="folder_recent">Récents</string>
     <string name="setting_show_recent">Afficher Récents</string>
     <string name="setting_show_recent_hint">Toutes les photos et vidéos, les plus récentes d\'abord, en première vignette</string>
+    <string name="setting_copy_path">Copier le chemin</string>
+    <string name="setting_copy_path_hint">Ajoute « Copier le chemin » au menu de sélection : chemins entre guillemets sur une seule ligne, pour les scripts</string>
 </resources>

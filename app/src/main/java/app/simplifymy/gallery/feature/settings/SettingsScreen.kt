@@ -273,6 +273,15 @@ fun SettingsScreen(
                 )
             }
 
+            Section(stringResource(R.string.section_advanced)) {
+                ToggleRow(
+                    stringResource(R.string.setting_copy_path),
+                    stringResource(R.string.setting_copy_path_hint),
+                    settings.copyPathAction,
+                    viewModel::setCopyPathAction,
+                )
+            }
+
             Section(stringResource(R.string.section_support)) {
                 LinkRow(
                     stringResource(R.string.setting_contact),

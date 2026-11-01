@@ -56,6 +56,7 @@
     <string name="section_thumbnails">Thumbnails</string>
     <string name="section_video">Video</string>
     <string name="section_support">Support</string>
+    <string name="section_advanced">Advanced</string>
 
     <!-- Settings rows -->
     <string name="setting_mode">Mode</string>
@@ -306,6 +307,8 @@
     <string name="action_copy_to">Copy to</string>
     <string name="action_move_to">Move to</string>
     <string name="action_rename">Rename</string>
+    <string name="action_copy_path">Copy path</string>
+    <string name="paths_copied">Paths copied</string>
     <string name="files_new_folder">New folder</string>
     <string name="files_copy_failed">Some items could not be copied</string>
     <string name="files_move_failed">Some items could not be moved</string>
@@ -313,4 +316,6 @@
     <string name="folder_recent">Recent</string>
     <string name="setting_show_recent">Show Recent</string>
     <string name="setting_show_recent_hint">All photos and videos, newest first, as the first tile</string>
+    <string name="setting_copy_path">Copy path</string>
+    <string name="setting_copy_path_hint">Adds “Copy path” to the selection menu: quoted paths on one line, for scripts</string>
 </resources>

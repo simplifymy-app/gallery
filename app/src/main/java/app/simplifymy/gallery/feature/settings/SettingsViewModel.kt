@@ -68,6 +68,7 @@ class SettingsViewModel @Inject constructor(
     fun setThumbnailSpacing(value: ThumbnailSpacing) = update { repository.setThumbnailSpacing(value) }
     fun setShowVideoDuration(value: Boolean) = update { repository.setShowVideoDuration(value) }
     fun setAutoplayNextVideo(value: Boolean) = update { repository.setAutoplayNextVideo(value) }
+    fun setCopyPathAction(value: Boolean) = update { repository.setCopyPathAction(value) }
     fun setLanguage(value: Language, onApplied: () -> Unit) = viewModelScope.launch {
         repository.setLanguage(value)
         onApplied()

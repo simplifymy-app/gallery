@@ -56,6 +56,7 @@
     <string name="section_thumbnails">Мініатюри</string>
     <string name="section_video">Відео</string>
     <string name="section_support">Підтримка</string>
+    <string name="section_advanced">Додатково</string>
 
     <!-- Рядки налаштувань -->
     <string name="setting_mode">Режим</string>
@@ -306,6 +307,8 @@
     <string name="action_copy_to">Копіювати до</string>
     <string name="action_move_to">Перемістити до</string>
     <string name="action_rename">Перейменувати</string>
+    <string name="action_copy_path">Копіювати шлях</string>
+    <string name="paths_copied">Шляхи скопійовано</string>
     <string name="files_new_folder">Нова папка</string>
     <string name="files_copy_failed">Деякі файли не вдалося скопіювати</string>
     <string name="files_move_failed">Деякі файли не вдалося перемістити</string>
@@ -313,4 +316,6 @@
     <string name="folder_recent">Нещодавні</string>
     <string name="setting_show_recent">Показувати «Нещодавні»</string>
     <string name="setting_show_recent_hint">Усі фото й відео, найновіші спершу, першою плиткою</string>
+    <string name="setting_copy_path">Копіювати шлях</string>
+    <string name="setting_copy_path_hint">Додає «Копіювати шлях» у меню вибору: шляхи в лапках одним рядком, для скриптів</string>
 </resources>

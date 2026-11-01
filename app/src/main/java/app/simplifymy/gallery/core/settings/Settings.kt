@@ -55,6 +55,7 @@ data class GallerySettings(
     val thumbnailSpacing: ThumbnailSpacing = ThumbnailSpacing.Small,
     val showVideoDuration: Boolean = true,
     val autoplayNextVideo: Boolean = false,
+    val copyPathAction: Boolean = false,
     val language: Language = Language.System,
 )
 
@@ -87,6 +88,7 @@ private object Keys {
     val thumbnailSpacing = stringPreferencesKey("thumbnail_spacing")
     val showVideoDuration = booleanPreferencesKey("show_video_duration")
     val autoplayNextVideo = booleanPreferencesKey("autoplay_next_video")
+    val copyPathAction = booleanPreferencesKey("copy_path_action")
     val language = stringPreferencesKey("language")
 }
 
@@ -124,6 +126,7 @@ class SettingsRepository @Inject constructor(@ApplicationContext private val con
             thumbnailSpacing = p.enum(Keys.thumbnailSpacing, defaults.thumbnailSpacing),
             showVideoDuration = p[Keys.showVideoDuration] ?: defaults.showVideoDuration,
             autoplayNextVideo = p[Keys.autoplayNextVideo] ?: defaults.autoplayNextVideo,
+            copyPathAction = p[Keys.copyPathAction] ?: defaults.copyPathAction,
             language = p.enum(Keys.language, defaults.language),
         )
     }
@@ -149,6 +152,7 @@ class SettingsRepository @Inject constructor(@ApplicationContext private val con
     suspend fun setThumbnailSpacing(value: ThumbnailSpacing) = put(Keys.thumbnailSpacing, value.name)
     suspend fun setShowVideoDuration(value: Boolean) = put(Keys.showVideoDuration, value)
     suspend fun setAutoplayNextVideo(value: Boolean) = put(Keys.autoplayNextVideo, value)
+    suspend fun setCopyPathAction(value: Boolean) = put(Keys.copyPathAction, value)
     suspend fun setLanguage(value: Language) {
         context.getSharedPreferences(BOOTSTRAP_PREFS, Context.MODE_PRIVATE)
             .edit()

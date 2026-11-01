@@ -56,6 +56,7 @@
     <string name="section_thumbnails">Vorschaubilder</string>
     <string name="section_video">Video</string>
     <string name="section_support">Support</string>
+    <string name="section_advanced">Erweitert</string>
 
     <!-- Settings rows -->
     <string name="setting_mode">Modus</string>
@@ -306,6 +307,8 @@
     <string name="action_copy_to">Kopieren nach</string>
     <string name="action_move_to">Verschieben nach</string>
     <string name="action_rename">Umbenennen</string>
+    <string name="action_copy_path">Pfad kopieren</string>
+    <string name="paths_copied">Pfade kopiert</string>
     <string name="files_new_folder">Neuer Ordner</string>
     <string name="files_copy_failed">Einige Dateien konnten nicht kopiert werden</string>
     <string name="files_move_failed">Einige Dateien konnten nicht verschoben werden</string>
@@ -313,4 +316,6 @@
     <string name="folder_recent">Neueste</string>
     <string name="setting_show_recent">„Neueste“ anzeigen</string>
     <string name="setting_show_recent_hint">Alle Fotos und Videos, die neuesten zuerst, als erste Kachel</string>
+    <string name="setting_copy_path">Pfad kopieren</string>
+    <string name="setting_copy_path_hint">Fügt „Pfad kopieren“ zum Auswahlmenü hinzu: Pfade in Anführungszeichen in einer Zeile, für Skripte</string>
 </resources>

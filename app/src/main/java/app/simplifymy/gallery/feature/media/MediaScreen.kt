@@ -3,7 +3,12 @@ package app.simplifymy.gallery.feature.media
 import app.simplifymy.gallery.R
 import androidx.compose.ui.res.stringResource
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
+import android.os.Build
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -267,6 +272,7 @@ fun MediaScreen(
                 onCopy = { fileAction = FileAction.Copy },
                 onMove = { fileAction = FileAction.Move },
                 onRename = if (state.selected.size == 1) ({ fileAction = FileAction.Rename }) else null,
+                onCopyPath = if (state.settings.copyPathAction) ({ viewModel.copySelectedPaths { context.copyToClipboard(it) } }) else null,
                 onDelete = {
                     trashLauncher.launch(
                         IntentSenderRequest.Builder(
@@ -347,6 +353,7 @@ private fun ActionBar(
     onCopy: () -> Unit,
     onMove: () -> Unit,
     onRename: (() -> Unit)?,
+    onCopyPath: (() -> Unit)?,
     onDelete: () -> Unit,
 ) {
     val colors = GalleryTheme.colors
@@ -365,7 +372,15 @@ private fun ActionBar(
         OverflowMenu { dismiss ->
             MenuEntry(stringResource(R.string.action_move_to)) { dismiss(); onMove() }
             if (onRename != null) MenuEntry(stringResource(R.string.action_rename)) { dismiss(); onRename() }
+            if (onCopyPath != null) MenuEntry(stringResource(R.string.action_copy_path)) { dismiss(); onCopyPath() }
         }
+    }
+}
+
+private fun Context.copyToClipboard(text: String) {
+    getSystemService(ClipboardManager::class.java).setPrimaryClip(ClipData.newPlainText(getString(R.string.action_copy_path), text))
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        Toast.makeText(this, R.string.paths_copied, Toast.LENGTH_SHORT).show()
     }
 }
 

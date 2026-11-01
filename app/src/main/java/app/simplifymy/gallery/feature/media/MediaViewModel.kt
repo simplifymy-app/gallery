@@ -6,12 +6,14 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import app.simplifymy.gallery.core.data.MediaRepository
 import app.simplifymy.gallery.core.data.MediaWriter
+import app.simplifymy.gallery.core.media.MediaPaths
 import app.simplifymy.gallery.core.model.GridItem
 import app.simplifymy.gallery.core.model.Grouping
 import app.simplifymy.gallery.core.model.Medium
 import app.simplifymy.gallery.core.model.RECENT_BUCKET_ID
 import app.simplifymy.gallery.core.model.ScrollDirection
 import app.simplifymy.gallery.core.model.grouped
+import app.simplifymy.gallery.core.model.shellQuoted
 import app.simplifymy.gallery.core.model.sortedBy
 import app.simplifymy.gallery.core.settings.GallerySettings
 import app.simplifymy.gallery.core.settings.SettingsRepository
@@ -47,6 +49,7 @@ class MediaViewModel @Inject constructor(
     private val repository: MediaRepository,
     private val settings: SettingsRepository,
     private val writer: MediaWriter,
+    private val paths: MediaPaths,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -57,11 +60,11 @@ class MediaViewModel @Inject constructor(
 
     val state: StateFlow<MediaUiState> =
         combine(settings.settings.flatMapLatest { repository.mediaIn(route.bucketId, it.mediaFilter) }, settings.settings, selected) { media, config, picked ->
-            loaded = media
             val order = config.sorting.copy(
                 descending = config.sorting.descending != (config.scrollDirection == ScrollDirection.Up)
             )
             val sorted = media.sortedBy(order)
+            loaded = sorted
             MediaUiState(
                 title = route.title,
                 items = sorted.grouped(config.grouping, order),
@@ -106,6 +109,12 @@ class MediaViewModel @Inject constructor(
     fun setColumns(count: Int) = viewModelScope.launch { settings.setMediaColumns(count) }
 
     fun selectedMedia(): List<Medium> = loaded.filter { it.id in selected.value }
+
+    fun copySelectedPaths(copy: (String) -> Unit) = viewModelScope.launch {
+        val found = paths.absolute(selectedMedia())
+        if (found.isNotEmpty()) copy(shellQuoted(found))
+        clearSelection()
+    }
 
     fun ignoreFolder() = viewModelScope.launch {
         repository.ignoreFolder(route.bucketId, route.title)
