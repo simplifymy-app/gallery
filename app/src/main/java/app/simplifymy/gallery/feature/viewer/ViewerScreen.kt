@@ -148,6 +148,7 @@ fun ViewerScreen(
     ) {
         HorizontalPager(
             state = pagerState,
+            key = { page -> state.media[page].id },
             modifier = Modifier.fillMaxSize().graphicsLayer {
                 translationY = pull.value
                 val shrink = 1f - (pull.value / size.height).coerceIn(0f, 1f) * 0.3f
@@ -160,8 +161,10 @@ fun ViewerScreen(
                 if (page == pagerState.currentPage) {
                     VideoPlayer(
                         uri = medium.uri,
+                        title = medium.name,
                         controlsVisible = chrome,
                         autoplayNext = state.autoplayNextVideo,
+                        backgroundPlayback = state.backgroundPlayback,
                         onToggleChrome = { chrome = !chrome },
                         onEnded = {
                             val ahead = state.media.drop(page + 1).indexOfFirst { it.type == MediaType.Video }
@@ -250,8 +253,10 @@ fun StandaloneViewer(uri: Uri, isVideo: Boolean, onBack: () -> Unit) {
         if (isVideo) {
             VideoPlayer(
                 uri = uri,
+                title = uri.lastPathSegment.orEmpty(),
                 controlsVisible = chrome,
                 autoplayNext = false,
+                backgroundPlayback = false,
                 onToggleChrome = { chrome = !chrome },
                 onEnded = {},
                 onZoomedChange = {},

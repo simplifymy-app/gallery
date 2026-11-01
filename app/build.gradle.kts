@@ -22,8 +22,8 @@ android {
         applicationId = "app.simplifymy.gallery"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 28
-        versionName = "1.3.5"
+        versionCode = 29
+        versionName = "1.4.0"
         testInstrumentationRunner = "app.simplifymy.gallery.GalleryTestRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -120,5 +120,6 @@ dependencies {
     implementation(libs.telephoto.zoomable)
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.ui.compose)
+    implementation(libs.media3.session)
     implementation(libs.androidx.exifinterface)
 }

@@ -271,6 +271,12 @@ fun SettingsScreen(
                     settings.autoplayNextVideo,
                     viewModel::setAutoplayNextVideo,
                 )
+                ToggleRow(
+                    stringResource(R.string.setting_background_playback),
+                    stringResource(R.string.setting_background_playback_hint),
+                    settings.backgroundPlayback,
+                    viewModel::setBackgroundPlayback,
+                )
             }
 
             Section(stringResource(R.string.section_advanced)) {

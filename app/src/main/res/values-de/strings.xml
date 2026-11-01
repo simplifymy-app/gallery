@@ -92,6 +92,8 @@
     <string name="setting_video_duration_hint">Kleines Abzeichen auf Video-Vorschaubildern</string>
     <string name="setting_autoplay">Nächstes Video automatisch abspielen</string>
     <string name="setting_autoplay_hint">Wenn eines endet, mit dem nächsten Video im Ordner fortfahren. Aus: wiederholen.</string>
+    <string name="setting_background_playback">Im Hintergrund weiterspielen</string>
+    <string name="setting_background_playback_hint">Das Video läuft weiter, wenn die App minimiert ist, gesteuert über die Benachrichtigung.</string>
     <string name="setting_contact">Kontakt</string>
     <string name="setting_contact_hint">Fehler melden, Idee vorschlagen oder Frage stellen</string>
 

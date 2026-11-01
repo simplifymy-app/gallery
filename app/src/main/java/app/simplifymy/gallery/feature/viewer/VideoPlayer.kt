@@ -34,6 +34,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.setValue
@@ -45,7 +46,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
@@ -73,15 +77,19 @@ enum class VideoFit(@StringRes val labelRes: Int) {
 @Composable
 fun VideoPlayer(
     uri: Uri,
+    title: String,
     controlsVisible: Boolean,
     autoplayNext: Boolean,
+    backgroundPlayback: Boolean,
     onToggleChrome: () -> Unit,
     onEnded: () -> Unit,
     onZoomedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val player = remember { ExoPlayer.Builder(context).build() }
+    val player = remember(uri) { ExoPlayer.Builder(context).build() }
+    val currentAutoplayNext by rememberUpdatedState(autoplayNext)
+    val currentOnEnded by rememberUpdatedState(onEnded)
     var playing by rememberSaveable(uri) { mutableStateOf(true) }
     var muted by rememberSaveable { mutableStateOf(false) }
     var position by rememberSaveable(uri) { mutableLongStateOf(0L) }
@@ -95,9 +103,13 @@ fun VideoPlayer(
         snapshotFlow { (zoom.zoomFraction ?: 0f) > 0.01f }.collect(onZoomedChange)
     }
 
-    DisposableEffect(uri, autoplayNext) {
-        player.setMediaItem(MediaItem.fromUri(uri))
-        player.repeatMode = if (autoplayNext) Player.REPEAT_MODE_OFF else Player.REPEAT_MODE_ONE
+    DisposableEffect(player) {
+        player.setMediaItem(
+            MediaItem.Builder()
+                .setUri(uri)
+                .setMediaMetadata(MediaMetadata.Builder().setTitle(title).build())
+                .build()
+        )
         player.seekTo(position)
         player.setPlaybackSpeed(speed)
         player.volume = if (muted) 0f else 1f
@@ -113,7 +125,7 @@ fun VideoPlayer(
             }
 
             override fun onPlaybackStateChanged(state: Int) {
-                if (state == Player.STATE_ENDED && autoplayNext) onEnded()
+                if (state == Player.STATE_ENDED && currentAutoplayNext) currentOnEnded()
             }
         }
         player.addListener(listener)
@@ -122,6 +134,16 @@ fun VideoPlayer(
             player.release()
         }
     }
+
+    LaunchedEffect(player, autoplayNext) {
+        player.repeatMode = if (autoplayNext) Player.REPEAT_MODE_OFF else Player.REPEAT_MODE_ONE
+    }
+
+    LifecycleEventEffect(Lifecycle.Event.ON_STOP) {
+        if (!backgroundPlayback) player.pause()
+    }
+
+    if (backgroundPlayback) PlaybackSessionEffect(player)
 
     LaunchedEffect(player) {
         while (true) {

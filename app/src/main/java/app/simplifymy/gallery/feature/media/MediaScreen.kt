@@ -240,21 +240,22 @@ fun MediaScreen(
                 horizontalArrangement = Arrangement.spacedBy(state.settings.thumbnailSpacing.gap),
                 verticalArrangement = Arrangement.spacedBy(state.settings.thumbnailSpacing.gap),
             ) {
-                state.items.forEach { item ->
-                    when (item) {
-                        is GridItem.Header -> item(span = { GridItemSpan(maxLineSpan) }, key = item.date) {
-                            GroupHeader(item)
-                        }
-                        is GridItem.Item -> item(key = item.medium.id) {
-                            MediaTile(
-                                medium = item.medium,
-                                selected = item.medium.id in state.selected,
-                                selecting = state.selecting,
-                                showDuration = state.settings.showVideoDuration,
-                                onTap = { openOrToggle(item.medium) },
-                                onHold = { viewModel.toggle(item.medium.id) },
-                            )
-                        }
+                items(
+                    count = state.items.size,
+                    key = { index -> state.items[index].key },
+                    span = { index -> GridItemSpan(if (state.items[index] is GridItem.Header) maxLineSpan else 1) },
+                    contentType = { index -> state.items[index] is GridItem.Header },
+                ) { index ->
+                    when (val item = state.items[index]) {
+                        is GridItem.Header -> GroupHeader(item)
+                        is GridItem.Item -> MediaTile(
+                            medium = item.medium,
+                            selected = item.medium.id in state.selected,
+                            selecting = state.selecting,
+                            showDuration = state.settings.showVideoDuration,
+                            onTap = { openOrToggle(item.medium) },
+                            onHold = { viewModel.toggle(item.medium.id) },
+                        )
                     }
                 }
             }
@@ -517,6 +518,12 @@ private fun Modifier.gridGestures(
         onSlideEnd()
     }
 }
+
+private val GridItem.key: Any
+    get() = when (this) {
+        is GridItem.Header -> date
+        is GridItem.Item -> medium.id
+    }
 
 private fun LazyGridState.mediumAt(point: Offset): Long? =
     layoutInfo.visibleItemsInfo.firstOrNull { IntRect(it.offset, it.size).contains(point.round()) }?.key as? Long

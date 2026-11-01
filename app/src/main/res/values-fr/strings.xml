@@ -92,6 +92,8 @@
     <string name="setting_video_duration_hint">Petit badge sur les miniatures vidéo</string>
     <string name="setting_autoplay">Lire la vidéo suivante</string>
     <string name="setting_autoplay_hint">À la fin d’une vidéo, passer à la suivante du dossier. Désactivé, elle est répétée.</string>
+    <string name="setting_background_playback">Continuer la lecture en arrière-plan</string>
+    <string name="setting_background_playback_hint">La vidéo continue quand l’app est réduite, contrôlée depuis la notification.</string>
     <string name="setting_contact">Nous contacter</string>
     <string name="setting_contact_hint">Signaler un bug, proposer une idée ou poser une question</string>
 

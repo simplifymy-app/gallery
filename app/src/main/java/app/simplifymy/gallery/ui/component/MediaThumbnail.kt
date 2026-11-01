@@ -8,7 +8,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import android.net.Uri
+import androidx.compose.runtime.remember
 import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import app.simplifymy.gallery.core.media.Thumbnail
 import app.simplifymy.gallery.ui.theme.GalleryTheme
 
@@ -20,8 +24,12 @@ fun MediaThumbnail(
     aspectRatio: Float = 1f,
     description: String? = null,
 ) {
+    val context = LocalPlatformContext.current
+    val request = remember(model) {
+        model?.let { ImageRequest.Builder(context).data(Thumbnail(it)).crossfade(false).build() }
+    }
     AsyncImage(
-        model = model?.let(::Thumbnail),
+        model = request,
         contentDescription = description,
         contentScale = if (crop) ContentScale.Crop else ContentScale.Fit,
         modifier = modifier

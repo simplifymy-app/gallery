@@ -19,12 +19,15 @@ import app.simplifymy.gallery.core.settings.GallerySettings
 import app.simplifymy.gallery.core.settings.SettingsRepository
 import app.simplifymy.gallery.core.settings.cycled
 import app.simplifymy.gallery.navigation.Media
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -58,22 +61,24 @@ class MediaViewModel @Inject constructor(
     private val selected = MutableStateFlow(emptySet<Long>())
     private val refreshing = MutableStateFlow(false)
     private var loaded = emptyList<Medium>()
+    private var positions = emptyMap<Long, Int>()
     private var rangeBase = emptySet<Long>()
 
+    private val arranged = settings.settings.flatMapLatest { config ->
+        repository.mediaIn(route.bucketId, config.mediaFilter).map { media -> media.arranged(config) }
+    }.flowOn(Dispatchers.Default)
+
     val state: StateFlow<MediaUiState> =
-        combine(settings.settings.flatMapLatest { repository.mediaIn(route.bucketId, it.mediaFilter) }, settings.settings, selected, refreshing) { media, config, picked, busy ->
-            val order = config.sorting.copy(
-                descending = config.sorting.descending != (config.scrollDirection == ScrollDirection.Up)
-            )
-            val sorted = media.sortedBy(order)
-            loaded = sorted
+        combine(arranged, selected, refreshing) { library, picked, busy ->
+            loaded = library.sorted
+            positions = library.positions
             MediaUiState(
                 title = route.title,
-                items = sorted.grouped(config.grouping, order),
-                totalCount = media.size,
-                totalSize = media.sumOf { it.size },
+                items = library.items,
+                totalCount = library.sorted.size,
+                totalSize = library.totalSize,
                 selected = picked,
-                settings = config,
+                settings = library.settings,
                 recent = route.bucketId == RECENT_BUCKET_ID,
                 refreshing = busy,
             )
@@ -98,11 +103,9 @@ class MediaViewModel @Inject constructor(
     fun beginRange() { rangeBase = selected.value }
 
     fun selectRange(from: Long, to: Long) {
-        val ids = state.value.items.mapNotNull { (it as? GridItem.Item)?.medium?.id }
-        val start = ids.indexOf(from)
-        val end = ids.indexOf(to)
-        if (start < 0 || end < 0) return
-        selected.value = rangeBase + ids.subList(minOf(start, end), maxOf(start, end) + 1)
+        val start = positions[from] ?: return
+        val end = positions[to] ?: return
+        selected.value = rangeBase + loaded.subList(minOf(start, end), maxOf(start, end) + 1).map(Medium::id)
     }
 
     fun selectAll() { selected.value = loaded.map(Medium::id).toSet() }
@@ -141,4 +144,27 @@ class MediaViewModel @Inject constructor(
         picked.forEach { repository.setFavorite(it, makeFavorite) }
         clearSelection()
     }
+}
+
+private class ArrangedMedia(
+    val sorted: List<Medium>,
+    val items: List<GridItem>,
+    val positions: Map<Long, Int>,
+    val totalSize: Long,
+    val settings: GallerySettings,
+)
+
+private fun List<Medium>.arranged(config: GallerySettings): ArrangedMedia {
+    val order = config.sorting.copy(
+        descending = config.sorting.descending != (config.scrollDirection == ScrollDirection.Up)
+    )
+    val items = sortedBy(order).grouped(config.grouping, order)
+    val shown = items.mapNotNull { (it as? GridItem.Item)?.medium }
+    return ArrangedMedia(
+        sorted = shown,
+        items = items,
+        positions = HashMap<Long, Int>(shown.size * 2).apply { shown.forEachIndexed { index, medium -> put(medium.id, index) } },
+        totalSize = sumOf { it.size },
+        settings = config,
+    )
 }

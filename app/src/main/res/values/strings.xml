@@ -92,6 +92,8 @@
     <string name="setting_video_duration_hint">Small badge on video thumbnails</string>
     <string name="setting_autoplay">Autoplay next video</string>
     <string name="setting_autoplay_hint">When one ends, continue with the next video in the folder. Off repeats it.</string>
+    <string name="setting_background_playback">Keep playing when minimised</string>
+    <string name="setting_background_playback_hint">Video keeps playing with the app in the background, controlled from the notification.</string>
     <string name="setting_contact">Contact us</string>
     <string name="setting_contact_hint">Report a bug, suggest an idea or ask a question</string>
 

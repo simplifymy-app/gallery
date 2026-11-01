@@ -92,6 +92,8 @@
     <string name="setting_video_duration_hint">Pequeno distintivo nas miniaturas de vídeo</string>
     <string name="setting_autoplay">Reproduzir o vídeo seguinte</string>
     <string name="setting_autoplay_hint">Quando um termina, continua com o vídeo seguinte da pasta. Desligado, repete-o.</string>
+    <string name="setting_background_playback">Continuar a reproduzir ao minimizar</string>
+    <string name="setting_background_playback_hint">O vídeo continua com a app em segundo plano, controlado a partir da notificação.</string>
     <string name="setting_contact">Contacte-nos</string>
     <string name="setting_contact_hint">Comunicar um erro, sugerir uma ideia ou fazer uma pergunta</string>
 
