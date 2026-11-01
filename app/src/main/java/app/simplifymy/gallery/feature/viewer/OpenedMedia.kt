@@ -40,7 +40,7 @@ fun Intent.openedMedium(type: String?): OpenedMedium? {
 sealed interface OpenedState {
     data object Resolving : OpenedState
     data class InGallery(val route: Viewer) : OpenedState
-    data object Standalone : OpenedState
+    data class Standalone(val panoramaForAll: Boolean) : OpenedState
 }
 
 @HiltViewModel
@@ -56,11 +56,11 @@ class OpenedMediaViewModel @Inject constructor(
         if (_state.value != OpenedState.Resolving) return
         viewModelScope.launch {
             val medium = runCatching { repository.locate(uri) }.getOrNull()
-            val filter = settings.settings.first().mediaFilter
+            val config = settings.settings.first()
             val browsable = medium != null &&
-                repository.mediaIn(medium.bucketId, filter).first().any { it.id == medium.id }
+                repository.mediaIn(medium.bucketId, config.mediaFilter).first().any { it.id == medium.id }
             _state.value = if (browsable) OpenedState.InGallery(Viewer(medium.bucketId, medium.id))
-            else OpenedState.Standalone
+            else OpenedState.Standalone(config.panoramaForAll)
         }
     }
 }
@@ -76,6 +76,6 @@ fun OpenedMediaScreen(
     when (val current = state) {
         OpenedState.Resolving -> Box(Modifier.fillMaxSize().background(Color.Black))
         is OpenedState.InGallery -> GalleryNavHost(start = current.route, onExit = onClose)
-        OpenedState.Standalone -> StandaloneViewer(opened.uri, opened.isVideo, onBack = onClose)
+        is OpenedState.Standalone -> StandaloneViewer(opened.uri, opened.isVideo, current.panoramaForAll, onBack = onClose)
     }
 }

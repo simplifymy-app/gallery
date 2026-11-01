@@ -34,6 +34,7 @@ data class ViewerUiState(
     val details: MediaDetails = MediaDetails(),
     val autoplayNextVideo: Boolean = false,
     val backgroundPlayback: Boolean = false,
+    val panoramaForAll: Boolean = false,
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -57,6 +58,7 @@ class ViewerViewModel @Inject constructor(
                 startIndex = sorted.indexOfFirst { it.id == route.mediumId }.coerceAtLeast(0),
                 autoplayNextVideo = config.autoplayNextVideo,
                 backgroundPlayback = config.backgroundPlayback,
+                panoramaForAll = config.panoramaForAll,
             )
         }
     }.flowOn(Dispatchers.Default)

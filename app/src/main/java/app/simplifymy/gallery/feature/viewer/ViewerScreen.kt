@@ -46,7 +46,6 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -139,9 +138,8 @@ fun ViewerScreen(
 
     val pagerState = rememberPagerState(initialPage = state.startIndex) { state.media.size }
     val current = state.media.getOrNull(pagerState.currentPage) ?: return
-    val panorama = rememberPanorama(current.uri, current.type == MediaType.Video)
-    var flat by rememberSaveable(current.id) { mutableStateOf(false) }
-    val sphere = panorama?.takeIf { !flat }
+    val panorama = rememberPanoramaMode(current.uri, current.type == MediaType.Video, state.panoramaForAll)
+    val sphere = panorama.sphere
     val locked by rememberUpdatedState(zoomed || sphere != null)
 
     LaunchedEffect(pagerState) {
@@ -229,9 +227,9 @@ fun ViewerScreen(
             TopChrome(
                 medium = current,
                 infoOpen = info,
-                panorama = panorama != null,
+                panorama = panorama.available,
                 panoramaOn = sphere != null,
-                onTogglePanorama = { flat = !flat },
+                onTogglePanorama = panorama.toggle,
                 onBack = onBack,
                 onToggleFavorite = { viewModel.toggleFavorite(current) },
                 onToggleInfo = { info = !info },
@@ -297,11 +295,10 @@ fun ViewerScreen(
 }
 
 @Composable
-fun StandaloneViewer(uri: Uri, isVideo: Boolean, onBack: () -> Unit) {
+fun StandaloneViewer(uri: Uri, isVideo: Boolean, panoramaForAll: Boolean, onBack: () -> Unit) {
     var chrome by remember { mutableStateOf(true) }
-    val panorama = rememberPanorama(uri, isVideo)
-    var flat by rememberSaveable { mutableStateOf(false) }
-    val sphere = panorama?.takeIf { !flat }
+    val panorama = rememberPanoramaMode(uri, isVideo, panoramaForAll)
+    val sphere = panorama.sphere
     SystemBars(visible = chrome)
     Box(Modifier.fillMaxSize().background(Color.Black)) {
         if (!isVideo && sphere != null) {
@@ -342,7 +339,7 @@ fun StandaloneViewer(uri: Uri, isVideo: Boolean, onBack: () -> Unit) {
             ) {
                 IconAction(GalleryIcons.Back, onClick = onBack, tint = CHROME_TEXT)
                 Spacer(Modifier.weight(1f))
-                if (panorama != null) PanoramaToggle(sphere != null) { flat = !flat }
+                if (panorama.available) PanoramaToggle(sphere != null, panorama.toggle)
             }
         }
     }

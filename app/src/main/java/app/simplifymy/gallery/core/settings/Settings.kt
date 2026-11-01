@@ -57,6 +57,7 @@ data class GallerySettings(
     val autoplayNextVideo: Boolean = false,
     val backgroundPlayback: Boolean = false,
     val copyPathAction: Boolean = false,
+    val panoramaForAll: Boolean = false,
     val language: Language = Language.System,
 )
 
@@ -91,6 +92,7 @@ private object Keys {
     val autoplayNextVideo = booleanPreferencesKey("autoplay_next_video")
     val backgroundPlayback = booleanPreferencesKey("background_playback")
     val copyPathAction = booleanPreferencesKey("copy_path_action")
+    val panoramaForAll = booleanPreferencesKey("panorama_for_all")
     val language = stringPreferencesKey("language")
 }
 
@@ -130,6 +132,7 @@ class SettingsRepository @Inject constructor(@ApplicationContext private val con
             autoplayNextVideo = p[Keys.autoplayNextVideo] ?: defaults.autoplayNextVideo,
             backgroundPlayback = p[Keys.backgroundPlayback] ?: defaults.backgroundPlayback,
             copyPathAction = p[Keys.copyPathAction] ?: defaults.copyPathAction,
+            panoramaForAll = p[Keys.panoramaForAll] ?: defaults.panoramaForAll,
             language = p.enum(Keys.language, defaults.language),
         )
     }
@@ -157,6 +160,7 @@ class SettingsRepository @Inject constructor(@ApplicationContext private val con
     suspend fun setAutoplayNextVideo(value: Boolean) = put(Keys.autoplayNextVideo, value)
     suspend fun setBackgroundPlayback(value: Boolean) = put(Keys.backgroundPlayback, value)
     suspend fun setCopyPathAction(value: Boolean) = put(Keys.copyPathAction, value)
+    suspend fun setPanoramaForAll(value: Boolean) = put(Keys.panoramaForAll, value)
     suspend fun setLanguage(value: Language) {
         context.getSharedPreferences(BOOTSTRAP_PREFS, Context.MODE_PRIVATE)
             .edit()

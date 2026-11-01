@@ -286,6 +286,12 @@ fun SettingsScreen(
                     settings.copyPathAction,
                     viewModel::setCopyPathAction,
                 )
+                ToggleRow(
+                    stringResource(R.string.setting_panorama_all),
+                    stringResource(R.string.setting_panorama_all_hint),
+                    settings.panoramaForAll,
+                    viewModel::setPanoramaForAll,
+                )
             }
 
             Section(stringResource(R.string.section_support)) {

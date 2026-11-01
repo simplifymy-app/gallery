@@ -322,6 +322,8 @@
     <string name="setting_show_recent_hint">Усі фото й відео, найновіші спершу, першою плиткою</string>
     <string name="setting_copy_path">Копіювати шлях</string>
     <string name="setting_copy_path_hint">Додає «Копіювати шлях» у меню вибору: шляхи в лапках одним рядком, для скриптів</string>
+    <string name="setting_panorama_all">360° для всіх медіа</string>
+    <string name="setting_panorama_all_hint">Кнопка 360° зʼявляється на кожному фото й відео. Файли без 360° метаданих відкриваються пласкими, а сферу вмикає кнопка.</string>
     <string name="action_metadata">Метадані</string>
     <string name="metadata_date">Дата</string>
     <string name="metadata_time">Час</string>

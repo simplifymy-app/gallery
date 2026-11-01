@@ -322,6 +322,8 @@
     <string name="setting_show_recent_hint">Todas as fotos e vídeos, os mais recentes primeiro, como primeiro mosaico</string>
     <string name="setting_copy_path">Copiar caminho</string>
     <string name="setting_copy_path_hint">Adiciona “Copiar caminho” ao menu de seleção: caminhos entre aspas numa só linha, para scripts</string>
+    <string name="setting_panorama_all">360° para todos os ficheiros</string>
+    <string name="setting_panorama_all_hint">O botão 360° aparece em todas as fotos e vídeos. Os ficheiros sem metadados 360° abrem planos e o botão mostra-os como esfera.</string>
     <string name="action_metadata">Metadados</string>
     <string name="metadata_date">Data</string>
     <string name="metadata_time">Hora</string>

@@ -322,6 +322,8 @@
     <string name="setting_show_recent_hint">All photos and videos, newest first, as the first tile</string>
     <string name="setting_copy_path">Copy path</string>
     <string name="setting_copy_path_hint">Adds “Copy path” to the selection menu: quoted paths on one line, for scripts</string>
+    <string name="setting_panorama_all">Show 360° for all media</string>
+    <string name="setting_panorama_all_hint">The 360° button appears on every photo and video. Files without 360° metadata open flat and switch to a sphere from the button.</string>
     <string name="action_metadata">Metadata</string>
     <string name="metadata_date">Date</string>
     <string name="metadata_time">Time</string>

@@ -70,6 +70,7 @@ class SettingsViewModel @Inject constructor(
     fun setAutoplayNextVideo(value: Boolean) = update { repository.setAutoplayNextVideo(value) }
     fun setBackgroundPlayback(value: Boolean) = update { repository.setBackgroundPlayback(value) }
     fun setCopyPathAction(value: Boolean) = update { repository.setCopyPathAction(value) }
+    fun setPanoramaForAll(value: Boolean) = update { repository.setPanoramaForAll(value) }
     fun setLanguage(value: Language, onApplied: () -> Unit) = viewModelScope.launch {
         repository.setLanguage(value)
         onApplied()

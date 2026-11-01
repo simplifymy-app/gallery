@@ -322,6 +322,8 @@
     <string name="setting_show_recent_hint">Toutes les photos et vidéos, les plus récentes d\'abord, en première vignette</string>
     <string name="setting_copy_path">Copier le chemin</string>
     <string name="setting_copy_path_hint">Ajoute « Copier le chemin » au menu de sélection : chemins entre guillemets sur une seule ligne, pour les scripts</string>
+    <string name="setting_panorama_all">360° pour tous les médias</string>
+    <string name="setting_panorama_all_hint">Le bouton 360° apparaît sur chaque photo et vidéo. Les fichiers sans métadonnées 360° s’ouvrent à plat et le bouton les affiche en sphère.</string>
     <string name="action_metadata">Métadonnées</string>
     <string name="metadata_date">Date</string>
     <string name="metadata_time">Heure</string>

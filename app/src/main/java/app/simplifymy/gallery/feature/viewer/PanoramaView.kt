@@ -26,9 +26,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
@@ -59,8 +62,18 @@ private const val MIN_FOV = 30f
 private const val MAX_FOV = 110f
 private const val MAX_PITCH = 89f
 
+class PanoramaMode(val available: Boolean, val sphere: Panorama?, val toggle: () -> Unit)
+
 @Composable
-fun rememberPanorama(uri: Uri, isVideo: Boolean): Panorama? {
+fun rememberPanoramaMode(uri: Uri, isVideo: Boolean, forAll: Boolean): PanoramaMode {
+    val detected = rememberPanorama(uri, isVideo)
+    val panorama = detected ?: Panorama().takeIf { forAll }
+    var flat by rememberSaveable(uri, detected != null) { mutableStateOf(detected == null) }
+    return PanoramaMode(panorama != null, panorama?.takeIf { !flat }) { flat = !flat }
+}
+
+@Composable
+private fun rememberPanorama(uri: Uri, isVideo: Boolean): Panorama? {
     val resolver = LocalContext.current.contentResolver
     return produceState<Panorama?>(null, uri) {
         value = withContext(Dispatchers.IO) { readPanorama(resolver, uri, isVideo) }
