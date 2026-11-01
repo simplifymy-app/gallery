@@ -1,5 +1,7 @@
 package app.simplifymy.gallery.core.data
 
+import android.net.Uri
+
 import app.simplifymy.gallery.core.database.FavoriteDao
 import app.simplifymy.gallery.core.database.FolderRow
 import app.simplifymy.gallery.core.database.IgnoredFolderDao
@@ -74,6 +76,14 @@ class MediaRepository @Inject constructor(
         folders.forEach { ignored.add(IgnoredFolderEntity(it.bucketId, it.name)) }
 
     suspend fun medium(id: Long): Medium? = media.medium(id)?.toMedium(false)
+
+    suspend fun locate(uri: Uri): Medium? {
+        val id = scanner.mediaIdOf(uri) ?: return null
+        return medium(id) ?: run {
+            sync()
+            medium(id)
+        }
+    }
 
     suspend fun mediaForFolders(bucketIds: List<Long>): List<Medium> =
         media.mediaForFolders(bucketIds).map { it.toMedium(false) }

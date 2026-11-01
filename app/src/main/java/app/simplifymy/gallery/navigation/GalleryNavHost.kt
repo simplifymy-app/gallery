@@ -38,13 +38,14 @@ data class Viewer(val bucketId: Long, val mediumId: Long)
 data class Editor(val mediumId: Long)
 
 @Composable
-fun GalleryNavHost() {
+fun GalleryNavHost(start: Any = Folders, onExit: () -> Unit = {}) {
     val navController = rememberNavController()
     val openSettings = { navController.navigate(Settings) }
+    val back: () -> Unit = { if (!navController.popBackStack()) onExit() }
 
     NavHost(
         navController = navController,
-        startDestination = Folders,
+        startDestination = start,
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
     ) {
@@ -65,7 +66,7 @@ fun GalleryNavHost() {
         }
         composable<Viewer> {
             ViewerScreen(
-                onBack = navController::popBackStack,
+                onBack = back,
                 onEdit = { navController.navigate(Editor(it.id)) },
             )
         }

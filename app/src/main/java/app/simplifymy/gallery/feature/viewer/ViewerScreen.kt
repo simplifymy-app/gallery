@@ -4,6 +4,7 @@ import app.simplifymy.gallery.R
 import androidx.compose.ui.res.stringResource
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -233,6 +234,48 @@ fun ViewerScreen(
         },
         onDismiss = { fileAction = null },
     )
+}
+
+@Composable
+fun StandaloneViewer(uri: Uri, isVideo: Boolean, onBack: () -> Unit) {
+    var chrome by remember { mutableStateOf(true) }
+    SystemBars(visible = chrome)
+    Box(Modifier.fillMaxSize().background(Color.Black)) {
+        if (isVideo) {
+            VideoPlayer(
+                uri = uri,
+                controlsVisible = chrome,
+                autoplayNext = false,
+                onToggleChrome = { chrome = !chrome },
+                onEnded = {},
+                onZoomedChange = {},
+            )
+        } else {
+            ZoomableAsyncImage(
+                model = uri,
+                contentDescription = null,
+                state = rememberZoomableImageState(),
+                modifier = Modifier.fillMaxSize(),
+                onClick = { chrome = !chrome },
+            )
+        }
+        AnimatedVisibility(
+            visible = chrome,
+            enter = fadeIn(),
+            exit = fadeOut(),
+            modifier = Modifier.align(Alignment.TopCenter),
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Brush.verticalGradient(listOf(Color(0xAE000000), Color.Transparent)))
+                    .windowInsetsPadding(WindowInsets.safeDrawing)
+                    .padding(8.dp),
+            ) {
+                IconAction(GalleryIcons.Back, onClick = onBack, tint = CHROME_TEXT)
+            }
+        }
+    }
 }
 
 private val SWIPE_THRESHOLD = 80.dp

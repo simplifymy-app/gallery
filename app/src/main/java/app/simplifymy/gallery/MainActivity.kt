@@ -13,6 +13,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import app.simplifymy.gallery.core.settings.AppIconManager
 import app.simplifymy.gallery.feature.permission.MediaPermissionGate
+import app.simplifymy.gallery.feature.viewer.OpenedMediaScreen
+import app.simplifymy.gallery.feature.viewer.openedMedium
 import app.simplifymy.gallery.navigation.GalleryNavHost
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
@@ -40,6 +42,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        val opened = intent.openedMedium(intent.resolveType(this))
         setContent {
             val viewModel: ThemeViewModel = hiltViewModel()
             val settings by viewModel.settings.collectAsStateWithLifecycle()
@@ -52,7 +55,8 @@ class MainActivity : ComponentActivity() {
                 textScale = settings.textScale,
             ) {
                 SystemBars(light = !settings.themeMode.isDark())
-                MediaPermissionGate { GalleryNavHost() }
+                if (opened != null) OpenedMediaScreen(opened, onClose = ::finish)
+                else MediaPermissionGate { GalleryNavHost() }
             }
         }
     }

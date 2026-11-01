@@ -1,10 +1,12 @@
 package app.simplifymy.gallery.core.media
 
+import android.content.ContentUris
 import android.content.Context
 import android.database.ContentObserver
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import android.provider.DocumentsContract
 import android.provider.MediaStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import app.simplifymy.gallery.core.database.MediumEntity
@@ -74,6 +76,16 @@ class MediaStoreScanner @Inject constructor(
             }
         }
         return out
+    }
+
+    fun mediaIdOf(uri: Uri): Long? {
+        val media = if (DocumentsContract.isDocumentUri(context, uri)) {
+            runCatching { MediaStore.getMediaUri(context, uri) }.getOrNull()
+        } else {
+            uri
+        }
+        if (media?.authority != MediaStore.AUTHORITY) return null
+        return runCatching { ContentUris.parseId(media) }.getOrNull()?.takeIf { it >= 0 }
     }
 
     val changes: Flow<Unit> = callbackFlow {
