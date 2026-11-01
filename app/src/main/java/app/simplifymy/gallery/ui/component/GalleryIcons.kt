@@ -38,6 +38,7 @@ object GalleryIcons {
     val VolumeOn = icon("M4 7.5h3l4-3v11l-4-3H4zM13.5 7a4 4 0 0 1 0 6")
     val VolumeOff = icon("M4 7.5h3l4-3v11l-4-3H4zM13 8l4 4M17 8l-4 4")
     val Close = icon("M5 5l10 10M15 5L5 15")
+    val Panorama = icon("M10 3a7 7 0 1 0 0 14a7 7 0 1 0 0-14M3 10a7 2.6 0 0 0 14 0M10 3a2.6 7 0 0 0 0 14")
     val Info = icon("M10 2.8a7.2 7.2 0 1 0 0 14.4a7.2 7.2 0 1 0 0-14.4M10 9v5M10 6.3v.6")
     val Share = icon("M10 13V3M6.5 6.5L10 3l3.5 3.5M4 12v4h12v-4")
     val Edit = icon("M13.4 3.6l3 3L7 16H4v-3z")

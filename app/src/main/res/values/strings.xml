@@ -190,6 +190,7 @@
     <string name="action_undo">Undo</string>
     <string name="action_redo">Redo</string>
     <string name="action_edit">Edit</string>
+    <string name="action_panorama">360° view</string>
     <string name="action_cancel">Cancel</string>
     <string name="editor_reset_all">Reset all</string>
     <string name="crop_original">Original</string>

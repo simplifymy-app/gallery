@@ -55,6 +55,7 @@ import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.compose.PlayerSurface
+import app.simplifymy.gallery.core.media.Panorama
 import app.simplifymy.gallery.ui.component.GalleryIcons
 import app.simplifymy.gallery.ui.component.MenuEntry
 import app.simplifymy.gallery.ui.formatDuration
@@ -85,6 +86,7 @@ fun VideoPlayer(
     onEnded: () -> Unit,
     onZoomedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
+    panorama: Panorama? = null,
 ) {
     val context = LocalContext.current
     val player = remember(uri) { ExoPlayer.Builder(context).build() }
@@ -154,7 +156,9 @@ fun VideoPlayer(
     }
 
     Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        BoxWithConstraints(
+        if (panorama != null) {
+            PanoramaVideo(player, panorama, onTap = onToggleChrome)
+        } else BoxWithConstraints(
             modifier = Modifier.fillMaxSize().clipToBounds().zoomable(zoom, onClick = { onToggleChrome() }),
             contentAlignment = Alignment.Center,
         ) {
@@ -215,7 +219,9 @@ fun VideoPlayer(
                     speed = it
                     player.setPlaybackSpeed(it)
                 }
-                Pill(stringResource(fit.labelRes)) { fit = VideoFit.entries[(fit.ordinal + 1) % VideoFit.entries.size] }
+                if (panorama == null) {
+                    Pill(stringResource(fit.labelRes)) { fit = VideoFit.entries[(fit.ordinal + 1) % VideoFit.entries.size] }
+                }
                 Icon(
                     if (muted) GalleryIcons.VolumeOff else GalleryIcons.VolumeOn,
                     contentDescription = null,

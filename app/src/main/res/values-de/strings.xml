@@ -190,6 +190,7 @@
     <string name="action_undo">Rückgängig</string>
     <string name="action_redo">Wiederholen</string>
     <string name="action_edit">Bearbeiten</string>
+    <string name="action_panorama">360°-Ansicht</string>
     <string name="action_cancel">Abbrechen</string>
     <string name="editor_reset_all">Alles zurücksetzen</string>
     <string name="crop_original">Original</string>

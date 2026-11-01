@@ -190,6 +190,7 @@
     <string name="action_undo">Відмінити</string>
     <string name="action_redo">Повторити</string>
     <string name="action_edit">Редагувати</string>
+    <string name="action_panorama">Перегляд 360°</string>
     <string name="action_cancel">Скасувати</string>
     <string name="editor_reset_all">Скинути все</string>
     <string name="crop_original">Оригінал</string>

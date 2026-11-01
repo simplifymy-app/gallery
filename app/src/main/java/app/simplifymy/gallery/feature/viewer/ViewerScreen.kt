@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,6 +43,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -119,6 +122,10 @@ fun ViewerScreen(
 
     val pagerState = rememberPagerState(initialPage = state.startIndex) { state.media.size }
     val current = state.media.getOrNull(pagerState.currentPage) ?: return
+    val panorama = rememberPanorama(current.uri, current.type == MediaType.Video)
+    var flat by rememberSaveable(current.id) { mutableStateOf(false) }
+    val sphere = panorama?.takeIf { !flat }
+    val locked by rememberUpdatedState(zoomed || sphere != null)
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
@@ -134,7 +141,7 @@ fun ViewerScreen(
             .fillMaxSize()
             .background(Color.Black)
             .verticalSwipe(
-                enabled = { !zoomed },
+                enabled = { !locked },
                 onDrag = { dy -> if (!info) scope.launch { pull.snapTo(dy.coerceAtLeast(0f)) } },
                 onRelease = { dy ->
                     when {
@@ -149,6 +156,7 @@ fun ViewerScreen(
         HorizontalPager(
             state = pagerState,
             key = { page -> state.media[page].id },
+            userScrollEnabled = sphere == null,
             modifier = Modifier.fillMaxSize().graphicsLayer {
                 translationY = pull.value
                 val shrink = 1f - (pull.value / size.height).coerceIn(0f, 1f) * 0.3f
@@ -171,10 +179,13 @@ fun ViewerScreen(
                             if (ahead >= 0) scope.launch { pagerState.animateScrollToPage(page + 1 + ahead) }
                         },
                         onZoomedChange = { zoomed = it },
+                        panorama = sphere,
                     )
                 } else {
                     VideoPoster(medium) { chrome = !chrome }
                 }
+            } else if (page == pagerState.currentPage && sphere != null) {
+                PanoramaPhoto(medium.uri, sphere, onTap = { chrome = !chrome })
             } else {
                 val zoom = rememberDeepZoomState()
                 if (page == pagerState.currentPage) {
@@ -201,6 +212,9 @@ fun ViewerScreen(
             TopChrome(
                 medium = current,
                 infoOpen = info,
+                panorama = panorama != null,
+                panoramaOn = sphere != null,
+                onTogglePanorama = { flat = !flat },
                 onBack = onBack,
                 onToggleFavorite = { viewModel.toggleFavorite(current) },
                 onToggleInfo = { info = !info },
@@ -248,9 +262,14 @@ fun ViewerScreen(
 @Composable
 fun StandaloneViewer(uri: Uri, isVideo: Boolean, onBack: () -> Unit) {
     var chrome by remember { mutableStateOf(true) }
+    val panorama = rememberPanorama(uri, isVideo)
+    var flat by rememberSaveable { mutableStateOf(false) }
+    val sphere = panorama?.takeIf { !flat }
     SystemBars(visible = chrome)
     Box(Modifier.fillMaxSize().background(Color.Black)) {
-        if (isVideo) {
+        if (!isVideo && sphere != null) {
+            PanoramaPhoto(uri, sphere, onTap = { chrome = !chrome })
+        } else if (isVideo) {
             VideoPlayer(
                 uri = uri,
                 title = uri.lastPathSegment.orEmpty(),
@@ -260,6 +279,7 @@ fun StandaloneViewer(uri: Uri, isVideo: Boolean, onBack: () -> Unit) {
                 onToggleChrome = { chrome = !chrome },
                 onEnded = {},
                 onZoomedChange = {},
+                panorama = sphere,
             )
         } else {
             ZoomableAsyncImage(
@@ -284,9 +304,21 @@ fun StandaloneViewer(uri: Uri, isVideo: Boolean, onBack: () -> Unit) {
                     .padding(8.dp),
             ) {
                 IconAction(GalleryIcons.Back, onClick = onBack, tint = CHROME_TEXT)
+                Spacer(Modifier.weight(1f))
+                if (panorama != null) PanoramaToggle(sphere != null) { flat = !flat }
             }
         }
     }
+}
+
+@Composable
+private fun PanoramaToggle(on: Boolean, onToggle: () -> Unit) {
+    IconAction(
+        GalleryIcons.Panorama,
+        onClick = onToggle,
+        label = stringResource(R.string.action_panorama),
+        tint = if (on) GalleryTheme.colors.accent else CHROME_TEXT,
+    )
 }
 
 private const val MAX_ZOOM_OF_PIXELS = 2f
@@ -378,6 +410,9 @@ private fun VideoPoster(medium: Medium, onToggleChrome: () -> Unit) {
 private fun TopChrome(
     medium: Medium,
     infoOpen: Boolean,
+    panorama: Boolean,
+    panoramaOn: Boolean,
+    onTogglePanorama: () -> Unit,
     onBack: () -> Unit,
     onToggleFavorite: () -> Unit,
     onToggleInfo: () -> Unit,
@@ -407,6 +442,7 @@ private fun TopChrome(
                 color = CHROME_TEXT.copy(alpha = 0.62f),
             )
         }
+        if (panorama) PanoramaToggle(panoramaOn, onTogglePanorama)
         IconAction(
             GalleryIcons.Heart,
             onClick = onToggleFavorite,

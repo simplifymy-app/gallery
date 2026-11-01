@@ -190,6 +190,7 @@
     <string name="action_undo">Deshacer</string>
     <string name="action_redo">Rehacer</string>
     <string name="action_edit">Editar</string>
+    <string name="action_panorama">Vista 360°</string>
     <string name="action_cancel">Cancelar</string>
     <string name="editor_reset_all">Restablecer todo</string>
     <string name="crop_original">Original</string>

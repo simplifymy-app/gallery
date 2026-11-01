@@ -190,6 +190,7 @@
     <string name="action_undo">Annuler</string>
     <string name="action_redo">Rétablir</string>
     <string name="action_edit">Modifier</string>
+    <string name="action_panorama">Vue 360°</string>
     <string name="action_cancel">Annuler</string>
     <string name="editor_reset_all">Tout réinitialiser</string>
     <string name="crop_original">Original</string>
