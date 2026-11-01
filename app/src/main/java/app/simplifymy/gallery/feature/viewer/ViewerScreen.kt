@@ -259,7 +259,7 @@ fun ViewerScreen(
         ) {
             BottomChrome(
                 onShare = { context.startActivity(Intent.createChooser(shareIntent(current), null)) },
-                onEdit = { onEdit(current) },
+                onEdit = { onEdit(current) }.takeIf { current.type == MediaType.Image },
                 onSetAs = { runCatching { context.startActivity(setAsIntent(current)) } },
                 onDelete = {
                     trashLauncher.launch(IntentSenderRequest.Builder(viewModel.trash(current)).build())
@@ -489,7 +489,7 @@ private fun TopChrome(
 @Composable
 private fun BottomChrome(
     onShare: () -> Unit,
-    onEdit: () -> Unit,
+    onEdit: (() -> Unit)?,
     onSetAs: () -> Unit,
     onDelete: () -> Unit,
     onFileAction: (FileAction) -> Unit,
@@ -505,7 +505,7 @@ private fun BottomChrome(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconAction(GalleryIcons.Share, onClick = onShare, tint = CHROME_TEXT)
-        IconAction(GalleryIcons.Edit, onClick = onEdit, label = stringResource(R.string.action_edit), tint = CHROME_TEXT)
+        if (onEdit != null) IconAction(GalleryIcons.Edit, onClick = onEdit, label = stringResource(R.string.action_edit), tint = CHROME_TEXT)
         IconAction(GalleryIcons.SetAs, onClick = onSetAs, tint = CHROME_TEXT)
         IconAction(GalleryIcons.Trash, onClick = onDelete, tint = CHROME_TEXT)
         OverflowMenu(tint = CHROME_TEXT) { dismiss ->
