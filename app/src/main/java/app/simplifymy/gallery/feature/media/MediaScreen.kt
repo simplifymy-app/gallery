@@ -53,7 +53,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -411,7 +410,7 @@ private fun MediaTile(
         MediaThumbnail(
             model = medium.uri,
             description = medium.name,
-            modifier = Modifier.fillMaxSize().then(if (selected) Modifier.scale(0.86f) else Modifier),
+            modifier = Modifier.fillMaxSize().then(if (selected) Modifier.padding(SELECTION_BORDER) else Modifier),
         )
         if (medium.type == MediaType.Video && showDuration) {
             Text(
@@ -458,6 +457,7 @@ private fun MediaTile(
     }
 }
 
+private val SELECTION_BORDER = 3.dp
 private val COLUMN_RANGE = 2..6
 private val AUTO_SCROLL_EDGE = 64.dp
 private const val AUTO_SCROLL_SPEED = 24f

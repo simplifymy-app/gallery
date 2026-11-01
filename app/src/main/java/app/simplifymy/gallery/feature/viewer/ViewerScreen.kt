@@ -39,6 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -55,6 +56,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
@@ -77,8 +79,12 @@ import app.simplifymy.gallery.ui.formatSize
 import app.simplifymy.gallery.ui.theme.GalleryTheme
 import app.simplifymy.gallery.ui.theme.Spacing
 import me.saket.telephoto.zoomable.coil3.ZoomableAsyncImage
+import me.saket.telephoto.zoomable.ZoomSpec
+import me.saket.telephoto.zoomable.ZoomableImageState
 import me.saket.telephoto.zoomable.rememberZoomableImageState
+import me.saket.telephoto.zoomable.rememberZoomableState
 import kotlin.math.abs
+import kotlin.math.max
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -167,7 +173,7 @@ fun ViewerScreen(
                     VideoPoster(medium) { chrome = !chrome }
                 }
             } else {
-                val zoom = rememberZoomableImageState()
+                val zoom = rememberDeepZoomState()
                 if (page == pagerState.currentPage) {
                     LaunchedEffect(zoom) {
                         snapshotFlow { (zoom.zoomableState.zoomFraction ?: 0f) > 0.01f }.collect { zoomed = it }
@@ -254,7 +260,7 @@ fun StandaloneViewer(uri: Uri, isVideo: Boolean, onBack: () -> Unit) {
             ZoomableAsyncImage(
                 model = uri,
                 contentDescription = null,
-                state = rememberZoomableImageState(),
+                state = rememberDeepZoomState(),
                 modifier = Modifier.fillMaxSize(),
                 onClick = { chrome = !chrome },
             )
@@ -276,6 +282,24 @@ fun StandaloneViewer(uri: Uri, isVideo: Boolean, onBack: () -> Unit) {
             }
         }
     }
+}
+
+private const val MAX_ZOOM_OF_PIXELS = 2f
+private const val MAX_ZOOM_OF_SCREEN = 6f
+
+@Composable
+private fun rememberDeepZoomState(): ZoomableImageState {
+    var fitScale by remember { mutableFloatStateOf(0f) }
+    val zoomable = rememberZoomableState(
+        zoomSpec = ZoomSpec(maxZoomFactor = max(MAX_ZOOM_OF_PIXELS, fitScale * MAX_ZOOM_OF_SCREEN)),
+    )
+    LaunchedEffect(zoomable) {
+        snapshotFlow {
+            zoomable.contentTransformation.takeIf { it.isSpecified }
+                ?.scaleMetadata?.initialScale?.takeIf { it != ScaleFactor.Unspecified }?.scaleX
+        }.collect { if (it != null && it > 0f) fitScale = it }
+    }
+    return rememberZoomableImageState(zoomable)
 }
 
 private val SWIPE_THRESHOLD = 80.dp
