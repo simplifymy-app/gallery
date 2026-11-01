@@ -10,6 +10,7 @@ import app.simplifymy.gallery.core.database.MediaDao
 import app.simplifymy.gallery.core.database.MediumEntity
 import app.simplifymy.gallery.core.database.PinnedFolderDao
 import app.simplifymy.gallery.core.database.PinnedFolderEntity
+import app.simplifymy.gallery.core.media.MediaPaths
 import app.simplifymy.gallery.core.media.MediaStoreScanner
 import app.simplifymy.gallery.core.model.Folder
 import app.simplifymy.gallery.core.model.FolderEntry
@@ -31,6 +32,7 @@ class MediaRepository @Inject constructor(
     private val ignored: IgnoredFolderDao,
     private val pinned: PinnedFolderDao,
     private val scanner: MediaStoreScanner,
+    private val paths: MediaPaths,
     private val writer: MediaWriter,
 ) {
 
@@ -89,6 +91,11 @@ class MediaRepository @Inject constructor(
         media.mediaForFolders(bucketIds).map { it.toMedium(false) }
 
     suspend fun sync() = media.replaceAll(scanner.scan())
+
+    suspend fun refresh(bucketIds: Set<Long>?) {
+        scanner.rescan(paths.folders(bucketIds))
+        sync()
+    }
 
     suspend fun copy(items: List<Medium>, folder: String): Int = items.count { writer.copy(it, folder) }
 

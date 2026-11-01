@@ -22,6 +22,7 @@
     <string name="menu_columns">Spalten</string>
     <string name="menu_group_by">Gruppieren nach</string>
     <string name="menu_ignore_folder">Ordner ignorieren</string>
+    <string name="menu_refresh">Aktualisieren</string>
     <string name="menu_settings">Einstellungen</string>
 
     <!-- Media grid -->

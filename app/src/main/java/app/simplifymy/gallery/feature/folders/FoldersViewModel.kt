@@ -31,6 +31,7 @@ data class FoldersUiState(
     val folders: List<Folder> = emptyList(),
     val settings: GallerySettings = GallerySettings(),
     val selected: Set<Long> = emptySet(),
+    val refreshing: Boolean = false,
 ) {
     val selecting: Boolean get() = selected.isNotEmpty()
 
@@ -46,6 +47,7 @@ class FoldersViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val selected = MutableStateFlow(emptySet<Long>())
+    private val refreshing = MutableStateFlow(false)
     private var loaded = emptyList<Folder>()
 
     val state: StateFlow<FoldersUiState> =
@@ -53,11 +55,12 @@ class FoldersViewModel @Inject constructor(
             settings.settings.flatMapLatest { repository.folders(it.mediaFilter) },
             settings.settings,
             selected,
-        ) { folders, config, picked ->
+            refreshing,
+        ) { folders, config, picked, busy ->
             val sorted = folders.sortedBy(config.sorting).sortedByDescending(Folder::isPinned)
             loaded = sorted
             val shown = listOfNotNull(folders.recent().takeIf { config.showRecent }) + sorted
-            FoldersUiState(shown, config, picked.intersect(sorted.map(Folder::bucketId).toSet()))
+            FoldersUiState(shown, config, picked.intersect(sorted.map(Folder::bucketId).toSet()), busy)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), FoldersUiState())
 
     init {
@@ -66,6 +69,14 @@ class FoldersViewModel @Inject constructor(
     }
 
     fun sync() = viewModelScope.launch { repository.sync() }
+
+    fun refresh() {
+        if (refreshing.value) return
+        refreshing.value = true
+        viewModelScope.launch {
+            try { repository.refresh(null) } finally { refreshing.value = false }
+        }
+    }
 
     fun toggle(bucketId: Long) {
         if (bucketId == RECENT_BUCKET_ID) return

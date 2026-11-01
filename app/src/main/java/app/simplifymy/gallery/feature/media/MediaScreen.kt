@@ -85,6 +85,7 @@ import app.simplifymy.gallery.ui.component.MenuEntry
 import app.simplifymy.gallery.ui.component.MenuStepper
 import app.simplifymy.gallery.ui.component.OverflowMenu
 import app.simplifymy.gallery.ui.component.MediaThumbnail
+import app.simplifymy.gallery.ui.component.PullToRefresh
 import app.simplifymy.gallery.ui.component.island
 import app.simplifymy.gallery.ui.component.islandGap
 import app.simplifymy.gallery.ui.component.shadowed
@@ -160,6 +161,7 @@ fun MediaScreen(
                 onBack = onBack,
                 menu = {
                     OverflowMenu(Modifier.island(overlay)) { dismiss ->
+                        MenuEntry(stringResource(R.string.menu_refresh)) { dismiss(); viewModel.refresh() }
                         MenuEntry(stringResource(R.string.menu_group_by), value = stringResource(state.settings.grouping.labelRes)) {
                             viewModel.cycleGrouping()
                         }
@@ -194,7 +196,13 @@ fun MediaScreen(
     ) {
         if (!overlay) bar()
 
-        Box(Modifier.weight(1f)) {
+        PullToRefresh(
+            refreshing = state.refreshing,
+            onRefresh = viewModel::refresh,
+            atTop = { !gridState.canScrollBackward },
+            indicatorOffset = if (overlay) barHeight else 0.dp,
+            modifier = Modifier.weight(1f),
+        ) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(state.settings.mediaColumns),
                 state = gridState,

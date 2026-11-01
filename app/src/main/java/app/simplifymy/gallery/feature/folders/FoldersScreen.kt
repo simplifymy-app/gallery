@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
@@ -55,6 +56,7 @@ import app.simplifymy.gallery.ui.component.MediaThumbnail
 import app.simplifymy.gallery.ui.component.MenuEntry
 import app.simplifymy.gallery.ui.component.MenuStepper
 import app.simplifymy.gallery.ui.component.OverflowMenu
+import app.simplifymy.gallery.ui.component.PullToRefresh
 import app.simplifymy.gallery.ui.component.island
 import app.simplifymy.gallery.ui.component.islandGap
 import app.simplifymy.gallery.ui.component.shadowed
@@ -88,6 +90,7 @@ fun FoldersScreen(
     val recentName = stringResource(R.string.folder_recent)
     val folders = state.folders.map { if (it.isRecent) it.copy(name = recentName) else it }
     var barHeight by remember { mutableStateOf(0.dp) }
+    val gridState = rememberLazyGridState()
     val density = LocalDensity.current
 
     val bar: @Composable () -> Unit = {
@@ -139,6 +142,7 @@ fun FoldersScreen(
                 label = stringResource(R.string.action_search),
             )
             OverflowMenu(Modifier.island(overlay)) { dismiss ->
+                MenuEntry(stringResource(R.string.menu_refresh)) { dismiss(); viewModel.refresh() }
                 MenuEntry(stringResource(R.string.menu_sort_by), value = stringResource(state.settings.sorting.key.labelRes)) { viewModel.cycleSorting() }
                 MenuEntry(stringResource(R.string.menu_show), value = stringResource(state.settings.mediaFilter.labelRes)) { viewModel.cycleFilter() }
                 MenuStepper(
@@ -165,9 +169,16 @@ fun FoldersScreen(
     ) {
         if (!overlay) bar()
 
-        Box(Modifier.weight(1f)) {
+        PullToRefresh(
+            refreshing = state.refreshing,
+            onRefresh = viewModel::refresh,
+            atTop = { !gridState.canScrollBackward },
+            indicatorOffset = if (overlay) barHeight else 0.dp,
+            modifier = Modifier.weight(1f),
+        ) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(state.settings.folderColumns),
+                state = gridState,
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(start = gap, end = gap, top = if (overlay) barHeight else 0.dp),
                 horizontalArrangement = Arrangement.spacedBy(gap),

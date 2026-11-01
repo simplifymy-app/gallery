@@ -3,6 +3,7 @@ package app.simplifymy.gallery.core.media
 import android.content.ContentUris
 import android.content.Context
 import android.database.ContentObserver
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
@@ -15,9 +16,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.resume
 
 private val IMAGES: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 private val VIDEOS: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
@@ -76,6 +80,16 @@ class MediaStoreScanner @Inject constructor(
             }
         }
         return out
+    }
+
+    suspend fun rescan(folders: List<String>) {
+        if (folders.isEmpty()) return
+        suspendCancellableCoroutine { done ->
+            val remaining = AtomicInteger(folders.size)
+            MediaScannerConnection.scanFile(context, folders.toTypedArray(), null) { _, _ ->
+                if (remaining.decrementAndGet() == 0) done.resume(Unit)
+            }
+        }
     }
 
     fun mediaIdOf(uri: Uri): Long? {

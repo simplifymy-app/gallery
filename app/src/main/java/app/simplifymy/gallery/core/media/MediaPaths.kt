@@ -23,6 +23,24 @@ class MediaPaths @Inject constructor(
         media.mapNotNull { (if (it.type == MediaType.Video) videoPaths else imagePaths)[it.id] }
     }
 
+    suspend fun folders(bucketIds: Set<Long>?): List<String> = withContext(Dispatchers.IO) {
+        val found = (foldersIn(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, bucketIds) +
+            foldersIn(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, bucketIds)).toSortedSet()
+        found.filter { folder -> found.none { it != folder && folder.startsWith("$it/") } }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun foldersIn(collection: Uri, bucketIds: Set<Long>?): Set<String> {
+        val selection = bucketIds?.let { "${MediaStore.MediaColumns.BUCKET_ID} IN (${it.joinToString(",")})" }
+        val folders = mutableSetOf<String>()
+        context.contentResolver.query(collection, arrayOf(MediaStore.MediaColumns.DATA), selection, null, null)?.use { c ->
+            while (c.moveToNext()) {
+                c.getString(0)?.substringBeforeLast('/', "")?.takeIf { it.isNotEmpty() }?.let(folders::add)
+            }
+        }
+        return folders
+    }
+
     @Suppress("DEPRECATION")
     private fun pathsIn(collection: Uri, media: List<Medium>): Map<Long, String> {
         if (media.isEmpty()) return emptyMap()

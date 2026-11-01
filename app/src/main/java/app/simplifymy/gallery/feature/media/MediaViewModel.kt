@@ -39,6 +39,7 @@ data class MediaUiState(
     val selected: Set<Long> = emptySet(),
     val settings: GallerySettings = GallerySettings(),
     val recent: Boolean = false,
+    val refreshing: Boolean = false,
 ) {
     val selecting: Boolean get() = selected.isNotEmpty()
 }
@@ -55,11 +56,12 @@ class MediaViewModel @Inject constructor(
 
     private val route = savedStateHandle.toRoute<Media>()
     private val selected = MutableStateFlow(emptySet<Long>())
+    private val refreshing = MutableStateFlow(false)
     private var loaded = emptyList<Medium>()
     private var rangeBase = emptySet<Long>()
 
     val state: StateFlow<MediaUiState> =
-        combine(settings.settings.flatMapLatest { repository.mediaIn(route.bucketId, it.mediaFilter) }, settings.settings, selected) { media, config, picked ->
+        combine(settings.settings.flatMapLatest { repository.mediaIn(route.bucketId, it.mediaFilter) }, settings.settings, selected, refreshing) { media, config, picked, busy ->
             val order = config.sorting.copy(
                 descending = config.sorting.descending != (config.scrollDirection == ScrollDirection.Up)
             )
@@ -73,8 +75,21 @@ class MediaViewModel @Inject constructor(
                 selected = picked,
                 settings = config,
                 recent = route.bucketId == RECENT_BUCKET_ID,
+                refreshing = busy,
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), MediaUiState(title = route.title))
+
+    fun refresh() {
+        if (refreshing.value) return
+        refreshing.value = true
+        viewModelScope.launch {
+            try {
+                repository.refresh(route.bucketId.takeUnless { it == RECENT_BUCKET_ID }?.let(::setOf))
+            } finally {
+                refreshing.value = false
+            }
+        }
+    }
 
     fun toggle(id: Long) {
         selected.value = selected.value.let { if (id in it) it - id else it + id }
