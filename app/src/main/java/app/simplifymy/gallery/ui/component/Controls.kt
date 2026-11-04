@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -44,6 +45,21 @@ fun IconAction(
         contentAlignment = Alignment.Center,
     ) {
         Icon(icon, contentDescription = label, tint = tint, modifier = Modifier.size(20.dp))
+    }
+}
+
+@Composable
+fun CheckBox(checked: Boolean, modifier: Modifier = Modifier) {
+    val colors = GalleryTheme.colors
+    Box(
+        modifier = modifier
+            .size(22.dp)
+            .clip(RoundedCornerShape(ControlRadius))
+            .background(if (checked) colors.accent else colors.background)
+            .border(1.5.dp, if (checked) colors.accent else colors.textFaint, RoundedCornerShape(ControlRadius)),
+        contentAlignment = Alignment.Center,
+    ) {
+        if (checked) Icon(GalleryIcons.Check, contentDescription = null, tint = colors.onAccent, modifier = Modifier.size(16.dp))
     }
 }
 

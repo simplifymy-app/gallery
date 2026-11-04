@@ -23,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -52,10 +53,18 @@ fun OverflowMenu(
 }
 
 @Composable
-fun MenuEntry(label: String, value: String? = null, onClick: () -> Unit) {
+fun MenuEntry(
+    label: String,
+    value: String? = null,
+    icon: ImageVector? = null,
+    onClick: () -> Unit,
+) {
     DropdownMenuItem(
         text = {
             Text(label, style = GalleryTheme.type.body, color = GalleryTheme.colors.text)
+        },
+        leadingIcon = icon?.let {
+            { Icon(it, contentDescription = null, tint = GalleryTheme.colors.textMuted, modifier = Modifier.size(18.dp)) }
         },
         trailingIcon = value?.let {
             {

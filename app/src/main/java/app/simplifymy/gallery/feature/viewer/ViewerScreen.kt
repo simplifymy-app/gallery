@@ -1,6 +1,8 @@
 package app.simplifymy.gallery.feature.viewer
 
 import app.simplifymy.gallery.R
+import app.simplifymy.gallery.core.model.BarAction
+import app.simplifymy.gallery.core.model.BarLayout
 import androidx.compose.ui.res.stringResource
 import android.app.Activity
 import android.content.Intent
@@ -75,9 +77,8 @@ import app.simplifymy.gallery.core.media.MetadataEdit
 import app.simplifymy.gallery.core.model.MediaType
 import app.simplifymy.gallery.core.model.Medium
 import app.simplifymy.gallery.ui.component.GalleryIcons
+import app.simplifymy.gallery.ui.component.ActionBar
 import app.simplifymy.gallery.ui.component.IconAction
-import app.simplifymy.gallery.ui.component.MenuEntry
-import app.simplifymy.gallery.ui.component.OverflowMenu
 import app.simplifymy.gallery.feature.files.FileAction
 import app.simplifymy.gallery.feature.files.FileActions
 import app.simplifymy.gallery.ui.formatSize
@@ -258,14 +259,20 @@ fun ViewerScreen(
             modifier = Modifier.align(Alignment.BottomCenter),
         ) {
             BottomChrome(
-                onShare = { context.startActivity(Intent.createChooser(shareIntent(current), null)) },
-                onEdit = { onEdit(current) }.takeIf { current.type == MediaType.Image },
-                onSetAs = { runCatching { context.startActivity(setAsIntent(current)) } },
-                onDelete = {
-                    trashLauncher.launch(IntentSenderRequest.Builder(viewModel.trash(current)).build())
+                layout = state.actions.only { it != BarAction.Edit || current.type == MediaType.Image },
+                onAction = { action ->
+                    when (action) {
+                        BarAction.Share -> context.startActivity(Intent.createChooser(shareIntent(current), null))
+                        BarAction.Edit -> onEdit(current)
+                        BarAction.SetAs -> runCatching { context.startActivity(setAsIntent(current)) }
+                        BarAction.Delete -> trashLauncher.launch(IntentSenderRequest.Builder(viewModel.trash(current)).build())
+                        BarAction.Copy -> fileAction = FileAction.Copy
+                        BarAction.Move -> fileAction = FileAction.Move
+                        BarAction.Rename -> fileAction = FileAction.Rename
+                        BarAction.Metadata -> metadata = true
+                        else -> Unit
+                    }
                 },
-                onFileAction = { fileAction = it },
-                onMetadata = { metadata = true },
             )
         }
     }
@@ -487,34 +494,16 @@ private fun TopChrome(
 }
 
 @Composable
-private fun BottomChrome(
-    onShare: () -> Unit,
-    onEdit: (() -> Unit)?,
-    onSetAs: () -> Unit,
-    onDelete: () -> Unit,
-    onFileAction: (FileAction) -> Unit,
-    onMetadata: () -> Unit,
-) {
-    Row(
+private fun BottomChrome(layout: BarLayout, onAction: (BarAction) -> Unit) {
+    ActionBar(
+        layout = layout,
+        onAction = onAction,
+        tint = CHROME_TEXT,
         modifier = Modifier
-            .fillMaxWidth()
             .background(Brush.verticalGradient(listOf(Color.Transparent, Color(0xB8000000))))
             .windowInsetsPadding(WindowInsets.safeDrawing)
             .padding(vertical = 12.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        IconAction(GalleryIcons.Share, onClick = onShare, tint = CHROME_TEXT)
-        if (onEdit != null) IconAction(GalleryIcons.Edit, onClick = onEdit, label = stringResource(R.string.action_edit), tint = CHROME_TEXT)
-        IconAction(GalleryIcons.SetAs, onClick = onSetAs, tint = CHROME_TEXT)
-        IconAction(GalleryIcons.Trash, onClick = onDelete, tint = CHROME_TEXT)
-        OverflowMenu(tint = CHROME_TEXT) { dismiss ->
-            FileAction.entries.forEach { action ->
-                MenuEntry(stringResource(action.labelRes)) { dismiss(); onFileAction(action) }
-            }
-            MenuEntry(stringResource(R.string.action_metadata)) { dismiss(); onMetadata() }
-        }
-    }
+    )
 }
 
 @Composable

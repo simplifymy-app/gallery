@@ -320,8 +320,6 @@
     <string name="folder_recent">Recentes</string>
     <string name="setting_show_recent">Mostrar Recentes</string>
     <string name="setting_show_recent_hint">Todas as fotos e vídeos, os mais recentes primeiro, como primeiro mosaico</string>
-    <string name="setting_copy_path">Copiar caminho</string>
-    <string name="setting_copy_path_hint">Adiciona “Copiar caminho” ao menu de seleção: caminhos entre aspas numa só linha, para scripts</string>
     <string name="setting_panorama_all">360° para todos os ficheiros</string>
     <string name="setting_panorama_all_hint">O botão 360° aparece em todas as fotos e vídeos. Os ficheiros sem metadados 360° abrem planos e o botão mostra-os como esfera.</string>
     <string name="action_metadata">Metadados</string>
@@ -335,4 +333,12 @@
     <string name="metadata_save_failed">Não foi possível guardar as alterações</string>
     <string name="details_lens">Objetiva</string>
     <string name="details_focal_length">Distância focal</string>
+    <string name="action_set_as">Definir como</string>
+    <string name="section_actions">Barras de ações</string>
+    <string name="setting_selection_bar">Ao selecionar</string>
+    <string name="setting_viewer_bar">Ao visualizar</string>
+    <string name="actions_hint">Arraste para reordenar. Toque numa ação para movê-la entre a barra e o menu ⋮, desmarque para ocultá-la.</string>
+    <string name="actions_in_menu">No menu</string>
+    <string name="setting_actions_hint">Escolha quais ações ficam na barra inferior e quais no menu ⋮</string>
+    <string name="actions_overflow_hint">Se faltar espaço na barra, as últimas ações vão sozinhas para o menu ⋮ e voltam quando houver espaço. Nada se perde.</string>
 </resources>

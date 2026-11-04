@@ -11,6 +11,7 @@ import app.simplifymy.gallery.core.data.MediaWriter
 import app.simplifymy.gallery.core.media.MediaDetails
 import app.simplifymy.gallery.core.media.MediaDetailsLoader
 import app.simplifymy.gallery.core.media.MetadataEdit
+import app.simplifymy.gallery.core.model.BarLayout
 import app.simplifymy.gallery.core.model.Medium
 import app.simplifymy.gallery.core.model.sortedBy
 import app.simplifymy.gallery.core.settings.SettingsRepository
@@ -35,6 +36,7 @@ data class ViewerUiState(
     val autoplayNextVideo: Boolean = false,
     val backgroundPlayback: Boolean = false,
     val panoramaForAll: Boolean = false,
+    val actions: BarLayout = BarLayout.Viewer,
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -59,6 +61,7 @@ class ViewerViewModel @Inject constructor(
                 autoplayNextVideo = config.autoplayNextVideo,
                 backgroundPlayback = config.backgroundPlayback,
                 panoramaForAll = config.panoramaForAll,
+                actions = config.viewerBar,
             )
         }
     }.flowOn(Dispatchers.Default)

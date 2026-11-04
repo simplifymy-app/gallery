@@ -320,8 +320,6 @@
     <string name="folder_recent">Récents</string>
     <string name="setting_show_recent">Afficher Récents</string>
     <string name="setting_show_recent_hint">Toutes les photos et vidéos, les plus récentes d\'abord, en première vignette</string>
-    <string name="setting_copy_path">Copier le chemin</string>
-    <string name="setting_copy_path_hint">Ajoute « Copier le chemin » au menu de sélection : chemins entre guillemets sur une seule ligne, pour les scripts</string>
     <string name="setting_panorama_all">360° pour tous les médias</string>
     <string name="setting_panorama_all_hint">Le bouton 360° apparaît sur chaque photo et vidéo. Les fichiers sans métadonnées 360° s’ouvrent à plat et le bouton les affiche en sphère.</string>
     <string name="action_metadata">Métadonnées</string>
@@ -335,4 +333,12 @@
     <string name="metadata_save_failed">Impossible d\'enregistrer les modifications</string>
     <string name="details_lens">Objectif</string>
     <string name="details_focal_length">Focale</string>
+    <string name="action_set_as">Définir comme</string>
+    <string name="section_actions">Barres d’actions</string>
+    <string name="setting_selection_bar">Pendant la sélection</string>
+    <string name="setting_viewer_bar">Pendant l’affichage</string>
+    <string name="actions_hint">Faites glisser pour réordonner. Touchez une action pour la déplacer entre la barre et le menu ⋮, décochez-la pour la masquer.</string>
+    <string name="actions_in_menu">Dans le menu</string>
+    <string name="setting_actions_hint">Choisissez les actions de la barre du bas et celles du menu ⋮</string>
+    <string name="actions_overflow_hint">Si la barre manque de place, les dernières actions passent d’elles-mêmes dans ⋮ et reviennent dès qu’il y a de la place. Rien n’est perdu.</string>
 </resources>

@@ -320,8 +320,6 @@
     <string name="folder_recent">Recent</string>
     <string name="setting_show_recent">Show Recent</string>
     <string name="setting_show_recent_hint">All photos and videos, newest first, as the first tile</string>
-    <string name="setting_copy_path">Copy path</string>
-    <string name="setting_copy_path_hint">Adds “Copy path” to the selection menu: quoted paths on one line, for scripts</string>
     <string name="setting_panorama_all">Show 360° for all media</string>
     <string name="setting_panorama_all_hint">The 360° button appears on every photo and video. Files without 360° metadata open flat and switch to a sphere from the button.</string>
     <string name="action_metadata">Metadata</string>
@@ -335,4 +333,12 @@
     <string name="metadata_save_failed">Couldn\'t save the changes</string>
     <string name="details_lens">Lens</string>
     <string name="details_focal_length">Focal length</string>
+    <string name="action_set_as">Set as</string>
+    <string name="section_actions">Action bars</string>
+    <string name="setting_selection_bar">When selecting</string>
+    <string name="setting_viewer_bar">When viewing</string>
+    <string name="actions_hint">Drag to reorder. Tap an action to move it between the bar and the ⋮ menu, untick it to hide it.</string>
+    <string name="actions_in_menu">In the menu</string>
+    <string name="setting_actions_hint">Choose which actions sit in the bottom bar and which in the ⋮ menu</string>
+    <string name="actions_overflow_hint">If the bar runs out of room, the last actions move into ⋮ by themselves and come back when there is space again. Nothing is lost.</string>
 </resources>

@@ -1,6 +1,7 @@
 package app.simplifymy.gallery.feature.media
 
 import app.simplifymy.gallery.R
+import app.simplifymy.gallery.core.model.BarAction
 import androidx.compose.ui.res.stringResource
 import android.app.Activity
 import android.content.ClipData
@@ -80,6 +81,7 @@ import app.simplifymy.gallery.core.model.ScrollDirection
 import app.simplifymy.gallery.feature.files.FileAction
 import app.simplifymy.gallery.feature.files.FileActions
 import app.simplifymy.gallery.ui.component.GalleryIcons
+import app.simplifymy.gallery.ui.component.ActionBar
 import app.simplifymy.gallery.ui.component.IconAction
 import app.simplifymy.gallery.ui.component.MenuEntry
 import app.simplifymy.gallery.ui.component.MenuStepper
@@ -271,24 +273,34 @@ fun MediaScreen(
 
         if (state.selecting) {
             ActionBar(
-                onShare = {
-                    val media = viewModel.selectedMedia()
-                    if (media.isNotEmpty()) {
-                        context.startActivity(Intent.createChooser(shareIntent(media), null))
+                layout = state.settings.selectionBar.only { action ->
+                    when (action) {
+                        BarAction.Rename -> state.selected.size == 1
+                        else -> true
                     }
                 },
-                onFavorite = viewModel::toggleFavorite,
-                onCopy = { fileAction = FileAction.Copy },
-                onMove = { fileAction = FileAction.Move },
-                onRename = if (state.selected.size == 1) ({ fileAction = FileAction.Rename }) else null,
-                onCopyPath = if (state.settings.copyPathAction) ({ viewModel.copySelectedPaths { context.copyToClipboard(it) } }) else null,
-                onDelete = {
-                    trashLauncher.launch(
-                        IntentSenderRequest.Builder(
-                            viewModel.trashSelected()
-                        ).build()
-                    )
+                onAction = { action ->
+                    when (action) {
+                        BarAction.Share -> {
+                            val media = viewModel.selectedMedia()
+                            if (media.isNotEmpty()) {
+                                context.startActivity(Intent.createChooser(shareIntent(media), null))
+                            }
+                        }
+                        BarAction.Favorite -> viewModel.toggleFavorite()
+                        BarAction.Copy -> fileAction = FileAction.Copy
+                        BarAction.Move -> fileAction = FileAction.Move
+                        BarAction.Rename -> fileAction = FileAction.Rename
+                        BarAction.CopyPath -> viewModel.copySelectedPaths { context.copyToClipboard(it) }
+                        BarAction.Delete -> trashLauncher.launch(
+                            IntentSenderRequest.Builder(viewModel.trashSelected()).build()
+                        )
+                        else -> Unit
+                    }
                 },
+                modifier = Modifier
+                    .background(GalleryTheme.colors.surface)
+                    .padding(vertical = Spacing.base),
             )
         }
     }
@@ -352,37 +364,6 @@ private fun SelectionBar(count: Int, island: Boolean, onClose: () -> Unit, onSel
             color = colors.text,
             modifier = Modifier.island(island).clickable(onClick = onSelectAll).padding(8.dp),
         )
-    }
-}
-
-@Composable
-private fun ActionBar(
-    onShare: () -> Unit,
-    onFavorite: () -> Unit,
-    onCopy: () -> Unit,
-    onMove: () -> Unit,
-    onRename: (() -> Unit)?,
-    onCopyPath: (() -> Unit)?,
-    onDelete: () -> Unit,
-) {
-    val colors = GalleryTheme.colors
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(colors.surface)
-            .padding(vertical = Spacing.base),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        IconAction(GalleryIcons.Share, onClick = onShare, label = stringResource(R.string.action_share))
-        IconAction(GalleryIcons.Heart, onClick = onFavorite, label = stringResource(R.string.action_favorite))
-        IconAction(GalleryIcons.Duplicate, onClick = onCopy, label = stringResource(R.string.action_copy))
-        IconAction(GalleryIcons.Trash, onClick = onDelete, label = stringResource(R.string.action_delete))
-        OverflowMenu { dismiss ->
-            MenuEntry(stringResource(R.string.action_move_to)) { dismiss(); onMove() }
-            if (onRename != null) MenuEntry(stringResource(R.string.action_rename)) { dismiss(); onRename() }
-            if (onCopyPath != null) MenuEntry(stringResource(R.string.action_copy_path)) { dismiss(); onCopyPath() }
-        }
     }
 }
 

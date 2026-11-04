@@ -37,6 +37,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import app.simplifymy.gallery.core.data.MediaRepository
 import app.simplifymy.gallery.core.model.FolderEntry
 import app.simplifymy.gallery.ui.component.GalleryIcons
+import app.simplifymy.gallery.ui.component.CheckBox
 import app.simplifymy.gallery.ui.component.IconAction
 import app.simplifymy.gallery.ui.formatCount
 import app.simplifymy.gallery.ui.theme.ControlRadius
@@ -144,16 +145,7 @@ private fun IgnoreRow(folder: FolderEntry, ignored: Boolean, onClick: () -> Unit
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        Box(
-            modifier = Modifier
-                .size(22.dp)
-                .clip(RoundedCornerShape(ControlRadius))
-                .background(if (ignored) colors.accent else colors.background)
-                .border(1.5.dp, if (ignored) colors.accent else colors.textFaint, RoundedCornerShape(ControlRadius)),
-            contentAlignment = Alignment.Center,
-        ) {
-            if (ignored) Icon(GalleryIcons.Check, contentDescription = null, tint = colors.onAccent, modifier = Modifier.size(16.dp))
-        }
+        CheckBox(ignored)
         Column(Modifier.weight(1f)) {
             Text(
                 folder.name,

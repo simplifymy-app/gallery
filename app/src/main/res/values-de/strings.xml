@@ -320,8 +320,6 @@
     <string name="folder_recent">Neueste</string>
     <string name="setting_show_recent">„Neueste“ anzeigen</string>
     <string name="setting_show_recent_hint">Alle Fotos und Videos, die neuesten zuerst, als erste Kachel</string>
-    <string name="setting_copy_path">Pfad kopieren</string>
-    <string name="setting_copy_path_hint">Fügt „Pfad kopieren“ zum Auswahlmenü hinzu: Pfade in Anführungszeichen in einer Zeile, für Skripte</string>
     <string name="setting_panorama_all">360° für alle Medien</string>
     <string name="setting_panorama_all_hint">Die 360°-Schaltfläche erscheint bei jedem Foto und Video. Dateien ohne 360°-Metadaten öffnen flach und wechseln über die Schaltfläche zur Kugel.</string>
     <string name="action_metadata">Metadaten</string>
@@ -335,4 +333,12 @@
     <string name="metadata_save_failed">Änderungen konnten nicht gespeichert werden</string>
     <string name="details_lens">Objektiv</string>
     <string name="details_focal_length">Brennweite</string>
+    <string name="action_set_as">Festlegen als</string>
+    <string name="section_actions">Aktionsleisten</string>
+    <string name="setting_selection_bar">Bei Auswahl</string>
+    <string name="setting_viewer_bar">Beim Ansehen</string>
+    <string name="actions_hint">Ziehen zum Anordnen. Tippe auf eine Aktion, um sie zwischen Leiste und ⋮-Menü zu verschieben, entferne das Häkchen, um sie auszublenden.</string>
+    <string name="actions_in_menu">Im Menü</string>
+    <string name="setting_actions_hint">Wähle, welche Aktionen in der unteren Leiste und welche im ⋮-Menü stehen</string>
+    <string name="actions_overflow_hint">Reicht der Platz in der Leiste nicht, wandern die letzten Aktionen von selbst ins ⋮-Menü und kehren zurück, sobald wieder Platz ist. Nichts geht verloren.</string>
 </resources>

@@ -79,6 +79,7 @@ private const val CONTACT_URL = "https://www.simplifymy.app/contact/"
 fun SettingsScreen(
     onBack: () -> Unit,
     onOpenIgnored: () -> Unit,
+    onOpenActionBars: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val settings by viewModel.settings.collectAsStateWithLifecycle()
@@ -280,11 +281,10 @@ fun SettingsScreen(
             }
 
             Section(stringResource(R.string.section_advanced)) {
-                ToggleRow(
-                    stringResource(R.string.setting_copy_path),
-                    stringResource(R.string.setting_copy_path_hint),
-                    settings.copyPathAction,
-                    viewModel::setCopyPathAction,
+                LinkRow(
+                    stringResource(R.string.section_actions),
+                    stringResource(R.string.setting_actions_hint),
+                    onOpenActionBars,
                 )
                 ToggleRow(
                     stringResource(R.string.setting_panorama_all),

@@ -3,6 +3,7 @@ package app.simplifymy.gallery.feature.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import app.simplifymy.gallery.core.model.BarLayout
 import app.simplifymy.gallery.core.model.Grouping
 import app.simplifymy.gallery.core.model.Sorting
 import app.simplifymy.gallery.core.settings.AppIconManager
@@ -69,8 +70,9 @@ class SettingsViewModel @Inject constructor(
     fun setShowVideoDuration(value: Boolean) = update { repository.setShowVideoDuration(value) }
     fun setAutoplayNextVideo(value: Boolean) = update { repository.setAutoplayNextVideo(value) }
     fun setBackgroundPlayback(value: Boolean) = update { repository.setBackgroundPlayback(value) }
-    fun setCopyPathAction(value: Boolean) = update { repository.setCopyPathAction(value) }
     fun setPanoramaForAll(value: Boolean) = update { repository.setPanoramaForAll(value) }
+    fun setSelectionBar(value: BarLayout) = update { repository.setSelectionBar(value) }
+    fun setViewerBar(value: BarLayout) = update { repository.setViewerBar(value) }
     fun setLanguage(value: Language, onApplied: () -> Unit) = viewModelScope.launch {
         repository.setLanguage(value)
         onApplied()

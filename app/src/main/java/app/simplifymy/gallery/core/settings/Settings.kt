@@ -11,6 +11,8 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
+import app.simplifymy.gallery.core.model.BarAction
+import app.simplifymy.gallery.core.model.BarLayout
 import app.simplifymy.gallery.core.model.Grouping
 import app.simplifymy.gallery.core.model.MediaFilter
 import app.simplifymy.gallery.core.model.ScrollDirection
@@ -56,8 +58,9 @@ data class GallerySettings(
     val showVideoDuration: Boolean = true,
     val autoplayNextVideo: Boolean = false,
     val backgroundPlayback: Boolean = false,
-    val copyPathAction: Boolean = false,
     val panoramaForAll: Boolean = false,
+    val selectionBar: BarLayout = BarLayout.Selection,
+    val viewerBar: BarLayout = BarLayout.Viewer,
     val language: Language = Language.System,
 )
 
@@ -93,6 +96,8 @@ private object Keys {
     val backgroundPlayback = booleanPreferencesKey("background_playback")
     val copyPathAction = booleanPreferencesKey("copy_path_action")
     val panoramaForAll = booleanPreferencesKey("panorama_for_all")
+    val selectionBar = stringPreferencesKey("selection_bar")
+    val viewerBar = stringPreferencesKey("viewer_bar")
     val language = stringPreferencesKey("language")
 }
 
@@ -131,8 +136,12 @@ class SettingsRepository @Inject constructor(@ApplicationContext private val con
             showVideoDuration = p[Keys.showVideoDuration] ?: defaults.showVideoDuration,
             autoplayNextVideo = p[Keys.autoplayNextVideo] ?: defaults.autoplayNextVideo,
             backgroundPlayback = p[Keys.backgroundPlayback] ?: defaults.backgroundPlayback,
-            copyPathAction = p[Keys.copyPathAction] ?: defaults.copyPathAction,
             panoramaForAll = p[Keys.panoramaForAll] ?: defaults.panoramaForAll,
+            selectionBar = BarLayout.decode(
+                p[Keys.selectionBar],
+                defaults.selectionBar.shown(BarAction.CopyPath, p[Keys.copyPathAction] == true),
+            ),
+            viewerBar = BarLayout.decode(p[Keys.viewerBar], defaults.viewerBar),
             language = p.enum(Keys.language, defaults.language),
         )
     }
@@ -159,8 +168,9 @@ class SettingsRepository @Inject constructor(@ApplicationContext private val con
     suspend fun setShowVideoDuration(value: Boolean) = put(Keys.showVideoDuration, value)
     suspend fun setAutoplayNextVideo(value: Boolean) = put(Keys.autoplayNextVideo, value)
     suspend fun setBackgroundPlayback(value: Boolean) = put(Keys.backgroundPlayback, value)
-    suspend fun setCopyPathAction(value: Boolean) = put(Keys.copyPathAction, value)
     suspend fun setPanoramaForAll(value: Boolean) = put(Keys.panoramaForAll, value)
+    suspend fun setSelectionBar(value: BarLayout) = put(Keys.selectionBar, value.encode())
+    suspend fun setViewerBar(value: BarLayout) = put(Keys.viewerBar, value.encode())
     suspend fun setLanguage(value: Language) {
         context.getSharedPreferences(BOOTSTRAP_PREFS, Context.MODE_PRIVATE)
             .edit()

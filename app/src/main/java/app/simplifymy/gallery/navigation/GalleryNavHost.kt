@@ -11,6 +11,7 @@ import app.simplifymy.gallery.feature.editor.EditorScreen
 import app.simplifymy.gallery.feature.folders.FoldersScreen
 import app.simplifymy.gallery.feature.media.MediaScreen
 import app.simplifymy.gallery.feature.search.SearchScreen
+import app.simplifymy.gallery.feature.settings.ActionBarsScreen
 import app.simplifymy.gallery.feature.settings.IgnoredFoldersScreen
 import app.simplifymy.gallery.feature.settings.SettingsScreen
 import app.simplifymy.gallery.feature.viewer.ViewerScreen
@@ -27,6 +28,9 @@ object Search
 
 @Serializable
 object IgnoredFolders
+
+@Serializable
+object ActionBars
 
 @Serializable
 data class Media(val bucketId: Long, val title: String)
@@ -83,7 +87,11 @@ fun GalleryNavHost(start: Any = Folders, onExit: () -> Unit = {}) {
             SettingsScreen(
                 onBack = navController::popBackStack,
                 onOpenIgnored = { navController.navigate(IgnoredFolders) },
+                onOpenActionBars = { navController.navigate(ActionBars) },
             )
+        }
+        composable<ActionBars> {
+            ActionBarsScreen(onBack = navController::popBackStack)
         }
         composable<IgnoredFolders> {
             IgnoredFoldersScreen(onBack = navController::popBackStack)
