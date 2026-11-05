@@ -3,11 +3,9 @@ package app.simplifymy.gallery.feature.editor
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
+import kotlin.math.abs
 
 enum class CropGrip { None, Move, TopLeft, TopRight, BottomLeft, BottomRight }
-
-private const val MIN_PX = 72f
-private const val GRAB_PX = 56f
 
 fun Rect.onCanvas(canvas: Size) =
     Rect(left * canvas.width, top * canvas.height, right * canvas.width, bottom * canvas.height)
@@ -15,19 +13,19 @@ fun Rect.onCanvas(canvas: Size) =
 fun Rect.toFractions(canvas: Size) =
     Rect(left / canvas.width, top / canvas.height, right / canvas.width, bottom / canvas.height)
 
-fun gripAt(point: Offset, box: Rect): CropGrip {
+fun gripAt(point: Offset, box: Rect, reach: Float): CropGrip {
     val corners = listOf(
-        CropGrip.TopLeft to Offset(box.left, box.top),
-        CropGrip.TopRight to Offset(box.right, box.top),
-        CropGrip.BottomLeft to Offset(box.left, box.bottom),
-        CropGrip.BottomRight to Offset(box.right, box.bottom),
+        CropGrip.TopLeft to box.topLeft,
+        CropGrip.TopRight to box.topRight,
+        CropGrip.BottomLeft to box.bottomLeft,
+        CropGrip.BottomRight to box.bottomRight,
     )
-    val nearest = corners.minByOrNull { (_, corner) -> (corner - point).getDistance() }
-    if (nearest != null && (nearest.second - point).getDistance() <= GRAB_PX) return nearest.first
+    val nearest = corners.minBy { (_, corner) -> (corner - point).getDistance() }
+    if ((nearest.second - point).getDistance() <= reach) return nearest.first
     return if (box.contains(point)) CropGrip.Move else CropGrip.None
 }
 
-fun Rect.dragged(grip: CropGrip, delta: Offset, ratio: Float?, bounds: Size): Rect {
+fun Rect.dragged(grip: CropGrip, delta: Offset, ratio: Float?, bounds: Size, minimum: Float): Rect {
     if (grip == CropGrip.None) return this
     if (grip == CropGrip.Move) {
         val dx = delta.x.coerceIn(-left, bounds.width - right)
@@ -46,29 +44,31 @@ fun Rect.dragged(grip: CropGrip, delta: Offset, ratio: Float?, bounds: Size): Re
         CropGrip.BottomRight -> { r += delta.x; b += delta.y }
         else -> Unit
     }
-    l = l.coerceIn(0f, right - MIN_PX)
-    t = t.coerceIn(0f, bottom - MIN_PX)
-    r = r.coerceIn(left + MIN_PX, bounds.width)
-    b = b.coerceIn(top + MIN_PX, bounds.height)
+    l = l.coerceIn(0f, right - minimum)
+    t = t.coerceIn(0f, bottom - minimum)
+    r = r.coerceIn(left + minimum, bounds.width)
+    b = b.coerceIn(top + minimum, bounds.height)
 
     val box = Rect(l, t, r, b)
-    return if (ratio == null) box else box.lockedTo(ratio, grip, bounds)
+    return if (ratio == null) box else box.lockedTo(ratio, grip, bounds, minimum, from = this)
 }
 
-private fun Rect.lockedTo(ratio: Float, grip: CropGrip, bounds: Size): Rect {
-    val anchorX = if (grip == CropGrip.TopLeft || grip == CropGrip.BottomLeft) right else left
-    val anchorY = if (grip == CropGrip.TopLeft || grip == CropGrip.TopRight) bottom else top
-    val towardLeft = anchorX == right
-    val towardTop = anchorY == bottom
+private fun Rect.lockedTo(ratio: Float, grip: CropGrip, bounds: Size, minimum: Float, from: Rect): Rect {
+    val anchorX = if (grip == CropGrip.TopLeft || grip == CropGrip.BottomLeft) from.right else from.left
+    val anchorY = if (grip == CropGrip.TopLeft || grip == CropGrip.TopRight) from.bottom else from.top
+    val towardLeft = anchorX == from.right
+    val towardTop = anchorY == from.bottom
 
-    var w = width
+    val widthChange = abs(width - from.width)
+    val heightChange = abs(height - from.height) * ratio
+    var w = if (heightChange > widthChange) height * ratio else width
     var h = w / ratio
     val roomX = if (towardLeft) anchorX else bounds.width - anchorX
     val roomY = if (towardTop) anchorY else bounds.height - anchorY
     if (w > roomX) { w = roomX; h = w / ratio }
     if (h > roomY) { h = roomY; w = h * ratio }
-    if (w < MIN_PX) { w = MIN_PX; h = w / ratio }
-    if (h < MIN_PX) { h = MIN_PX; w = h * ratio }
+    if (w < minimum) { w = minimum; h = w / ratio }
+    if (h < minimum) { h = minimum; w = h * ratio }
 
     val l = if (towardLeft) anchorX - w else anchorX
     val t = if (towardTop) anchorY - h else anchorY

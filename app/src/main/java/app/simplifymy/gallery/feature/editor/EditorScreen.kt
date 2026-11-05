@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
@@ -106,11 +107,16 @@ fun EditorScreen(
             EditorTool.Camera, EditorTool.Markup, EditorTool.Text -> Spacer(Modifier.height(12.dp))
         }
 
+        val overlay = overlayOf(state)
         Box(
-            modifier = Modifier.weight(1f).fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .padding(
+                    if (overlay == Overlay.Crop) PaddingValues(CROP_MARGIN) else PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                ),
             contentAlignment = Alignment.Center,
         ) {
-            val overlay = overlayOf(state)
             val shown = if (state.comparing) state.original else state.preview
             shown?.let { bitmap ->
                 Preview(
@@ -290,7 +296,7 @@ private fun Preview(
         Modifier
             .aspectRatio(aspect)
             .then(if (aspect >= 1f) Modifier.fillMaxWidth() else Modifier.fillMaxHeight())
-            .clip(RoundedCornerShape(2.dp))
+            .then(if (overlay == Overlay.Crop) Modifier else Modifier.clip(RoundedCornerShape(2.dp)))
             .testTag(EDITOR_PREVIEW)
             .then(
                 if (!comparable) Modifier else Modifier.pointerInput(Unit) {

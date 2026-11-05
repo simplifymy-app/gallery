@@ -90,6 +90,17 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.round
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.foundation.systemGestureExclusion
+import androidx.compose.foundation.gestures.drag
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -115,61 +126,90 @@ fun CropBox(
     onEnd: () -> Unit,
 ) {
     val current by rememberUpdatedState(crop)
-    var canvas by remember { mutableStateOf(Size.Zero) }
-    var grip by remember { mutableStateOf(CropGrip.None) }
-    val shade = Color(0x8C0B0B0C)
-    val guide = Color(0x47EDEDEF)
-    val edge = Color(0xD9EDEDEF)
-    val corner = Color(0xFFEDEDEF)
+    var overlay by remember { mutableStateOf(IntSize.Zero) }
+    val marginPx = with(LocalDensity.current) { CROP_MARGIN.toPx() }
+    val image = Size(overlay.width - marginPx * 2, overlay.height - marginPx * 2)
 
-    Canvas(
-        Modifier.fillMaxSize().pointerInput(ratio, interactive) {
-            if (!interactive) return@pointerInput
-            detectDragGestures(
-                onDragStart = {
-                    grip = gripAt(it, current.onCanvas(canvas))
-                    if (grip != CropGrip.None) onStart()
-                },
-                onDrag = { change, delta ->
-                    if (grip == CropGrip.None) return@detectDragGestures
-                    change.consume()
-                    val moved = current.onCanvas(canvas).dragged(grip, delta, ratio, canvas)
-                    onCrop(moved.toFractions(canvas))
-                },
-                onDragEnd = { grip = CropGrip.None; onEnd() },
-                onDragCancel = { grip = CropGrip.None; onEnd() },
-            )
+    Box(Modifier.outset(CROP_MARGIN).onSizeChanged { overlay = it }) {
+        Canvas(
+            Modifier.fillMaxSize().pointerInput(ratio, interactive, image) {
+                if (!interactive || image.minDimension <= 0f) return@pointerInput
+                awaitEachGesture {
+                    val down = awaitFirstDown(requireUnconsumed = false)
+                    val start = current.onCanvas(image)
+                    val grip = gripAt(down.position - Offset(marginPx, marginPx), start, CROP_GRAB.toPx())
+                    if (grip == CropGrip.None) return@awaitEachGesture
+                    down.consume()
+                    onStart()
+                    drag(down.id) { change ->
+                        change.consume()
+                        val moved = start.dragged(grip, change.position - down.position, ratio, image, CROP_MIN.toPx())
+                        onCrop(moved.toFractions(image))
+                    }
+                    onEnd()
+                }
+            }
+        ) {
+            if (image.minDimension <= 0f) return@Canvas
+            translate(marginPx, marginPx) { drawCropFrame(crop.onCanvas(image), image, lines, interactive) }
         }
-    ) {
-        canvas = size
-        val box = crop.onCanvas(size)
-        drawRect(shade, size = Size(size.width, box.top))
-        drawRect(shade, topLeft = Offset(0f, box.bottom), size = Size(size.width, size.height - box.bottom))
-        drawRect(shade, topLeft = Offset(0f, box.top), size = Size(box.left, box.height))
-        drawRect(shade, topLeft = Offset(box.right, box.top), size = Size(size.width - box.right, box.height))
-
-        drawRect(edge, topLeft = box.topLeft, size = box.size, style = DrawStroke(width = 1.dp.toPx()))
-        (1 until lines).forEach { step ->
-            val fraction = step.toFloat() / lines
-            val x = box.left + box.width * fraction
-            val y = box.top + box.height * fraction
-            drawLine(guide, Offset(x, box.top), Offset(x, box.bottom))
-            drawLine(guide, Offset(box.left, y), Offset(box.right, y))
-        }
-        if (!interactive) return@Canvas
-        val arm = 20.dp.toPx().coerceAtMost(box.minDimension / 3f)
-        val thick = 3.dp.toPx()
-        listOf(
-            box.topLeft to (Offset(arm, 0f) to Offset(0f, arm)),
-            box.topRight to (Offset(-arm, 0f) to Offset(0f, arm)),
-            box.bottomLeft to (Offset(arm, 0f) to Offset(0f, -arm)),
-            box.bottomRight to (Offset(-arm, 0f) to Offset(0f, -arm)),
-        ).forEach { (origin, arms) ->
-            drawLine(corner, origin, origin + arms.first, strokeWidth = thick)
-            drawLine(corner, origin, origin + arms.second, strokeWidth = thick)
+        if (interactive && image.minDimension > 0f) {
+            val box = crop.onCanvas(image)
+            listOf(box.topLeft, box.topRight, box.bottomLeft, box.bottomRight).forEach { corner ->
+                Spacer(
+                    Modifier
+                        .offset { corner.round() }
+                        .size(CROP_MARGIN * 2)
+                        .systemGestureExclusion()
+                )
+            }
         }
     }
 }
+
+private fun DrawScope.drawCropFrame(box: Rect, image: Size, lines: Int, interactive: Boolean) {
+    drawRect(CROP_SHADE, size = Size(image.width, box.top))
+    drawRect(CROP_SHADE, topLeft = Offset(0f, box.bottom), size = Size(image.width, image.height - box.bottom))
+    drawRect(CROP_SHADE, topLeft = Offset(0f, box.top), size = Size(box.left, box.height))
+    drawRect(CROP_SHADE, topLeft = Offset(box.right, box.top), size = Size(image.width - box.right, box.height))
+
+    drawRect(CROP_EDGE, topLeft = box.topLeft, size = box.size, style = DrawStroke(width = 1.dp.toPx()))
+    (1 until lines).forEach { step ->
+        val fraction = step.toFloat() / lines
+        val x = box.left + box.width * fraction
+        val y = box.top + box.height * fraction
+        drawLine(CROP_GUIDE, Offset(x, box.top), Offset(x, box.bottom))
+        drawLine(CROP_GUIDE, Offset(box.left, y), Offset(box.right, y))
+    }
+    if (!interactive) return
+    val arm = 20.dp.toPx().coerceAtMost(box.minDimension / 3f)
+    val thick = 3.dp.toPx()
+    listOf(
+        box.topLeft to (Offset(arm, 0f) to Offset(0f, arm)),
+        box.topRight to (Offset(-arm, 0f) to Offset(0f, arm)),
+        box.bottomLeft to (Offset(arm, 0f) to Offset(0f, -arm)),
+        box.bottomRight to (Offset(-arm, 0f) to Offset(0f, -arm)),
+    ).forEach { (origin, arms) ->
+        drawLine(CROP_CORNER, origin, origin + arms.first, strokeWidth = thick)
+        drawLine(CROP_CORNER, origin, origin + arms.second, strokeWidth = thick)
+    }
+}
+
+private fun Modifier.outset(margin: Dp) = layout { measurable, constraints ->
+    val extra = margin.roundToPx()
+    val placeable = measurable.measure(
+        Constraints.fixed(constraints.maxWidth + extra * 2, constraints.maxHeight + extra * 2)
+    )
+    layout(constraints.maxWidth, constraints.maxHeight) { placeable.place(-extra, -extra) }
+}
+
+val CROP_MARGIN = 24.dp
+private val CROP_GRAB = 32.dp
+private val CROP_MIN = 48.dp
+private val CROP_SHADE = Color(0x8C0B0B0C)
+private val CROP_GUIDE = Color(0x47EDEDEF)
+private val CROP_EDGE = Color(0xD9EDEDEF)
+private val CROP_CORNER = Color(0xFFEDEDEF)
 
 @Composable
 fun PerspectiveBox(
