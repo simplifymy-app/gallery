@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import app.simplifymy.gallery.feature.about.AboutScreen
 import app.simplifymy.gallery.feature.editor.EditorScreen
 import app.simplifymy.gallery.feature.folders.FoldersScreen
 import app.simplifymy.gallery.feature.media.MediaScreen
@@ -31,6 +32,9 @@ object IgnoredFolders
 
 @Serializable
 object ActionBars
+
+@Serializable
+object About
 
 @Serializable
 data class Media(val bucketId: Long, val title: String)
@@ -88,7 +92,11 @@ fun GalleryNavHost(start: Any = Folders, onExit: () -> Unit = {}) {
                 onBack = navController::popBackStack,
                 onOpenIgnored = { navController.navigate(IgnoredFolders) },
                 onOpenActionBars = { navController.navigate(ActionBars) },
+                onOpenAbout = { navController.navigate(About) },
             )
+        }
+        composable<About> {
+            AboutScreen(onBack = navController::popBackStack)
         }
         composable<ActionBars> {
             ActionBarsScreen(onBack = navController::popBackStack)

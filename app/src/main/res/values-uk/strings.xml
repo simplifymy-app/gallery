@@ -341,4 +341,17 @@
     <string name="actions_in_menu">У меню</string>
     <string name="setting_actions_hint">Оберіть, які дії стоять у нижній панелі, а які в меню ⋮</string>
     <string name="actions_overflow_hint">Якщо в панелі забракне місця, останні дії самі перейдуть у ⋮ і повернуться, коли місце з’явиться. Нічого не губиться.</string>
+    <string name="setting_about">Про застосунок</string>
+    <string name="setting_about_hint">Версія, подяки та музика</string>
+    <string name="about_tagline">Галерея, що береже приватність. Без інтернету, без акаунта, без реклами.</string>
+    <string name="about_version">Версія</string>
+    <string name="about_badges">БЕЗ РЕКЛАМИ · БЕЗ АКАУНТА · БЕЗ МЕРЕЖІ</string>
+    <string name="about_info">Simplify my Gallery відкривається на ваших папках, такими, якими вони є на телефоні, а не на стрічці, яку хтось упорядкував за вас. Фото й відео читаються напряму з MediaStore і ніколи не залишають пристрій. Немає аналітики, звітів про збої чи акаунта, а в маніфесті немає дозволу на мережу, щоб усе це взагалі було можливим.</string>
+    <string name="about_license">Ліцензія</string>
+    <string name="about_section_app">Про застосунок</string>
+    <string name="about_section_credits">Відкритий код</string>
+    <string name="about_credits_hint">Simplify my Gallery — відкритий код за ліцензією Mozilla Public License 2.0, і він побудований на роботі цих проєктів.</string>
+    <string name="about_section_links">Посилання</string>
+    <string name="about_website">Вебсайт</string>
+    <string name="about_website_hint">simplifymy.app</string>
 </resources>

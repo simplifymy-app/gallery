@@ -97,4 +97,4 @@ Kotlin and Jetpack Compose in a single `:app` module, with Hilt, Room, DataStore
 
 © 2026 Simplify my app. The source code is licensed under the [Mozilla Public License 2.0](LICENSE): you may use, change and ship it, also in closed or commercial apps, but changes to these files must stay under the MPL and be shared. It is provided as is, without warranty of any kind.
 
-The libraries the app is built on — AndroidX, Jetpack Compose, Hilt, Coil, Media3 and Telephoto — are under the Apache License 2.0. The bundled fonts Space Grotesk, Outfit and IBM Plex are under the SIL Open Font License 1.1.
+The libraries the app is built on — AndroidX, Jetpack Compose, Hilt, Coil, Media3 and Telephoto — are under the Apache License 2.0. The bundled fonts Space Grotesk, Outfit, IBM Plex and Caveat are under the SIL Open Font License 1.1; their copyright notices and the full licence text are in [`licenses/`](licenses).

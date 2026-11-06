@@ -341,4 +341,17 @@
     <string name="actions_in_menu">En el menú</string>
     <string name="setting_actions_hint">Elige qué acciones van en la barra inferior y cuáles en el menú ⋮</string>
     <string name="actions_overflow_hint">Si no hay espacio en la barra, las últimas acciones pasan solas al menú ⋮ y vuelven cuando haya sitio. No se pierde nada.</string>
+    <string name="setting_about">Acerca de</string>
+    <string name="setting_about_hint">Versión, créditos y la música</string>
+    <string name="about_tagline">Una galería que respeta tu privacidad. Sin internet, sin cuenta, sin anuncios.</string>
+    <string name="about_version">Versión</string>
+    <string name="about_badges">SIN ANUNCIOS · SIN CUENTA · SIN RED</string>
+    <string name="about_info">Simplify my Gallery se abre en tus carpetas, tal como están en el teléfono, en lugar de una cronología que otro ordenó por ti. Las fotos y los vídeos se leen directamente de MediaStore y nunca salen del dispositivo. No hay analíticas, ni informes de fallos, ni cuenta, ni permiso de red en el manifiesto que haga posible nada de eso.</string>
+    <string name="about_license">Licencia</string>
+    <string name="about_section_app">Acerca de la app</string>
+    <string name="about_section_credits">Código abierto</string>
+    <string name="about_credits_hint">Simplify my Gallery es código abierto bajo la Mozilla Public License 2.0 y se apoya en el trabajo de estos proyectos.</string>
+    <string name="about_section_links">Enlaces</string>
+    <string name="about_website">Sitio web</string>
+    <string name="about_website_hint">simplifymy.app</string>
 </resources>

@@ -80,6 +80,7 @@ fun SettingsScreen(
     onBack: () -> Unit,
     onOpenIgnored: () -> Unit,
     onOpenActionBars: () -> Unit,
+    onOpenAbout: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val settings by viewModel.settings.collectAsStateWithLifecycle()
@@ -299,6 +300,11 @@ fun SettingsScreen(
                     stringResource(R.string.setting_contact),
                     stringResource(R.string.setting_contact_hint),
                     { uriHandler.openUri(CONTACT_URL) },
+                )
+                LinkRow(
+                    stringResource(R.string.setting_about),
+                    stringResource(R.string.setting_about_hint),
+                    onOpenAbout,
                 )
             }
         }
