@@ -3,6 +3,7 @@ package app.simplifymy.gallery.feature.media
 import app.simplifymy.gallery.R
 import app.simplifymy.gallery.core.model.BarAction
 import androidx.compose.ui.res.stringResource
+import androidx.activity.compose.BackHandler
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -112,6 +113,7 @@ fun MediaScreen(
     val trashLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartIntentSenderForResult()
     ) { if (it.resultCode == Activity.RESULT_OK) viewModel.clearSelection() }
+    BackHandler(enabled = state.selecting, onBack = viewModel::clearSelection)
 
     val overlay = state.settings.overlayUi
     val gridState = rememberLazyGridState()

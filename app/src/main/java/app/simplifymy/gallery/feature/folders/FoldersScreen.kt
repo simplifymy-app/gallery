@@ -2,6 +2,7 @@ package app.simplifymy.gallery.feature.folders
 
 import app.simplifymy.gallery.R
 import androidx.compose.ui.res.stringResource
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -81,6 +82,7 @@ fun FoldersScreen(
     val trashLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartIntentSenderForResult()
     ) { viewModel.clearSelection() }
+    BackHandler(enabled = state.selecting, onBack = viewModel::clearSelection)
     val labelled = state.settings.showFolderNames
     val below = state.settings.detailsPlacement == DetailsPlacement.Below
     val gap = state.settings.thumbnailSpacing.gap
