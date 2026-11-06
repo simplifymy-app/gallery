@@ -47,6 +47,7 @@ import app.simplifymy.gallery.ui.component.GalleryIcons
 import app.simplifymy.gallery.ui.component.GallerySheet
 import app.simplifymy.gallery.ui.component.IconAction
 import app.simplifymy.gallery.ui.component.TextDialog
+import app.simplifymy.gallery.ui.component.iconSize
 import app.simplifymy.gallery.ui.formatSize
 import app.simplifymy.gallery.ui.theme.GalleryTheme
 import app.simplifymy.gallery.ui.theme.Spacing
@@ -199,8 +200,8 @@ private fun MetadataLine(
 
 @Composable
 private fun TrailingIcon(icon: ImageVector) {
-    Box(Modifier.size(Spacing.hitTarget), contentAlignment = Alignment.Center) {
-        Icon(icon, contentDescription = null, tint = GalleryTheme.colors.textFaint, modifier = Modifier.size(16.dp))
+    Box(Modifier.size(GalleryTheme.hitTarget), contentAlignment = Alignment.Center) {
+        Icon(icon, contentDescription = null, tint = GalleryTheme.colors.textFaint, modifier = Modifier.iconSize(16.dp))
     }
 }
 

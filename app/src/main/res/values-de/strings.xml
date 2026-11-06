@@ -67,7 +67,7 @@
     <string name="setting_contrast">Textkontrast</string>
     <string name="setting_corner_radius">Eckenradius</string>
     <string name="setting_font">Schriftart</string>
-    <string name="setting_text_size">Textgröße</string>
+    <string name="setting_interface_size">Größe der Oberfläche</string>
     <string name="setting_language">App-Sprache</string>
     <string name="setting_sort_all">Alles sortieren nach</string>
     <string name="setting_reverse">Umgekehrte Reihenfolge</string>

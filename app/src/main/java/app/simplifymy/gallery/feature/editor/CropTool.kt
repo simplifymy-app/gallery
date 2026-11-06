@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import app.simplifymy.gallery.ui.component.Chip
+import app.simplifymy.gallery.ui.component.iconSize
 import java.util.Locale
 import kotlin.math.abs
 import androidx.compose.foundation.Canvas
@@ -444,7 +445,7 @@ private fun RowScope.TurnButton(
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
-        Icon(icon, contentDescription = label, tint = colors.text, modifier = Modifier.size(18.dp))
+        Icon(icon, contentDescription = label, tint = colors.text, modifier = Modifier.iconSize(18.dp))
     }
 }
 

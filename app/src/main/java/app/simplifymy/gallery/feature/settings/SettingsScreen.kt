@@ -58,6 +58,7 @@ import app.simplifymy.gallery.ui.component.IconAction
 import app.simplifymy.gallery.ui.component.MediaThumbnail
 import app.simplifymy.gallery.ui.component.MenuStepper
 import app.simplifymy.gallery.ui.component.SegmentedPicker
+import app.simplifymy.gallery.ui.component.iconSize
 import app.simplifymy.gallery.ui.formatCount
 import app.simplifymy.gallery.ui.formatSize
 import app.simplifymy.gallery.ui.theme.Accent
@@ -156,7 +157,7 @@ fun SettingsScreen(
                     },
                     modifier = Modifier.padding(horizontal = Spacing.screen, vertical = 6.dp),
                 ) { if (it == Language.System) stringResource(R.string.follow_system) else it.label }
-                PickerRow(stringResource(R.string.setting_text_size)) {
+                PickerRow(stringResource(R.string.setting_interface_size)) {
                     SegmentedPicker(TextScale.entries, settings.textScale, viewModel::setTextScale) { it.label }
                 }
             }
@@ -342,7 +343,7 @@ private fun LinkRow(label: String, hint: String, onClick: () -> Unit) {
             GalleryIcons.Chevron,
             contentDescription = null,
             tint = colors.textMuted,
-            modifier = Modifier.size(16.dp).rotate(-90f),
+            modifier = Modifier.iconSize(16.dp).rotate(-90f),
         )
     }
 }

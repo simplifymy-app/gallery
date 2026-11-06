@@ -67,7 +67,7 @@
     <string name="setting_contrast">Contraste do texto</string>
     <string name="setting_corner_radius">Raio dos cantos</string>
     <string name="setting_font">Tipo de letra</string>
-    <string name="setting_text_size">Tamanho do texto</string>
+    <string name="setting_interface_size">Tamanho da interface</string>
     <string name="setting_language">Idioma da app</string>
     <string name="setting_sort_all">Ordenar tudo por</string>
     <string name="setting_reverse">Ordem inversa</string>

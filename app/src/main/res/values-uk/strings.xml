@@ -67,7 +67,7 @@
     <string name="setting_contrast">Контраст тексту</string>
     <string name="setting_corner_radius">Радіус кутів</string>
     <string name="setting_font">Шрифт</string>
-    <string name="setting_text_size">Розмір тексту</string>
+    <string name="setting_interface_size">Розмір інтерфейсу</string>
     <string name="setting_language">Мова застосунку</string>
     <string name="setting_sort_all">Сортувати все за</string>
     <string name="setting_reverse">Зворотний порядок</string>

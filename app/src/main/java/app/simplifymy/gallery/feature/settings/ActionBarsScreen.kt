@@ -47,6 +47,7 @@ import app.simplifymy.gallery.core.model.BarAction
 import app.simplifymy.gallery.core.model.BarLayout
 import app.simplifymy.gallery.ui.component.GalleryIcons
 import app.simplifymy.gallery.ui.component.icon
+import app.simplifymy.gallery.ui.component.iconSize
 import app.simplifymy.gallery.ui.theme.GalleryTheme
 import app.simplifymy.gallery.ui.theme.Spacing
 
@@ -188,7 +189,7 @@ private fun ActionBarEditor(title: String, layout: BarLayout, onChange: (BarLayo
                     ) {
                         if (slot == null) {
                             Box(Modifier.weight(1f).height(1.dp).background(colors.hairline))
-                            Icon(GalleryIcons.More, contentDescription = null, tint = colors.textFaint, modifier = Modifier.size(14.dp))
+                            Icon(GalleryIcons.More, contentDescription = null, tint = colors.textFaint, modifier = Modifier.iconSize(14.dp))
                             Text(stringResource(R.string.actions_in_menu), style = GalleryTheme.type.meta, color = colors.textFaint)
                             Box(Modifier.weight(1f).height(1.dp).background(colors.hairline))
                         } else {
@@ -197,7 +198,7 @@ private fun ActionBarEditor(title: String, layout: BarLayout, onChange: (BarLayo
                                 checked = on,
                                 modifier = Modifier.clickable { onChange(slots.toLayout(layout.hidden).shown(slot, !on)) },
                             )
-                            Icon(slot.icon, contentDescription = null, tint = if (on) colors.text else colors.textFaint, modifier = Modifier.size(18.dp))
+                            Icon(slot.icon, contentDescription = null, tint = if (on) colors.text else colors.textFaint, modifier = Modifier.iconSize(18.dp))
                             Text(
                                 stringResource(slot.labelRes),
                                 style = GalleryTheme.type.body,
@@ -210,7 +211,7 @@ private fun ActionBarEditor(title: String, layout: BarLayout, onChange: (BarLayo
                             contentDescription = null,
                             tint = colors.textFaint,
                             modifier = Modifier
-                                .size(20.dp)
+                                .iconSize(20.dp)
                                 .pointerInput(slot, layout) {
                                     detectDragGestures(
                                         onDragStart = { start(slot) },

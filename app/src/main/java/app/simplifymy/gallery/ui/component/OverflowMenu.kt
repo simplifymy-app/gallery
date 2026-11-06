@@ -64,7 +64,7 @@ fun MenuEntry(
             Text(label, style = GalleryTheme.type.body, color = GalleryTheme.colors.text)
         },
         leadingIcon = icon?.let {
-            { Icon(it, contentDescription = null, tint = GalleryTheme.colors.textMuted, modifier = Modifier.size(18.dp)) }
+            { Icon(it, contentDescription = null, tint = GalleryTheme.colors.textMuted, modifier = Modifier.iconSize(18.dp)) }
         },
         trailingIcon = value?.let {
             {
@@ -110,7 +110,7 @@ fun <T> DropdownSetting(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 Text(optionLabel(selected), style = GalleryTheme.type.label, color = colors.text)
-                Icon(GalleryIcons.Chevron, contentDescription = null, tint = colors.textMuted, modifier = Modifier.size(14.dp))
+                Icon(GalleryIcons.Chevron, contentDescription = null, tint = colors.textMuted, modifier = Modifier.iconSize(14.dp))
             }
             DropdownMenu(
                 expanded = open,

@@ -39,11 +39,12 @@ enum class GalleryFont(val label: String, @StringRes val labelRes: Int? = null) 
     }
 }
 
-enum class TextScale(val label: String, val factor: Float) {
-    Small("S", 0.9f),
-    Default("M", 1f),
-    Large("L", 1.12f),
-    Huge("XL", 1.26f),
+enum class TextScale(val label: String, val factor: Float, val iconFactor: Float) {
+    Small("S", 0.9f, 1f),
+    Default("M", 1f, 1f),
+    Large("L", 1.12f, 1.2f),
+    Huge("XL", 1.26f, 1.4f),
+    Giant("XXL", 1.42f, 1.6f),
 }
 
 private val Mono = FontFamily(

@@ -67,7 +67,7 @@
     <string name="setting_contrast">Contraste du texte</string>
     <string name="setting_corner_radius">Rayon des coins</string>
     <string name="setting_font">Police</string>
-    <string name="setting_text_size">Taille du texte</string>
+    <string name="setting_interface_size">Taille de l’interface</string>
     <string name="setting_language">Langue de l’app</string>
     <string name="setting_sort_all">Tout trier par</string>
     <string name="setting_reverse">Ordre inversé</string>

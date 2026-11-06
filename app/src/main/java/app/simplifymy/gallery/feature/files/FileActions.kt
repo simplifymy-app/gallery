@@ -38,6 +38,7 @@ import app.simplifymy.gallery.core.model.Medium
 import app.simplifymy.gallery.ui.component.GalleryIcons
 import app.simplifymy.gallery.ui.component.GallerySheet
 import app.simplifymy.gallery.ui.component.TextDialog
+import app.simplifymy.gallery.ui.component.iconSize
 import app.simplifymy.gallery.ui.formatCount
 import app.simplifymy.gallery.ui.theme.GalleryTheme
 import app.simplifymy.gallery.ui.theme.Spacing
@@ -165,7 +166,7 @@ private fun SheetRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        if (icon != null) Icon(icon, contentDescription = null, tint = colors.text, modifier = Modifier.size(20.dp))
+        if (icon != null) Icon(icon, contentDescription = null, tint = colors.text, modifier = Modifier.iconSize(20.dp))
         Column(Modifier.weight(1f)) {
             Text(title, style = GalleryTheme.type.body, color = colors.text, maxLines = 1, overflow = TextOverflow.Ellipsis)
             if (subtitle != null) {

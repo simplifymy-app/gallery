@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import app.simplifymy.gallery.R
 import app.simplifymy.gallery.ui.component.GalleryIcons
 import app.simplifymy.gallery.ui.component.IconAction
+import app.simplifymy.gallery.ui.component.iconSize
 import app.simplifymy.gallery.ui.theme.GalleryFont
 import app.simplifymy.gallery.ui.theme.GalleryTheme
 import app.simplifymy.gallery.ui.theme.Spacing
@@ -243,7 +244,7 @@ private fun LinkRow(label: String, hint: String, onClick: () -> Unit) {
             GalleryIcons.Chevron,
             contentDescription = null,
             tint = colors.textMuted,
-            modifier = Modifier.size(16.dp).rotate(-90f),
+            modifier = Modifier.iconSize(16.dp).rotate(-90f),
         )
     }
 }

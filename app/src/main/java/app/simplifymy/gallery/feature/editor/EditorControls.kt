@@ -56,6 +56,7 @@ import androidx.compose.foundation.Image
 import app.simplifymy.gallery.R
 import app.simplifymy.gallery.ui.component.GalleryIcons
 import app.simplifymy.gallery.ui.component.IconAction
+import app.simplifymy.gallery.ui.component.iconSize
 import app.simplifymy.gallery.ui.theme.ControlRadius
 import app.simplifymy.gallery.ui.theme.GalleryTheme
 import app.simplifymy.gallery.ui.theme.Spacing
@@ -192,7 +193,7 @@ fun ToolItem(icon: ImageVector, label: String, selected: Boolean, onClick: () ->
                     selected -> colors.accent
                     else -> colors.text
                 },
-                modifier = Modifier.size(22.dp),
+                modifier = Modifier.iconSize(22.dp),
             )
         }
         Text(
@@ -256,7 +257,7 @@ fun ResetTile(onClick: () -> Unit) {
             Modifier.size(60.dp).clip(RoundedCornerShape(GalleryTheme.corners.radius)).background(colors.surface),
             contentAlignment = Alignment.Center,
         ) {
-            Icon(GalleryIcons.Reset, contentDescription = null, tint = colors.textMuted, modifier = Modifier.size(20.dp))
+            Icon(GalleryIcons.Reset, contentDescription = null, tint = colors.textMuted, modifier = Modifier.iconSize(20.dp))
         }
         Text(stringResource(R.string.action_reset), style = GalleryTheme.type.label.scaled(0.8f), color = colors.textMuted)
     }

@@ -63,6 +63,7 @@ import app.simplifymy.gallery.ui.component.GalleryIcons
 import app.simplifymy.gallery.ui.component.IconAction
 import app.simplifymy.gallery.ui.component.MenuEntry
 import app.simplifymy.gallery.ui.component.OverflowMenu
+import app.simplifymy.gallery.ui.component.iconSize
 import app.simplifymy.gallery.ui.theme.ControlRadius
 import app.simplifymy.gallery.ui.theme.GalleryTheme
 import java.util.Locale
@@ -433,7 +434,7 @@ private fun TabBar(selected: EditorTab, onPick: (EditorTab) -> Unit) {
                     tab.icon,
                     contentDescription = stringResource(tab.labelRes),
                     tint = if (on) colors.accent else colors.textFaint,
-                    modifier = Modifier.size(19.dp),
+                    modifier = Modifier.iconSize(19.dp),
                 )
                 Box(Modifier.height(5.dp))
                 Text(

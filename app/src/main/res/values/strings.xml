@@ -67,7 +67,7 @@
     <string name="setting_contrast">Text contrast</string>
     <string name="setting_corner_radius">Corner radius</string>
     <string name="setting_font">Font</string>
-    <string name="setting_text_size">Text size</string>
+    <string name="setting_interface_size">Interface size</string>
     <string name="setting_language">App language</string>
     <string name="setting_sort_all">Sort everything by</string>
     <string name="setting_reverse">Reverse order</string>

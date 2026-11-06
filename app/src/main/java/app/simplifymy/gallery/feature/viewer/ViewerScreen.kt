@@ -71,6 +71,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.simplifymy.gallery.ui.component.iconSize
 import coil3.compose.AsyncImage
 import app.simplifymy.gallery.core.media.MediaDetails
 import app.simplifymy.gallery.core.media.MetadataEdit
@@ -443,7 +444,7 @@ private fun VideoPoster(medium: Medium, onToggleChrome: () -> Unit) {
             contentScale = ContentScale.Fit,
             modifier = Modifier.fillMaxSize(),
         )
-        Icon(GalleryIcons.Play, contentDescription = null, tint = CHROME_TEXT, modifier = Modifier.size(40.dp))
+        Icon(GalleryIcons.Play, contentDescription = null, tint = CHROME_TEXT, modifier = Modifier.iconSize(40.dp))
     }
 }
 
@@ -528,7 +529,7 @@ private fun DetailsPanel(medium: Medium, details: MediaDetails, onClose: () -> U
                 GalleryIcons.Close,
                 contentDescription = null,
                 tint = CHROME_TEXT.copy(alpha = 0.5f),
-                modifier = Modifier.size(16.dp).clickable(onClick = onClose),
+                modifier = Modifier.iconSize(16.dp).clickable(onClick = onClose),
             )
         }
         DetailRow(stringResource(R.string.details_size), formatSize(medium.size))

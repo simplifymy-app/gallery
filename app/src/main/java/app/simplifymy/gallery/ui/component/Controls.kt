@@ -38,13 +38,13 @@ fun IconAction(
 ) {
     Box(
         modifier = modifier
-            .size(Spacing.hitTarget)
+            .size(GalleryTheme.hitTarget)
             .alpha(if (enabled) 1f else 0.38f)
             .clip(RoundedCornerShape(ControlRadius))
             .clickable(enabled = enabled, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
-        Icon(icon, contentDescription = label, tint = tint, modifier = Modifier.size(20.dp))
+        Icon(icon, contentDescription = label, tint = tint, modifier = Modifier.iconSize(20.dp))
     }
 }
 
@@ -95,7 +95,7 @@ fun Chip(
         val content = if (selected) colors.onAccent else colors.textMuted
         Text(label, style = GalleryTheme.type.label, color = content)
         if (trailingIcon != null) {
-            Icon(trailingIcon, contentDescription = null, tint = content, modifier = Modifier.size(12.dp))
+            Icon(trailingIcon, contentDescription = null, tint = content, modifier = Modifier.iconSize(12.dp))
         }
     }
 }

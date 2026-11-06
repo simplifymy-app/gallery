@@ -14,9 +14,6 @@ import androidx.compose.ui.unit.dp
 import app.simplifymy.gallery.core.model.BarAction
 import app.simplifymy.gallery.core.model.BarLayout
 import app.simplifymy.gallery.ui.theme.GalleryTheme
-import app.simplifymy.gallery.ui.theme.Spacing
-
-private val ActionSlot = Spacing.hitTarget + 12.dp
 
 val BarAction.icon: ImageVector
     get() = when (this) {
@@ -40,7 +37,7 @@ fun ActionBar(
     tint: Color = GalleryTheme.colors.text,
 ) {
     BoxWithConstraints(modifier.fillMaxWidth()) {
-        val fitted = layout.fitting((maxWidth / ActionSlot).toInt())
+        val fitted = layout.fitting((maxWidth / (GalleryTheme.hitTarget + 12.dp)).toInt())
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly,

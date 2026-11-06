@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import app.simplifymy.gallery.R
 import app.simplifymy.gallery.ui.component.GalleryIcons
 import app.simplifymy.gallery.ui.component.IconAction
+import app.simplifymy.gallery.ui.component.iconSize
 import app.simplifymy.gallery.ui.theme.ControlRadius
 import app.simplifymy.gallery.ui.theme.GalleryTheme
 import app.simplifymy.gallery.ui.theme.Spacing
@@ -156,7 +157,7 @@ private fun LayerAction(icon: androidx.compose.ui.graphics.vector.ImageVector, l
         Modifier.size(40.dp).clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
-        Icon(icon, contentDescription = label, tint = GalleryTheme.colors.text, modifier = Modifier.size(18.dp))
+        Icon(icon, contentDescription = label, tint = GalleryTheme.colors.text, modifier = Modifier.iconSize(18.dp))
     }
 }
 

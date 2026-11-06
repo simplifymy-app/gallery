@@ -11,6 +11,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 
 @Composable
 fun ThemeMode.isDark(): Boolean = when (this) {
@@ -22,6 +23,7 @@ fun ThemeMode.isDark(): Boolean = when (this) {
 private val LocalColors = staticCompositionLocalOf<GalleryColors> { error("No GalleryTheme") }
 private val LocalType = staticCompositionLocalOf { galleryType(GalleryFont.SpaceGrotesk, TextScale.Default) }
 private val LocalCorners = staticCompositionLocalOf { CornerStyle.Default }
+private val LocalIconScale = staticCompositionLocalOf { TextScale.Default.iconFactor }
 
 object GalleryTheme {
     val colors: GalleryColors
@@ -30,6 +32,10 @@ object GalleryTheme {
         @Composable @ReadOnlyComposable get() = LocalType.current
     val corners: CornerStyle
         @Composable @ReadOnlyComposable get() = LocalCorners.current
+    val iconScale: Float
+        @Composable @ReadOnlyComposable get() = LocalIconScale.current
+    val hitTarget: Dp
+        @Composable @ReadOnlyComposable get() = Spacing.hitTarget * LocalIconScale.current
 }
 
 @Composable
@@ -52,6 +58,7 @@ fun GalleryTheme(
         LocalColors provides colors,
         LocalType provides type,
         LocalCorners provides corners,
+        LocalIconScale provides textScale.iconFactor,
     ) {
         MaterialTheme(
             colorScheme = colors.toMaterial(dark),

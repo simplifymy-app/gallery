@@ -58,6 +58,7 @@ import androidx.media3.ui.compose.PlayerSurface
 import app.simplifymy.gallery.core.media.Panorama
 import app.simplifymy.gallery.ui.component.GalleryIcons
 import app.simplifymy.gallery.ui.component.MenuEntry
+import app.simplifymy.gallery.ui.component.iconSize
 import app.simplifymy.gallery.ui.formatDuration
 import app.simplifymy.gallery.ui.theme.ControlRadius
 import app.simplifymy.gallery.ui.theme.GalleryTheme
@@ -188,7 +189,7 @@ fun VideoPlayer(
                     if (playing) GalleryIcons.Pause else GalleryIcons.Play,
                     contentDescription = null,
                     tint = CHROME,
-                    modifier = Modifier.size(26.dp),
+                    modifier = Modifier.iconSize(26.dp),
                 )
             }
         }
@@ -229,7 +230,7 @@ fun VideoPlayer(
                     contentDescription = null,
                     tint = CHROME,
                     modifier = Modifier
-                        .size(18.dp)
+                        .iconSize(18.dp)
                         .clickable {
                             muted = !muted
                             player.volume = if (muted) 0f else 1f
