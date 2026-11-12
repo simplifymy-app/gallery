@@ -22,8 +22,8 @@ android {
         applicationId = "app.simplifymy.gallery"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 39
-        versionName = "1.5.5"
+        versionCode = 40
+        versionName = "1.5.6"
         testInstrumentationRunner = "app.simplifymy.gallery.GalleryTestRunner"
         vectorDrawables.useSupportLibrary = true
     }
