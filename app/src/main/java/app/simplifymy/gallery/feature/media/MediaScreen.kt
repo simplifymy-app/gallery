@@ -103,6 +103,7 @@ import kotlinx.coroutines.delay
 fun MediaScreen(
     onBack: () -> Unit,
     onOpenMedium: (Medium) -> Unit,
+    onOpenSearch: () -> Unit,
     onOpenSettings: () -> Unit,
     viewModel: MediaViewModel = hiltViewModel(),
 ) {
@@ -164,6 +165,12 @@ fun MediaScreen(
                 island = overlay,
                 onBack = onBack,
                 menu = {
+                    IconAction(
+                        GalleryIcons.Search,
+                        onClick = onOpenSearch,
+                        modifier = Modifier.island(overlay),
+                        label = stringResource(R.string.action_search),
+                    )
                     OverflowMenu(Modifier.island(overlay)) { dismiss ->
                         MenuEntry(stringResource(R.string.menu_refresh)) { dismiss(); viewModel.refresh() }
                         MenuEntry(stringResource(R.string.menu_group_by), value = stringResource(state.settings.grouping.labelRes)) {

@@ -52,6 +52,7 @@ fun SearchScreen(
 ) {
     val query by viewModel.query.collectAsStateWithLifecycle()
     val results by viewModel.results.collectAsStateWithLifecycle()
+    val columns by viewModel.columns.collectAsStateWithLifecycle()
     val colors = GalleryTheme.colors
     val focus = remember { FocusRequester() }
 
@@ -98,7 +99,7 @@ fun SearchScreen(
         }
 
         LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
+            columns = GridCells.Fixed(columns),
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(horizontal = Spacing.gridGutter),
             horizontalArrangement = Arrangement.spacedBy(Spacing.gridGutter),

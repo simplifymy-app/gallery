@@ -54,6 +54,8 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
@@ -86,12 +88,15 @@ import app.simplifymy.gallery.ui.formatSize
 import app.simplifymy.gallery.ui.theme.GalleryTheme
 import app.simplifymy.gallery.ui.theme.Spacing
 import me.saket.telephoto.zoomable.coil3.ZoomableAsyncImage
+import me.saket.telephoto.zoomable.DoubleClickToZoomListener
 import me.saket.telephoto.zoomable.ZoomSpec
+import me.saket.telephoto.zoomable.ZoomableState
 import me.saket.telephoto.zoomable.ZoomableImageState
 import me.saket.telephoto.zoomable.rememberZoomableImageState
 import me.saket.telephoto.zoomable.rememberZoomableState
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.min
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -210,13 +215,7 @@ fun ViewerScreen(
                         snapshotFlow { (zoom.zoomableState.zoomFraction ?: 0f) > 0.01f }.collect { zoomed = it }
                     }
                 }
-                ZoomableAsyncImage(
-                    model = medium.uri,
-                    contentDescription = null,
-                    state = zoom,
-                    modifier = Modifier.fillMaxSize(),
-                    onClick = { chrome = !chrome },
-                )
+                ZoomablePhoto(medium.uri, zoom, onClick = { chrome = !chrome })
             }
         }
 
@@ -324,13 +323,7 @@ fun StandaloneViewer(uri: Uri, isVideo: Boolean, panoramaForAll: Boolean, onBack
                 panorama = sphere,
             )
         } else {
-            ZoomableAsyncImage(
-                model = uri,
-                contentDescription = null,
-                state = rememberDeepZoomState(),
-                modifier = Modifier.fillMaxSize(),
-                onClick = { chrome = !chrome },
-            )
+            ZoomablePhoto(uri, rememberDeepZoomState(), onClick = { chrome = !chrome })
         }
         AnimatedVisibility(
             visible = chrome,
@@ -365,6 +358,38 @@ private fun PanoramaToggle(on: Boolean, onToggle: () -> Unit) {
 
 private const val MAX_ZOOM_OF_PIXELS = 2f
 private const val MAX_ZOOM_OF_SCREEN = 6f
+private const val DOUBLE_TAP_ZOOM_OF_SCREEN = 2f
+
+@Composable
+private fun ZoomablePhoto(model: Any, state: ZoomableImageState, onClick: () -> Unit) {
+    var viewport by remember { mutableStateOf(IntSize.Zero) }
+    val doubleTap = remember { FillScreenOnDoubleTap { viewport } }
+    ZoomableAsyncImage(
+        model = model,
+        contentDescription = null,
+        state = state,
+        modifier = Modifier.fillMaxSize().onSizeChanged { viewport = it },
+        onClick = { onClick() },
+        onDoubleClick = doubleTap,
+    )
+}
+
+private class FillScreenOnDoubleTap(private val viewport: () -> IntSize) : DoubleClickToZoomListener {
+    override suspend fun onDoubleClick(state: ZoomableState, centroid: Offset) {
+        val content = state.contentTransformation.takeIf { it.isSpecified }?.contentSize ?: return
+        val screen = viewport()
+        if ((state.zoomFraction ?: 0f) > 0.01f || content.isEmpty() || screen == IntSize.Zero) {
+            state.resetZoom()
+            return
+        }
+        val widthScale = screen.width / content.width
+        val heightScale = screen.height / content.height
+        val fit = min(widthScale, heightScale)
+        val fill = max(widthScale, heightScale)
+        val target = max(fill, fit * DOUBLE_TAP_ZOOM_OF_SCREEN).coerceAtMost(state.zoomSpec.maximum.factor)
+        state.zoomTo(target, centroid)
+    }
+}
 
 @Composable
 private fun rememberDeepZoomState(): ZoomableImageState {

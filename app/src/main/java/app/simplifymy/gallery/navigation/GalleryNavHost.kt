@@ -49,6 +49,7 @@ data class Editor(val mediumId: Long)
 fun GalleryNavHost(start: Any = Folders, onExit: () -> Unit = {}) {
     val navController = rememberNavController()
     val openSettings = { navController.navigate(Settings) }
+    val openSearch = { navController.navigate(Search) }
     val back: () -> Unit = { if (!navController.popBackStack()) onExit() }
 
     NavHost(
@@ -60,7 +61,7 @@ fun GalleryNavHost(start: Any = Folders, onExit: () -> Unit = {}) {
         composable<Folders> {
             FoldersScreen(
                 onOpenFolder = { navController.navigate(Media(it.bucketId, it.name)) },
-                onOpenSearch = { navController.navigate(Search) },
+                onOpenSearch = { openSearch() },
                 onOpenSettings = { openSettings() },
                 onOpenIgnored = { navController.navigate(IgnoredFolders) },
             )
@@ -69,6 +70,7 @@ fun GalleryNavHost(start: Any = Folders, onExit: () -> Unit = {}) {
             MediaScreen(
                 onBack = navController::popBackStack,
                 onOpenMedium = { navController.navigate(Viewer(entry.toRoute<Media>().bucketId, it.id)) },
+                onOpenSearch = { openSearch() },
                 onOpenSettings = { openSettings() },
             )
         }
