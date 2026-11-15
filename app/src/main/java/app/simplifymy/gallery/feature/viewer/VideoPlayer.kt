@@ -45,6 +45,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
@@ -90,6 +91,7 @@ fun VideoPlayer(
     onZoomedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     panorama: Panorama? = null,
+    controlsBottom: Dp = VIDEO_CONTROLS_BOTTOM,
 ) {
     val context = LocalContext.current
     val player = remember(uri) { ExoPlayer.Builder(context).build() }
@@ -198,7 +200,7 @@ fun VideoPlayer(
             visible = controlsVisible,
             enter = fadeIn(),
             exit = fadeOut(),
-            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = VIDEO_CONTROLS_BOTTOM),
+            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = controlsBottom),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),

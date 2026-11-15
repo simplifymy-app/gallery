@@ -115,11 +115,13 @@ fun ViewerScreen(
     var chrome by remember { mutableStateOf(true) }
     var info by remember { mutableStateOf(false) }
     var zoomed by remember { mutableStateOf(false) }
+    var bottomBarHeight by remember { mutableStateOf(VIDEO_CONTROLS_BOTTOM) }
     var fileAction by remember { mutableStateOf<FileAction?>(null) }
     var metadata by remember { mutableStateOf(false) }
     var pendingEdit by remember { mutableStateOf<Pair<Medium, MetadataEdit>?>(null) }
     val pull = remember { Animatable(0f) }
-    val swipeThreshold = with(LocalDensity.current) { SWIPE_THRESHOLD.toPx() }
+    val density = LocalDensity.current
+    val swipeThreshold = with(density) { SWIPE_THRESHOLD.toPx() }
     val scope = rememberCoroutineScope()
 
     val trashLauncher = rememberLauncherForActivityResult(
@@ -202,6 +204,7 @@ fun ViewerScreen(
                         },
                         onZoomedChange = { zoomed = it },
                         panorama = sphere,
+                        controlsBottom = bottomBarHeight,
                     )
                 } else {
                     VideoPoster(medium) { chrome = !chrome }
@@ -243,9 +246,9 @@ fun ViewerScreen(
             exit = fadeOut(),
             modifier = Modifier.align(Alignment.BottomCenter).padding(
                 bottom = if (current.type == MediaType.Video) {
-                    VIDEO_CONTROLS_BOTTOM + VIDEO_CONTROLS_HEIGHT + 12.dp
+                    bottomBarHeight + VIDEO_CONTROLS_HEIGHT + 12.dp
                 } else {
-                    108.dp
+                    bottomBarHeight + 12.dp
                 },
             ),
         ) {
@@ -256,7 +259,9 @@ fun ViewerScreen(
             visible = chrome,
             enter = fadeIn() + slideInVertically { it / 3 },
             exit = fadeOut() + slideOutVertically { it / 3 },
-            modifier = Modifier.align(Alignment.BottomCenter),
+            modifier = Modifier.align(Alignment.BottomCenter).onSizeChanged { size ->
+                if (size.height > 0) bottomBarHeight = with(density) { size.height.toDp() }
+            },
         ) {
             BottomChrome(
                 layout = state.actions.only { it != BarAction.Edit || current.type == MediaType.Image },
