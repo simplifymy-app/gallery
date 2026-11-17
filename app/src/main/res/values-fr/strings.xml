@@ -320,6 +320,8 @@
     <string name="folder_recent">Récents</string>
     <string name="setting_show_recent">Afficher Récents</string>
     <string name="setting_show_recent_hint">Toutes les photos et vidéos, les plus récentes d\'abord, en première vignette</string>
+    <string name="setting_viewer_scrim">Fond des barres de la visionneuse</string>
+    <string name="setting_viewer_scrim_hint">Opacité des barres au-dessus d’une photo ou d’une vidéo en plein écran. Tout à droite : noir opaque.</string>
     <string name="setting_panorama_all">360° pour tous les médias</string>
     <string name="setting_panorama_all_hint">Le bouton 360° apparaît sur chaque photo et vidéo. Les fichiers sans métadonnées 360° s’ouvrent à plat et le bouton les affiche en sphère.</string>
     <string name="action_metadata">Métadonnées</string>

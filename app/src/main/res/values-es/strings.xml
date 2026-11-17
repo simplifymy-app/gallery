@@ -320,6 +320,8 @@
     <string name="folder_recent">Recientes</string>
     <string name="setting_show_recent">Mostrar Recientes</string>
     <string name="setting_show_recent_hint">Todas las fotos y vídeos, los más nuevos primero, como primer mosaico</string>
+    <string name="setting_viewer_scrim">Fondo de las barras del visor</string>
+    <string name="setting_viewer_scrim_hint">Qué tan oscuras son las barras sobre una foto o un vídeo a pantalla completa. Desliza a la derecha para negro sólido.</string>
     <string name="setting_panorama_all">360° para todo el contenido</string>
     <string name="setting_panorama_all_hint">El botón 360° aparece en todas las fotos y vídeos. Los archivos sin metadatos 360° se abren planos y el botón los muestra como esfera.</string>
     <string name="action_metadata">Metadatos</string>

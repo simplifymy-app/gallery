@@ -28,6 +28,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -63,6 +65,7 @@ import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.platform.LocalConfiguration
@@ -103,6 +106,22 @@ import java.util.Date
 import java.util.Locale
 
 private val CHROME_TEXT = Color(0xFFEDEDEF)
+private val TOP_TINT = Color(0xAE000000)
+private val BOTTOM_TINT = Color(0xB8000000)
+
+private val TOP_INSETS
+    @Composable get() = WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
+
+private val BOTTOM_INSETS
+    @Composable get() = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
+
+private fun topScrim(strength: Float) = Brush.verticalGradient(
+    listOf(lerp(TOP_TINT, Color.Black, strength), lerp(Color.Transparent, Color.Black, strength)),
+)
+
+private fun bottomScrim(strength: Float) = Brush.verticalGradient(
+    listOf(lerp(Color.Transparent, Color.Black, strength), lerp(BOTTOM_TINT, Color.Black, strength)),
+)
 
 @Composable
 fun ViewerScreen(
@@ -205,6 +224,7 @@ fun ViewerScreen(
                         onZoomedChange = { zoomed = it },
                         panorama = sphere,
                         controlsBottom = bottomBarHeight,
+                        scrim = state.scrim,
                     )
                 } else {
                     VideoPoster(medium) { chrome = !chrome }
@@ -233,6 +253,7 @@ fun ViewerScreen(
                 infoOpen = info,
                 panorama = panorama.available,
                 panoramaOn = sphere != null,
+                scrim = state.scrim,
                 onTogglePanorama = panorama.toggle,
                 onBack = onBack,
                 onToggleFavorite = { viewModel.toggleFavorite(current) },
@@ -264,6 +285,7 @@ fun ViewerScreen(
             },
         ) {
             BottomChrome(
+                scrim = state.scrim,
                 layout = state.actions.only { it != BarAction.Edit || current.type == MediaType.Image },
                 onAction = { action ->
                     when (action) {
@@ -307,7 +329,7 @@ fun ViewerScreen(
 }
 
 @Composable
-fun StandaloneViewer(uri: Uri, isVideo: Boolean, panoramaForAll: Boolean, onBack: () -> Unit) {
+fun StandaloneViewer(uri: Uri, isVideo: Boolean, panoramaForAll: Boolean, scrim: Float, onBack: () -> Unit) {
     var chrome by remember { mutableStateOf(true) }
     val panorama = rememberPanoramaMode(uri, isVideo, panoramaForAll)
     val sphere = panorama.sphere
@@ -326,6 +348,7 @@ fun StandaloneViewer(uri: Uri, isVideo: Boolean, panoramaForAll: Boolean, onBack
                 onEnded = {},
                 onZoomedChange = {},
                 panorama = sphere,
+                scrim = scrim,
             )
         } else {
             ZoomablePhoto(uri, rememberDeepZoomState(), onClick = { chrome = !chrome })
@@ -339,8 +362,8 @@ fun StandaloneViewer(uri: Uri, isVideo: Boolean, panoramaForAll: Boolean, onBack
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Brush.verticalGradient(listOf(Color(0xAE000000), Color.Transparent)))
-                    .windowInsetsPadding(WindowInsets.safeDrawing)
+                    .background(topScrim(scrim))
+                    .windowInsetsPadding(TOP_INSETS)
                     .padding(8.dp),
             ) {
                 IconAction(GalleryIcons.Back, onClick = onBack, tint = CHROME_TEXT)
@@ -484,6 +507,7 @@ private fun TopChrome(
     infoOpen: Boolean,
     panorama: Boolean,
     panoramaOn: Boolean,
+    scrim: Float,
     onTogglePanorama: () -> Unit,
     onBack: () -> Unit,
     onToggleFavorite: () -> Unit,
@@ -493,8 +517,8 @@ private fun TopChrome(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Brush.verticalGradient(listOf(Color(0xAE000000), Color.Transparent)))
-            .windowInsetsPadding(WindowInsets.safeDrawing)
+            .background(topScrim(scrim))
+            .windowInsetsPadding(TOP_INSETS)
             .padding(horizontal = 8.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -525,14 +549,14 @@ private fun TopChrome(
 }
 
 @Composable
-private fun BottomChrome(layout: BarLayout, onAction: (BarAction) -> Unit) {
+private fun BottomChrome(scrim: Float, layout: BarLayout, onAction: (BarAction) -> Unit) {
     ActionBar(
         layout = layout,
         onAction = onAction,
         tint = CHROME_TEXT,
         modifier = Modifier
-            .background(Brush.verticalGradient(listOf(Color.Transparent, Color(0xB8000000))))
-            .windowInsetsPadding(WindowInsets.safeDrawing)
+            .background(bottomScrim(scrim))
+            .windowInsetsPadding(BOTTOM_INSETS)
             .padding(vertical = 12.dp),
     )
 }

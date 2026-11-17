@@ -71,6 +71,7 @@ class SettingsViewModel @Inject constructor(
     fun setAutoplayNextVideo(value: Boolean) = update { repository.setAutoplayNextVideo(value) }
     fun setBackgroundPlayback(value: Boolean) = update { repository.setBackgroundPlayback(value) }
     fun setPanoramaForAll(value: Boolean) = update { repository.setPanoramaForAll(value) }
+    fun setViewerScrim(value: Float) = update { repository.setViewerScrim(value) }
     fun setSelectionBar(value: BarLayout) = update { repository.setSelectionBar(value) }
     fun setViewerBar(value: BarLayout) = update { repository.setViewerBar(value) }
     fun setLanguage(value: Language, onApplied: () -> Unit) = viewModelScope.launch {

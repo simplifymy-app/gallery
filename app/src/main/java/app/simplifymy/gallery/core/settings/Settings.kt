@@ -7,6 +7,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -59,6 +60,7 @@ data class GallerySettings(
     val autoplayNextVideo: Boolean = false,
     val backgroundPlayback: Boolean = false,
     val panoramaForAll: Boolean = false,
+    val viewerScrim: Float = 0f,
     val selectionBar: BarLayout = BarLayout.Selection,
     val viewerBar: BarLayout = BarLayout.Viewer,
     val language: Language = Language.System,
@@ -96,6 +98,7 @@ private object Keys {
     val backgroundPlayback = booleanPreferencesKey("background_playback")
     val copyPathAction = booleanPreferencesKey("copy_path_action")
     val panoramaForAll = booleanPreferencesKey("panorama_for_all")
+    val viewerScrim = floatPreferencesKey("viewer_scrim")
     val selectionBar = stringPreferencesKey("selection_bar")
     val viewerBar = stringPreferencesKey("viewer_bar")
     val language = stringPreferencesKey("language")
@@ -137,6 +140,7 @@ class SettingsRepository @Inject constructor(@ApplicationContext private val con
             autoplayNextVideo = p[Keys.autoplayNextVideo] ?: defaults.autoplayNextVideo,
             backgroundPlayback = p[Keys.backgroundPlayback] ?: defaults.backgroundPlayback,
             panoramaForAll = p[Keys.panoramaForAll] ?: defaults.panoramaForAll,
+            viewerScrim = (p[Keys.viewerScrim] ?: defaults.viewerScrim).coerceIn(0f, 1f),
             selectionBar = BarLayout.decode(
                 p[Keys.selectionBar],
                 defaults.selectionBar.shown(BarAction.CopyPath, p[Keys.copyPathAction] == true),
@@ -169,6 +173,7 @@ class SettingsRepository @Inject constructor(@ApplicationContext private val con
     suspend fun setAutoplayNextVideo(value: Boolean) = put(Keys.autoplayNextVideo, value)
     suspend fun setBackgroundPlayback(value: Boolean) = put(Keys.backgroundPlayback, value)
     suspend fun setPanoramaForAll(value: Boolean) = put(Keys.panoramaForAll, value)
+    suspend fun setViewerScrim(value: Float) = put(Keys.viewerScrim, value.coerceIn(0f, 1f))
     suspend fun setSelectionBar(value: BarLayout) = put(Keys.selectionBar, value.encode())
     suspend fun setViewerBar(value: BarLayout) = put(Keys.viewerBar, value.encode())
     suspend fun setLanguage(value: Language) {

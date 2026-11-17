@@ -320,6 +320,8 @@
     <string name="folder_recent">Нещодавні</string>
     <string name="setting_show_recent">Показувати «Нещодавні»</string>
     <string name="setting_show_recent_hint">Усі фото й відео, найновіші спершу, першою плиткою</string>
+    <string name="setting_viewer_scrim">Тло панелей перегляду</string>
+    <string name="setting_viewer_scrim_hint">Наскільки темні панелі над фото чи відео на весь екран. Праворуч — суцільний чорний.</string>
     <string name="setting_panorama_all">360° для всіх медіа</string>
     <string name="setting_panorama_all_hint">Кнопка 360° зʼявляється на кожному фото й відео. Файли без 360° метаданих відкриваються пласкими, а сферу вмикає кнопка.</string>
     <string name="action_metadata">Метадані</string>

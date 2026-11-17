@@ -320,6 +320,8 @@
     <string name="folder_recent">Recent</string>
     <string name="setting_show_recent">Show Recent</string>
     <string name="setting_show_recent_hint">All photos and videos, newest first, as the first tile</string>
+    <string name="setting_viewer_scrim">Viewer bar background</string>
+    <string name="setting_viewer_scrim_hint">How dark the bars over a full-screen photo or video are. Slide right for solid black.</string>
     <string name="setting_panorama_all">Show 360° for all media</string>
     <string name="setting_panorama_all_hint">The 360° button appears on every photo and video. Files without 360° metadata open flat and switch to a sphere from the button.</string>
     <string name="action_metadata">Metadata</string>

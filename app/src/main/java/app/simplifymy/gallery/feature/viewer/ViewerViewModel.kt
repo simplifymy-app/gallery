@@ -36,6 +36,7 @@ data class ViewerUiState(
     val autoplayNextVideo: Boolean = false,
     val backgroundPlayback: Boolean = false,
     val panoramaForAll: Boolean = false,
+    val scrim: Float = 0f,
     val actions: BarLayout = BarLayout.Viewer,
 )
 
@@ -61,6 +62,7 @@ class ViewerViewModel @Inject constructor(
                 autoplayNextVideo = config.autoplayNextVideo,
                 backgroundPlayback = config.backgroundPlayback,
                 panoramaForAll = config.panoramaForAll,
+                scrim = config.viewerScrim,
                 actions = config.viewerBar,
             )
         }

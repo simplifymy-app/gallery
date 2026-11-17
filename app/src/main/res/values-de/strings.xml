@@ -320,6 +320,8 @@
     <string name="folder_recent">Neueste</string>
     <string name="setting_show_recent">„Neueste“ anzeigen</string>
     <string name="setting_show_recent_hint">Alle Fotos und Videos, die neuesten zuerst, als erste Kachel</string>
+    <string name="setting_viewer_scrim">Hintergrund der Ansichtsleisten</string>
+    <string name="setting_viewer_scrim_hint">Wie dunkel die Leisten über einem Foto oder Video im Vollbild sind. Ganz rechts ist durchgehend schwarz.</string>
     <string name="setting_panorama_all">360° für alle Medien</string>
     <string name="setting_panorama_all_hint">Die 360°-Schaltfläche erscheint bei jedem Foto und Video. Dateien ohne 360°-Metadaten öffnen flach und wechseln über die Schaltfläche zur Kugel.</string>
     <string name="action_metadata">Metadaten</string>

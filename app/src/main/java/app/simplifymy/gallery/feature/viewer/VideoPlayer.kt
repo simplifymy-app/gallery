@@ -92,6 +92,7 @@ fun VideoPlayer(
     modifier: Modifier = Modifier,
     panorama: Panorama? = null,
     controlsBottom: Dp = VIDEO_CONTROLS_BOTTOM,
+    scrim: Float = 0f,
 ) {
     val context = LocalContext.current
     val player = remember(uri) { ExoPlayer.Builder(context).build() }
@@ -203,7 +204,10 @@ fun VideoPlayer(
             modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = controlsBottom),
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Black.copy(alpha = scrim))
+                    .padding(horizontal = 20.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {

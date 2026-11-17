@@ -51,6 +51,7 @@ import app.simplifymy.gallery.core.model.Grouping
 import app.simplifymy.gallery.core.model.ScrollDirection
 import app.simplifymy.gallery.core.model.SortKey
 import app.simplifymy.gallery.core.settings.GallerySettings
+import app.simplifymy.gallery.feature.editor.ValueSlider
 import app.simplifymy.gallery.ui.component.AccentPicker
 import app.simplifymy.gallery.ui.component.DropdownSetting
 import app.simplifymy.gallery.ui.component.GalleryIcons
@@ -72,6 +73,7 @@ import app.simplifymy.gallery.ui.theme.Spacing
 import app.simplifymy.gallery.ui.theme.TextScale
 import app.simplifymy.gallery.ui.theme.ThemeMode
 import app.simplifymy.gallery.ui.theme.ThumbnailSpacing
+import kotlin.math.roundToInt
 
 private val COLUMN_RANGE = 2..6
 private const val CONTACT_URL = "https://www.simplifymy.app/contact/"
@@ -288,6 +290,11 @@ fun SettingsScreen(
                     stringResource(R.string.setting_actions_hint),
                     onOpenActionBars,
                 )
+                SliderRow(
+                    stringResource(R.string.setting_viewer_scrim),
+                    stringResource(R.string.setting_viewer_scrim_hint),
+                    (settings.viewerScrim * 100).roundToInt(),
+                ) { viewModel.setViewerScrim(it / 100f) }
                 ToggleRow(
                     stringResource(R.string.setting_panorama_all),
                     stringResource(R.string.setting_panorama_all_hint),
@@ -567,6 +574,24 @@ private fun PreviewCaption(
                 overflow = TextOverflow.Ellipsis,
             )
         }
+    }
+}
+
+@Composable
+private fun SliderRow(label: String, hint: String, percent: Int, onChange: (Int) -> Unit) {
+    val colors = GalleryTheme.colors
+    Column(Modifier.fillMaxWidth().padding(start = Spacing.screen, end = Spacing.screen, top = 9.dp)) {
+        Text(label, style = GalleryTheme.type.body, color = colors.text)
+        Text(hint, style = GalleryTheme.type.meta, color = colors.textFaint)
+        ValueSlider(
+            label = label,
+            value = percent,
+            range = 0..100,
+            onChange = onChange,
+            onStart = {},
+            onEnd = {},
+            labelWidth = 0.dp,
+        )
     }
 }
 
