@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.ContentObserver
 import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.DocumentsContract
@@ -45,13 +46,14 @@ class MediaStoreScanner @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
 
-    suspend fun scan(): List<MediumEntity> = withContext(Dispatchers.IO) {
-        read(IMAGES, BASE_COLUMNS, video = false) + read(VIDEOS, VIDEO_COLUMNS, video = true)
+    suspend fun scan(trashed: Boolean = false): List<MediumEntity> = withContext(Dispatchers.IO) {
+        read(IMAGES, BASE_COLUMNS, video = false, trashed) + read(VIDEOS, VIDEO_COLUMNS, video = true, trashed)
     }
 
-    private fun read(collection: Uri, columns: Array<String>, video: Boolean): List<MediumEntity> {
+    private fun read(collection: Uri, columns: Array<String>, video: Boolean, trashed: Boolean): List<MediumEntity> {
         val out = ArrayList<MediumEntity>(512)
-        context.contentResolver.query(collection, columns, null, null, null)?.use { c ->
+        val args = Bundle().apply { if (trashed) putInt(MediaStore.QUERY_ARG_MATCH_TRASHED, MediaStore.MATCH_ONLY) }
+        context.contentResolver.query(collection, columns, args, null)?.use { c ->
             val id = c.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
             val name = c.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME)
             val bucketId = c.getColumnIndexOrThrow(MediaStore.MediaColumns.BUCKET_ID)

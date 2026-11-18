@@ -356,4 +356,11 @@
     <string name="about_section_links">Liens</string>
     <string name="about_website">Site web</string>
     <string name="about_website_hint">simplifymy.app</string>
+    <string name="trash_title">Corbeille</string>
+    <string name="trash_hint">Les éléments supprimés sont effacés définitivement après 30 jours</string>
+    <string name="trash_empty">La corbeille est vide</string>
+    <string name="action_restore">Restaurer</string>
+    <string name="action_delete_forever">Supprimer définitivement</string>
+    <string name="editor_saved_to_pictures">Enregistré dans Pictures</string>
+    <string name="editor_save_failed">Impossible d\'enregistrer la photo</string>
 </resources>

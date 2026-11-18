@@ -356,4 +356,11 @@
     <string name="about_section_links">Посилання</string>
     <string name="about_website">Вебсайт</string>
     <string name="about_website_hint">simplifymy.app</string>
+    <string name="trash_title">Кошик</string>
+    <string name="trash_hint">Видалені файли зникають назавжди через 30 днів</string>
+    <string name="trash_empty">Кошик порожній</string>
+    <string name="action_restore">Відновити</string>
+    <string name="action_delete_forever">Видалити назавжди</string>
+    <string name="editor_saved_to_pictures">Збережено в папку Pictures</string>
+    <string name="editor_save_failed">Не вдалося зберегти фото</string>
 </resources>

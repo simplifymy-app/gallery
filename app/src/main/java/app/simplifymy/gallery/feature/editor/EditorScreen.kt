@@ -1,5 +1,7 @@
 package app.simplifymy.gallery.feature.editor
 
+import androidx.compose.ui.platform.LocalContext
+import android.widget.Toast
 import android.graphics.Bitmap
 import android.graphics.Paint
 import androidx.activity.compose.BackHandler
@@ -81,6 +83,8 @@ fun EditorScreen(
     val colors = GalleryTheme.colors
     var straightening by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
+    LaunchedEffect(state.notice) { state.notice?.let { Toast.makeText(context, it, Toast.LENGTH_LONG).show() } }
     LaunchedEffect(state.finished) { if (state.finished) onBack() }
     BackHandler(onBack = viewModel::requestClose)
 
@@ -297,7 +301,7 @@ private fun Preview(
         Modifier
             .aspectRatio(aspect)
             .then(if (aspect >= 1f) Modifier.fillMaxWidth() else Modifier.fillMaxHeight())
-            .then(if (overlay == Overlay.Crop) Modifier else Modifier.clip(RoundedCornerShape(2.dp)))
+            .then(if (overlay == Overlay.Crop || overlay == Overlay.Perspective) Modifier else Modifier.clip(RoundedCornerShape(2.dp)))
             .testTag(EDITOR_PREVIEW)
             .then(
                 if (!comparable) Modifier else Modifier.pointerInput(Unit) {
@@ -388,7 +392,7 @@ private fun Preview(
                 onCrop = {},
                 onEnd = {},
             )
-            Overlay.Perspective -> PerspectiveBox(edits.quad, viewModel::beginGesture, viewModel::moveCorner, viewModel::endGesture)
+            Overlay.Perspective -> PerspectiveBox(state.edits.quad, viewModel::beginGesture, viewModel::moveCorner, viewModel::endGesture)
             Overlay.Text -> TextOverlay(edits.texts, state.selectedText, viewModel)
             Overlay.None, Overlay.Draw -> Unit
         }

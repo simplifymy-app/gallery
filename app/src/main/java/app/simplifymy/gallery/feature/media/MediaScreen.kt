@@ -403,7 +403,7 @@ private fun GroupHeader(header: GridItem.Header) {
 }
 
 @Composable
-private fun MediaTile(
+internal fun MediaTile(
     medium: Medium,
     selected: Boolean,
     selecting: Boolean,

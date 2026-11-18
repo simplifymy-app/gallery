@@ -356,4 +356,11 @@
     <string name="about_section_links">Enlaces</string>
     <string name="about_website">Sitio web</string>
     <string name="about_website_hint">simplifymy.app</string>
+    <string name="trash_title">Papelera</string>
+    <string name="trash_hint">Los elementos eliminados se borran para siempre tras 30 días</string>
+    <string name="trash_empty">La papelera está vacía</string>
+    <string name="action_restore">Restaurar</string>
+    <string name="action_delete_forever">Eliminar para siempre</string>
+    <string name="editor_saved_to_pictures">Guardado en Pictures</string>
+    <string name="editor_save_failed">No se pudo guardar la foto</string>
 </resources>

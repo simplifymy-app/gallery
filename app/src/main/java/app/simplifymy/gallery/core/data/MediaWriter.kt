@@ -19,6 +19,10 @@ import java.io.OutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
+enum class CopyPlace { BesideOriginal, Pictures }
+
+private val PICTURES = "${android.os.Environment.DIRECTORY_PICTURES}/"
+
 @Singleton
 class MediaWriter @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -34,12 +38,17 @@ class MediaWriter @Inject constructor(
     fun writeRequest(media: List<Medium>): IntentSender =
         MediaStore.createWriteRequest(resolver, media.map(Medium::uri)).intentSender
 
-    suspend fun saveCopy(source: Medium, bitmap: Bitmap): Uri? = withContext(Dispatchers.IO) {
-        val folder = resolver.query(source.uri, arrayOf(MediaStore.MediaColumns.RELATIVE_PATH), null, null, null)
+    suspend fun saveCopy(source: Medium, bitmap: Bitmap): CopyPlace? = withContext(Dispatchers.IO) {
+        val beside = resolver.query(source.uri, arrayOf(MediaStore.MediaColumns.RELATIVE_PATH), null, null, null)
             ?.use { if (it.moveToFirst()) it.getString(0) else null }
-            ?: "${android.os.Environment.DIRECTORY_PICTURES}/"
-        insert(MediaType.Image, editedName(source.name), "image/jpeg", folder) {
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 95, it)
+            ?: PICTURES
+        val name = editedName(source.name)
+        val write = { output: OutputStream -> bitmap.compress(Bitmap.CompressFormat.JPEG, 95, output); Unit }
+        when {
+            insert(MediaType.Image, name, "image/jpeg", beside, write) != null ->
+                if (beside == PICTURES) CopyPlace.Pictures else CopyPlace.BesideOriginal
+            insert(MediaType.Image, name, "image/jpeg", PICTURES, write) != null -> CopyPlace.Pictures
+            else -> null
         }
     }
 

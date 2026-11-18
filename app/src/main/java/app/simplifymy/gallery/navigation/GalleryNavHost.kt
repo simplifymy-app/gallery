@@ -15,6 +15,7 @@ import app.simplifymy.gallery.feature.search.SearchScreen
 import app.simplifymy.gallery.feature.settings.ActionBarsScreen
 import app.simplifymy.gallery.feature.settings.IgnoredFoldersScreen
 import app.simplifymy.gallery.feature.settings.SettingsScreen
+import app.simplifymy.gallery.feature.trash.TrashScreen
 import app.simplifymy.gallery.feature.viewer.ViewerScreen
 import kotlinx.serialization.Serializable
 
@@ -32,6 +33,9 @@ object IgnoredFolders
 
 @Serializable
 object ActionBars
+
+@Serializable
+object Trash
 
 @Serializable
 object About
@@ -64,6 +68,7 @@ fun GalleryNavHost(start: Any = Folders, onExit: () -> Unit = {}) {
                 onOpenSearch = { openSearch() },
                 onOpenSettings = { openSettings() },
                 onOpenIgnored = { navController.navigate(IgnoredFolders) },
+                onOpenTrash = { navController.navigate(Trash) },
             )
         }
         composable<Media> { entry ->
@@ -81,7 +86,7 @@ fun GalleryNavHost(start: Any = Folders, onExit: () -> Unit = {}) {
             )
         }
         composable<Editor> {
-            EditorScreen(onBack = navController::popBackStack)
+            EditorScreen(onBack = back)
         }
         composable<Search> {
             SearchScreen(
@@ -102,6 +107,9 @@ fun GalleryNavHost(start: Any = Folders, onExit: () -> Unit = {}) {
         }
         composable<ActionBars> {
             ActionBarsScreen(onBack = navController::popBackStack)
+        }
+        composable<Trash> {
+            TrashScreen(onBack = navController::popBackStack)
         }
         composable<IgnoredFolders> {
             IgnoredFoldersScreen(onBack = navController::popBackStack)

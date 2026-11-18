@@ -356,4 +356,11 @@
     <string name="about_section_links">Links</string>
     <string name="about_website">Website</string>
     <string name="about_website_hint">simplifymy.app</string>
+    <string name="trash_title">Papierkorb</string>
+    <string name="trash_hint">Gelöschte Elemente werden nach 30 Tagen endgültig entfernt</string>
+    <string name="trash_empty">Papierkorb ist leer</string>
+    <string name="action_restore">Wiederherstellen</string>
+    <string name="action_delete_forever">Endgültig löschen</string>
+    <string name="editor_saved_to_pictures">In Pictures gespeichert</string>
+    <string name="editor_save_failed">Foto konnte nicht gespeichert werden</string>
 </resources>

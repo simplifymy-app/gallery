@@ -23,6 +23,7 @@ import app.simplifymy.gallery.core.model.mediaUri
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -38,6 +39,10 @@ class MediaRepository @Inject constructor(
 ) {
 
     val changes: Flow<Unit> = scanner.changes
+
+    val trash: Flow<List<Medium>> = changes.onStart { emit(Unit) }.map {
+        scanner.scan(trashed = true).map { it.toMedium(false) }.sortedByDescending(Medium::dateTaken)
+    }
 
     fun folders(filter: MediaFilter): Flow<List<Folder>> =
         combine(media.folders(filter.types), pinned.ids()) { rows, pins ->

@@ -356,4 +356,11 @@
     <string name="about_section_links">Ligações</string>
     <string name="about_website">Website</string>
     <string name="about_website_hint">simplifymy.app</string>
+    <string name="trash_title">Lixeira</string>
+    <string name="trash_hint">Os itens apagados são removidos de vez após 30 dias</string>
+    <string name="trash_empty">A lixeira está vazia</string>
+    <string name="action_restore">Restaurar</string>
+    <string name="action_delete_forever">Apagar para sempre</string>
+    <string name="editor_saved_to_pictures">Guardado em Pictures</string>
+    <string name="editor_save_failed">Não foi possível guardar a foto</string>
 </resources>

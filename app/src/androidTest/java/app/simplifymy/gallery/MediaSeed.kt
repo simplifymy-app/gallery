@@ -1,9 +1,13 @@
 package app.simplifymy.gallery
 
+import android.content.ContentResolver
+import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.net.Uri
+import android.os.Bundle
 import android.provider.MediaStore
 
 object MediaSeed {
@@ -12,16 +16,22 @@ object MediaSeed {
 
     private val COLLECTION = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
-    fun insert(context: Context, names: List<String>, tint: Int = Color.rgb(110, 139, 255)) {
+    fun insert(
+        context: Context,
+        names: List<String>,
+        tint: Int = Color.rgb(110, 139, 255),
+        folder: String = "Pictures/$FOLDER",
+        collection: Uri = COLLECTION,
+    ) {
         val bitmap = Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_8888).apply { eraseColor(tint) }
         names.forEach { name ->
             val values = ContentValues().apply {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, name)
                 put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
-                put(MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/$FOLDER")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, folder)
                 put(MediaStore.MediaColumns.IS_PENDING, 1)
             }
-            val uri = context.contentResolver.insert(COLLECTION, values) ?: return@forEach
+            val uri = context.contentResolver.insert(collection, values) ?: return@forEach
             context.contentResolver.openOutputStream(uri)?.use {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
             }
@@ -35,12 +45,12 @@ object MediaSeed {
         bitmap.recycle()
     }
 
-    fun count(context: Context, nameLike: String): Int =
+    fun count(context: Context, nameLike: String, folderLike: String = "%$FOLDER%"): Int =
         context.contentResolver.query(
             COLLECTION,
             arrayOf(MediaStore.MediaColumns._ID),
             "${MediaStore.MediaColumns.RELATIVE_PATH} LIKE ? AND ${MediaStore.MediaColumns.DISPLAY_NAME} LIKE ?",
-            arrayOf("%$FOLDER%", nameLike),
+            arrayOf(folderLike, nameLike),
             null,
         )?.use { it.count } ?: 0
 
@@ -58,11 +68,36 @@ object MediaSeed {
         return options.outWidth to options.outHeight
     }
 
+    fun uriOf(context: Context, name: String): Uri? =
+        context.contentResolver.query(
+            COLLECTION,
+            arrayOf(MediaStore.MediaColumns._ID),
+            "${MediaStore.MediaColumns.RELATIVE_PATH} LIKE ? AND ${MediaStore.MediaColumns.DISPLAY_NAME} = ?",
+            arrayOf("%$FOLDER%", name),
+            null,
+        )?.use { if (it.moveToFirst()) ContentUris.withAppendedId(COLLECTION, it.getLong(0)) else null }
+
+    fun trash(context: Context, name: String) {
+        val uri = uriOf(context, name) ?: return
+        context.contentResolver.update(
+            uri,
+            ContentValues().apply { put(MediaStore.MediaColumns.IS_TRASHED, 1) },
+            null,
+            null,
+        )
+    }
+
     fun clear(context: Context) {
         context.contentResolver.delete(
             COLLECTION,
-            "${MediaStore.MediaColumns.RELATIVE_PATH} LIKE ?",
-            arrayOf("%$FOLDER%"),
+            Bundle().apply {
+                putString(
+                    ContentResolver.QUERY_ARG_SQL_SELECTION,
+                    "${MediaStore.MediaColumns.RELATIVE_PATH} LIKE ? OR ${MediaStore.MediaColumns.DISPLAY_NAME} LIKE ?",
+                )
+                putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, arrayOf("%$FOLDER%", "e2e_%"))
+                putInt(MediaStore.QUERY_ARG_MATCH_TRASHED, MediaStore.MATCH_INCLUDE)
+            },
         )
     }
 }

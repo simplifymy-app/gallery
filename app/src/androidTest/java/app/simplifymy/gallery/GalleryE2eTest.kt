@@ -117,6 +117,20 @@ class GalleryE2eTest {
     }
 
     @Test
+    fun aTrashedItemIsListedInTrashAndCanBeSelected() {
+        MediaSeed.trash(context, SEEDED.first())
+        awaitText(MediaSeed.FOLDER)
+        compose.onNodeWithContentDescription(str(R.string.action_more)).performClick()
+        awaitText(str(R.string.trash_title))
+        compose.onNodeWithText(str(R.string.trash_title)).performClick()
+        awaitDescription(SEEDED.first())
+        compose.onNodeWithContentDescription(SEEDED.first()).performClick()
+        awaitText(str(R.string.selection_count, 1))
+        compose.onNodeWithContentDescription(str(R.string.action_restore)).assertIsDisplayed()
+        compose.onNodeWithContentDescription(str(R.string.action_delete_forever)).assertIsDisplayed()
+    }
+
+    @Test
     fun aSelectedFolderCanBePinned() {
         awaitText(MediaSeed.FOLDER)
         compose.onNodeWithText(MediaSeed.FOLDER).performTouchInput { longClick() }

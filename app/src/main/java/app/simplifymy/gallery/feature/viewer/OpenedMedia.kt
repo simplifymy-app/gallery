@@ -17,6 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import app.simplifymy.gallery.core.data.MediaRepository
 import app.simplifymy.gallery.core.settings.SettingsRepository
+import app.simplifymy.gallery.navigation.Editor
 import app.simplifymy.gallery.navigation.GalleryNavHost
 import app.simplifymy.gallery.navigation.Viewer
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,20 +27,22 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class OpenedMedium(val uri: Uri, val isVideo: Boolean)
+data class OpenedMedium(val uri: Uri, val isVideo: Boolean, val edit: Boolean)
 
 private val VIEW_ACTIONS = setOf(Intent.ACTION_VIEW, MediaStore.ACTION_REVIEW, "com.android.camera.action.REVIEW")
 
 fun Intent.openedMedium(type: String?): OpenedMedium? {
     val uri = data ?: return null
-    if (action !in VIEW_ACTIONS || type == null) return null
+    if (type == null) return null
+    if (action == Intent.ACTION_EDIT && type.startsWith("image/")) return OpenedMedium(uri, isVideo = false, edit = true)
+    if (action !in VIEW_ACTIONS) return null
     if (!type.startsWith("image/") && !type.startsWith("video/")) return null
-    return OpenedMedium(uri, isVideo = type.startsWith("video/"))
+    return OpenedMedium(uri, isVideo = type.startsWith("video/"), edit = false)
 }
 
 sealed interface OpenedState {
     data object Resolving : OpenedState
-    data class InGallery(val route: Viewer) : OpenedState
+    data class InGallery(val route: Any) : OpenedState
     data class Standalone(val panoramaForAll: Boolean, val scrim: Float) : OpenedState
 }
 
@@ -52,11 +55,15 @@ class OpenedMediaViewModel @Inject constructor(
     private val _state = MutableStateFlow<OpenedState>(OpenedState.Resolving)
     val state: StateFlow<OpenedState> = _state
 
-    fun resolve(uri: Uri) {
+    fun resolve(uri: Uri, edit: Boolean) {
         if (_state.value != OpenedState.Resolving) return
         viewModelScope.launch {
             val medium = runCatching { repository.locate(uri) }.getOrNull()
             val config = settings.settings.first()
+            if (edit && medium != null) {
+                _state.value = OpenedState.InGallery(Editor(medium.id))
+                return@launch
+            }
             val browsable = medium != null &&
                 repository.mediaIn(medium.bucketId, config.mediaFilter).first().any { it.id == medium.id }
             _state.value = if (browsable) OpenedState.InGallery(Viewer(medium.bucketId, medium.id))
@@ -72,7 +79,7 @@ fun OpenedMediaScreen(
     viewModel: OpenedMediaViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    LaunchedEffect(opened.uri) { viewModel.resolve(opened.uri) }
+    LaunchedEffect(opened.uri) { viewModel.resolve(opened.uri, opened.edit) }
     when (val current = state) {
         OpenedState.Resolving -> Box(Modifier.fillMaxSize().background(Color.Black))
         is OpenedState.InGallery -> GalleryNavHost(start = current.route, onExit = onClose)

@@ -356,4 +356,11 @@
     <string name="about_section_links">Links</string>
     <string name="about_website">Website</string>
     <string name="about_website_hint">simplifymy.app</string>
+    <string name="trash_title">Trash</string>
+    <string name="trash_hint">Deleted items are removed for good after 30 days</string>
+    <string name="trash_empty">Trash is empty</string>
+    <string name="action_restore">Restore</string>
+    <string name="action_delete_forever">Delete forever</string>
+    <string name="editor_saved_to_pictures">Saved to Pictures</string>
+    <string name="editor_save_failed">Couldn\'t save the photo</string>
 </resources>

@@ -75,6 +75,7 @@ fun FoldersScreen(
     onOpenSearch: () -> Unit,
     onOpenSettings: () -> Unit,
     onOpenIgnored: () -> Unit,
+    onOpenTrash: () -> Unit,
     viewModel: FoldersViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -155,6 +156,7 @@ fun FoldersScreen(
                     onChange = viewModel::setColumns,
                 )
                 MenuEntry(stringResource(R.string.setting_ignored)) { dismiss(); onOpenIgnored() }
+                MenuEntry(stringResource(R.string.trash_title)) { dismiss(); onOpenTrash() }
                 MenuEntry(stringResource(R.string.menu_settings)) { dismiss(); onOpenSettings() }
             }
         }

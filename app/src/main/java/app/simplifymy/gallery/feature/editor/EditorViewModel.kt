@@ -12,6 +12,7 @@ import androidx.navigation.toRoute
 import app.simplifymy.gallery.R
 import app.simplifymy.gallery.core.data.MediaRepository
 import app.simplifymy.gallery.core.data.MediaWriter
+import app.simplifymy.gallery.core.data.CopyPlace
 import app.simplifymy.gallery.core.model.Medium
 import app.simplifymy.gallery.navigation.Editor
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -73,6 +74,7 @@ data class EditorUiState(
     val closeMenu: Boolean = false,
     val saving: Boolean = false,
     val finished: Boolean = false,
+    @StringRes val notice: Int? = null,
 ) {
     val changed: Boolean get() = edits != PhotoEdits()
     val date: Long get() = medium?.dateTaken?.takeIf { it > 0 } ?: System.currentTimeMillis()
@@ -324,17 +326,22 @@ class EditorViewModel @Inject constructor(
         val current = _state.value
         val medium = current.medium ?: return
         if (current.saving || current.original == null) return
-        _state.update { it.copy(saving = true, closeMenu = false) }
+        _state.update { it.copy(saving = true, closeMenu = false, notice = null) }
         viewModelScope.launch {
-            val saved = runCatching {
+            val place = runCatching {
                 val full = withContext(Dispatchers.IO) {
                     decodePhoto(context.contentResolver, medium.uri, EXPORT_PIXELS)
                 }
                 val bitmap = withContext(Dispatchers.Default) { render(full, current.edits, current.date, fonts) }
                 full.recycle()
                 writer.saveCopy(medium, bitmap).also { bitmap.recycle() }
-            }.getOrNull() != null
-            _state.update { it.copy(saving = false, finished = saved) }
+            }.getOrNull()
+            val notice = when (place) {
+                null -> R.string.editor_save_failed
+                CopyPlace.Pictures -> R.string.editor_saved_to_pictures
+                CopyPlace.BesideOriginal -> null
+            }
+            _state.update { it.copy(saving = false, finished = place != null, notice = notice) }
         }
     }
 
